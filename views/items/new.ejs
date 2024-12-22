@@ -1,0 +1,84 @@
+<% layout('../layout/boilerplate') -%>
+
+<body>
+    <div class="row">
+        <div class="col-8">
+            <br><br>
+            <h2>Add a new Item</h2>
+            <br>
+            <form method="POST" 
+            action="/items/new" 
+            class="needs-validation" 
+            novalidate 
+            enctype="multipart/form-data">
+                <div class="mb-3">
+                    <label for="title" class="form-label">Title</label>
+                    <input type="text" name="title" placeholder="Enter catchy title" class="form-control" required>
+                </div>
+                <br>
+                <div>
+                    <label for="description" class="form-label">Description</label>
+                    <input type="text" name="description" placeholder="Enter Description" class="form-control">
+                </div>
+                <br>
+                <div>
+                    <label for="key" class="form-label">Keywords</label>
+                    <input type="text" name="key" placeholder="Enter Some words that best represent the item" class="form-control">
+                </div>
+                <br>
+                <div>
+                    <label for="category" class="form-label">Category</label>
+                    <input type="text" name="category" placeholder="Enter category" class="form-control">
+                </div>
+                <br>
+                <div>
+                    <label for="unit" class="form-label">Measuring Unit</label>
+                    <input type="text" name="unit" placeholder="Enter measuring unit of item" class="form-control">
+                </div>
+                <br>
+                <div class="mb-3">
+                    <label for="image" class="form-label">Upload Item Image</label>
+                    <input type="file" name="image" class="form-control">
+                </div>
+                <br>
+                <div class="detail-inputs" style="border: 0.1rem,rgb(186, 186, 186),solid;border-radius:5%; padding: 5%;">
+                    <button type="button" class="btn btn-dark add-detail-btn mb-3">Add more Types</button>
+                    <div class="mb-3">
+                        <label for="typ" class="form-label">Type</label>
+                        <input type="text" name="typ[]" placeholder="Enter type" class="form-control">
+                    </div>
+                    <div class="mb-3">
+                        <label for="price" class="form-label">Price</label>
+                        <input type="text" name="price[]" placeholder="Enter price" class="form-control">
+                    </div>
+                </div>
+                <br><br>
+                <button class="btn btn-dark add-btn">Add</button>
+            </form>
+            <br>
+        </div>
+    </div>
+
+    <script>
+        // JavaScript for adding dynamic detail inputs
+        document.addEventListener('DOMContentLoaded', function() {
+            const addDetailBtn = document.querySelector('.add-detail-btn');
+            const detailInputs = document.querySelector('.detail-inputs');
+
+            addDetailBtn.addEventListener('click', function() {
+                const detailTemplate = `
+                <hr>
+                <div class="mb-3">
+                    <label for="typ" class="form-label">Type</label>
+                    <input type="text" name="typ[]" placeholder="Enter type" class="form-control">
+                </div>
+                <div class="mb-3">
+                    <label for="price" class="form-label">Price</label>
+                    <input type="text" name="price[]" placeholder="Enter price" class="form-control">
+                </div>
+                `;
+                detailInputs.insertAdjacentHTML('beforeend', detailTemplate);
+            });
+        });
+    </script>
+</body>

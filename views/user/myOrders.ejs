@@ -1,0 +1,162 @@
+<% layout('../layout/boilerplate') -%>
+
+<%if(allOrder.length==0){%>
+    <h2 style="opacity: 0.5;">You don't have made any order yet.</h2>
+    <%}%>
+<% for(let order of allOrder) { %>
+    <hr>
+    <br>
+    <% let user = order.author %>
+    <table class="table table-primary">
+        <thead class="thead-primary">
+            <tr>
+                <th>Item</th>
+                <th>Type</th>
+                <th>Price</th>
+                <th>Quantity</th>
+                <th>Rate</th>
+            </tr>
+        </thead>
+        <tbody>
+            <% let sum = 0; %>
+            <% let weight = 0; %>
+            <% for (let orderItem of order.items) { %>
+                <tr>
+                    <td><%= orderItem.item.title %></td>
+                    <td><%= orderItem.item.typ %></td>
+                    <td><%= orderItem.item.price.toLocaleString("en-IN") %> &#8377; / <%= orderItem.item.unit %></td>
+                    <td><%= orderItem.item.quantity.toLocaleString("en-IN") %> <%= orderItem.item.unit %></td>
+                    <td><%= (orderItem.item.quantity * orderItem.item.price).toLocaleString("en-IN") %> &#8377;</td>
+                </tr>
+                <% sum += orderItem.item.quantity * orderItem.item.price; %> 
+                <% weight += parseInt(orderItem.item.quantity); %>
+            <% } %>
+            <tr>
+                <td><b>Delivery</b></td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td><b><%= (user.distance * 2).toFixed(2).toLocaleString("en-IN") %> &#8377;</b></td>
+            </tr>
+            <tr>
+                <td><b>Balance Due</b></td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td><b><%= user.balance_due.toLocaleString("en-IN") %> &#8377;</b></td>
+            </tr>
+            <tr>
+                <td><b>Total</b></td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td><p style="text-decoration: line-through;"><%= (sum + user.balance_due + user.distance * 2).toFixed(2).toLocaleString("en-IN") %></p>
+                    <b><%= Math.floor(sum + user.balance_due + user.distance * 2).toFixed(2).toLocaleString("en-IN") %> &#8377;</b></td>
+            </tr>
+            
+            <tr>
+                <% if(order.status == "Order Processing") { %>
+                    <div class="progress" role="progressbar" aria-label="Amazon order progress bar" aria-valuenow="25" aria-valuemin="0" aria-valuemax="100">
+                        <div class="progress-bar bg-Info" style="width: 25%"></div>
+                    </div>
+                    <div class="order-progress">
+                        <div class="step completed">Ordered</div>
+                        <div class="step">Shipped</div>
+                        <div class="step">Out for delivery</div>
+                        <div class="step">Delivered</div>
+                    </div>
+                    <% } %>
+                    
+                    <% if(order.status == "Shipped") { %>
+                    <div class="progress" role="progressbar" aria-label="Amazon order progress bar" aria-valuenow="50" aria-valuemin="0" aria-valuemax="100">
+                        <div class="progress-bar bg-Info" style="width: 50%"></div>
+                    </div>
+                    <div class="order-progress">
+                        <div class="step completed">Ordered</div>
+                        <div class="step completed">Shipped</div>
+                        <div class="step">Out for delivery</div>
+                        <div class="step">Delivered</div>
+                    </div>
+                    <% } %>
+                    
+                    <% if(order.status == "Out for Delivery") { %>
+                    <div class="progress" role="progressbar" aria-label="Amazon order progress bar" aria-valuenow="75" aria-valuemin="0" aria-valuemax="100">
+                        <div class="progress-bar bg-Info" style="width: 75%"></div>
+                    </div>
+                    <div class="order-progress">
+                        <div class="step completed">Ordered</div>
+                        <div class="step completed">Shipped</div>
+                        <div class="step completed">Out for delivery</div>
+                        <div class="step">Delivered</div>
+                    </div>
+                    <% } %>
+                    
+                    <% if(order.status == "Delivered") { %>
+                    <div class="progress" role="progressbar" aria-label="Amazon order progress bar" aria-valuenow="100" aria-valuemin="0" aria-valuemax="100">
+                        <div class="progress-bar bg-Info" style="width: 100%"></div>
+                    </div>
+                    <div class="order-progress">
+                        <div class="step completed">Ordered</div>
+                        <div class="step completed">Shipped</div>
+                        <div class="step completed">Out for delivery</div>
+                        <div class="step completed">Delivered</div>
+                    </div>
+                    <% } %>
+            </tr>
+            
+        </tbody>
+    </table>
+    <br>
+<% } %>
+
+<style>
+    .progress {
+        height: 10px;
+        margin-bottom: 20px;
+    }
+    
+    .order-progress {
+        display: flex;
+        justify-content: space-between;
+        margin-top: 10px;
+    }
+    
+    .step {
+        width: 25%;
+        text-align: center;
+        position: relative;
+    }
+    
+    .step:before {
+        content: '';
+        position: absolute;
+        top: -20px;
+        left: 50%;
+        transform: translateX(-50%);
+        width: 10px;
+        height: 10px;
+        border-radius: 50%;
+        background-color: #ddd;
+    }
+    
+    .completed:before {
+        background-color:#007bff;
+    }
+    
+    .completed:after {
+        content: '\2713'; /* Unicode character for tick mark */
+        position: absolute;
+        top: -25px;
+        left: 50%;
+        transform: translateX(-50%);
+        font-size: 14px;
+        color: white;
+        background-color:#007bff;
+        border-radius: 50%;
+        width: 18px;
+        height: 18px;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+    }
+    </style>

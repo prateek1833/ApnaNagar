@@ -1,0 +1,25 @@
+<% layout('../layout/boilerplate') -%>
+
+<div class="row mt-3">
+    <h3 class="col-8 offset-3">SignUp on Mukesh Hardware Store</h3>
+    <div class="col-8 offset-2">
+        <form action="/signup" method="POST" class="needs-validation" novalidate>
+            <div class="mb-3">
+                <label for="username" id="username" class="form-label">Username</label>
+                <input type="text" name="username" placeholder="Enter catchy username" class="form-control" required>
+                <div class="valid-feedback">Looks good</div>
+            </div>
+            <div class="mb-3">
+                <label for="mobile" id="mobile" class="form-label">Mobile No.</label>
+                <input type="number" name="mobile" placeholder="Enter your Mobile Number" class="form-control" required>
+                <div class="valid-feedback">Looks good</div>
+            </div>
+            <div class="mb-3">
+                <label for="password" id="password" class="form-label">Password</label>
+                <input type="password" name="password" placeholder="Enter strong password" class="form-control" required>
+                <div class="valid-feedback">Looks good</div>
+            </div>
+            <button class="btn btn-success">SignUp</button>
+        </form>
+    </div>
+</div>

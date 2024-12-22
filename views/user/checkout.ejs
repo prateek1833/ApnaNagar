@@ -1,0 +1,63 @@
+<% layout('../layout/boilerplate') -%>
+
+<% user = currUser %>
+
+<%if(user.distance>10){%>
+        <h1 style="color: gray;">Sorry, we are not here yet!</h1>
+        <p style="color: gray;">This app is not available at this location at the moment. Please try a different location</p>
+<%}else{%>
+<div class="container">
+    <table class="table table-default">
+        <thead class="thead-default">
+            <tr>
+                <th>Item</th>
+                <th>Type</th>
+                <th>Price</th>
+                <th>Quantity</th>
+                <th>Rate</th>
+            </tr>
+        </thead>
+        <tbody>
+            <% if (order && order.length > 0) { %>
+                <% let sum = 0; %>
+                <% let weight = 0; %>
+                <% order.forEach(orderItem => { %>
+                    <tr>
+                        <td><%= orderItem.title %></td>
+                        <td><%= orderItem.detail.typ %></td>
+                        <td><%= orderItem.detail.price.toLocaleString("en-IN") %> &#8377; / <%= orderItem.unit %></td>
+                        <td><%= orderItem.quantity.toLocaleString("en-IN") %> <%= orderItem.unit %></td>
+                        <td><%= (orderItem.quantity * orderItem.detail.price).toLocaleString("en-IN") %> &#8377;</td>
+                    </tr>
+                    <% sum += orderItem.quantity * orderItem.detail.price; %>
+                    <% weight += parseInt(orderItem.quantity); %>
+                <% }) %>
+                <tr>
+                    <td><b>Delivery</b></td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                    <td><b><%= (user.distance * 2).toLocaleString("en-IN") %> &#8377;</b></td>
+                </tr>
+                <tr>
+                    <td><b>Total</b></td>
+                    <td></td>
+                    <td></td>
+                    <td><b></b></td>
+                    <td class="d-flex flex-wrap"><b style="text-decoration: line-through;"><%= (sum + (user.distance * 2)).toFixed(2).toLocaleString("en-IN") %></b>
+                        <b><%= (sum + Math.floor(user.distance * 2)).toFixed(2).toLocaleString("en-IN") %> &#8377;</b></td>
+                </tr>
+            <% } else { %>
+                <tr>
+                    <td colspan="5">No items in the cart</td>
+                </tr>
+            <% } %>
+        </tbody>
+    </table>
+    <% if (order && order.length > 0) { %>
+        <form method="POST" action="/order/checkout">
+            <button class="btn btn-success">Place Your Order</button>
+        </form>
+    <% } %>
+</div>
+<%}%>

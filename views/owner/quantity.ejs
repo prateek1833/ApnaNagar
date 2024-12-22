@@ -1,0 +1,17 @@
+<% layout('../layout/boilerplate') -%>
+
+<div class="row">
+    <div class="col-12">
+        <br>
+        <form method="POST" action="/owner/<%= order._id %>/quantity" novalidate class="needs-validation">
+            <% for (let orderItem of order.items) { %>
+                <div class="form-floating mb-3">
+                    <textarea class="form-control" placeholder="Enter updated quantity" id="floatingTextarea <%= orderItem._id %>" name="quantity_<%= orderItem._id %>"><%= orderItem.item.quantity %></textarea>
+                    <label for="floatingTextarea <%= orderItem._id %>"> <%= orderItem.item.title %> (in <%= orderItem.item.unit %>)</label>
+                </div>
+            <% } %>
+            <button class="btn btn-dark add-btn" type="submit">Update</button>
+        </form>
+        <br>
+    </div>
+</div>

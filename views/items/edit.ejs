@@ -1,0 +1,92 @@
+<% layout('../layout/boilerplate') -%>
+
+<div class="row">
+    <div class="col-8 offset-2">     
+        <br>
+        <form method="POST" action="/items/<%= item._id %>/edit?_method=PUT" novalidate class="needs-validation" enctype="multipart/form-data">
+            <div class="mb-3">
+                <label for="title" class="form-label">Title</label>
+                <input type="text" name="title" value="<%= item.title %>" class="form-control" required>
+            </div>
+            <div class="mb-3">
+                <label for="description" class="form-label">Description</label>
+                <textarea name="description" class="form-control" rows="3"><%= item.description %></textarea>
+            </div>
+            <div class="mb-3">
+                <label for="category" class="form-label">Category</label>
+                <input type="text" name="category" value="<%= item.category %>" class="form-control">
+            </div>
+            <div class="mb-3">
+                <label for="unit" class="form-label">Unit</label>
+                <input type="text" name="unit" value="<%= item.unit %>" class="form-control">
+            </div>
+            <div class="mb-3">
+                <img src="<%= item.image.url %>" alt="<%= item.image.filename %>" class="img-thumbnail">
+            </div>
+            <div class="mb-3">
+                <label for="image" class="form-label">Upload New Image</label>
+                <input type="file" name="image" class="form-control">
+            </div>
+            <div class="mb-3" style="border: solid rgb(180, 179, 179); border-width: 1px; border-radius: 10%; padding: 5%;">
+                <label for="detail" class="form-label">Details</label>
+                <div id="detail-container">
+                    <% item.detail.forEach((detail, index) => { %>
+                        <div class="detail-item mb-2 row">
+                            <div class="col">
+                                <label for="typ-<%= index %>" class="form-label">Type</label>
+                                <input type="text" name="detail[<%= index %>][typ]" value="<%= detail.typ %>" class="form-control">
+                            </div>
+                            <div class="col">
+                                <label for="price-<%= index %>" class="form-label">Price</label>
+                                <input type="number" name="detail[<%= index %>][price]" value="<%= detail.price %>" class="form-control" required>
+                            </div>
+                            <div class="col-auto d-flex align-items-end">
+                                <button type="button" class="btn btn-danger btn-sm delete-detail">Delete</button>
+                            </div>
+                        </div>
+                    <% }) %>
+                </div>
+                <button type="button" id="add-detail" class="btn btn-secondary mt-2">Add Detail</button>
+            </div>
+            <div class="mb-3">
+                <label for="key" class="form-label">Keywords</label>
+                <input type="text" name="key" value="<%= item.key.join(', ') %>" class="form-control">
+                <small class="form-text text-muted">Separate keywords with commas</small>
+            </div>
+            <button class="btn btn-dark add-btn">Submit</button>
+        </form>
+        <br>
+    </div>
+</div>
+
+<script>
+    document.getElementById('add-detail').addEventListener('click', function() {
+        const container = document.getElementById('detail-container');
+        const index = container.children.length;
+        const detailItem = document.createElement('div');
+        detailItem.classList.add('detail-item', 'mb-2', 'row');
+        detailItem.innerHTML = `
+            <div class="col">
+                <label for="typ-${index}" class="form-label">Type</label>
+                <input type="text" name="detail[${index}][typ]" class="form-control">
+            </div>
+            <div class="col">
+                <label for="price-${index}" class="form-label">Price</label>
+                <input type="number" name="detail[${index}][price]" class="form-control" required>
+            </div>
+            <div class="col-auto d-flex align-items-end">
+                <button type="button" class="btn btn-danger btn-sm delete-detail">Delete</button>
+            </div>
+        `;
+        container.appendChild(detailItem);
+        addDeleteEventListener(detailItem.querySelector('.delete-detail'));
+    });
+
+    function addDeleteEventListener(button) {
+        button.addEventListener('click', function() {
+            button.closest('.detail-item').remove();
+        });
+    }
+
+    document.querySelectorAll('.delete-detail').forEach(addDeleteEventListener);
+</script>

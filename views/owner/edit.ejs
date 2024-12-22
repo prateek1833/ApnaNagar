@@ -1,0 +1,43 @@
+<% layout('../layout/boilerplate') -%>
+
+    <div class="row">
+        <div class="col-8 offset-2">
+            <br>
+            <form method="POST" action="/owner/<%=user._id%>/edit?_method=PUT" novalidate class="needs-validation"
+                >
+                <div class="mb-3">
+                    <label for="username" class="form-label">Name</label>
+                    <input type="text" name="username" value="<%=user.username%>" class="form-control" required readonly>
+                </div>
+                <div class="row">
+                    <div class="col-md-4 mb-3">
+                        <label for="area" class="form-label">Area</label>
+                        <input type="text" name="area" value="<%=user.area%>" class="form-control">
+                    </div>
+                    <div class="col-md-4 mb-3">
+                        <label for="district" class="form-label">District</label>
+                        <input type="text" name="district" value="<%=user.district%>" class="form-control">
+                    </div>
+                    <div class="col-md-4 mb-3">
+                        <label for="area" class="form-label">State</label>
+                        <input type="text" name="state" value="<%=user.state%>" class="form-control">
+                    </div>
+                </div>
+                <div class="mb-3">
+                    <label for="pincode" class="form-label">Pin Code</label>
+                    <input type="number" name="pincode" value="<%=user.pincode%>" class="form-control">
+                </div>
+                <div class="mb-3">
+                    <label for="balance_due" class="form-label">Balance due</label>
+                    <input type="number" name="balance_due" value="<%=user.balance_due%>" class="form-control">
+                </div>
+                <div class="mb-3">
+                    <label for="mobile" class="form-label">Mobile</label>
+                    <input type="number" name="mobile" value="<%=user.mobile%>" class="form-control" required>
+                </div>
+
+                <button class="btn btn-dark add-btn">Submit</button>
+            </form>
+            <br>
+        </div>
+    </div>
