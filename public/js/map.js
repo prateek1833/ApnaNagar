@@ -132,38 +132,41 @@ if (toggleContainer) {
     console.error('No div with class "toggle" found in the document.');
 }
 const detectLocationButton = document.getElementById('detect-location');
+const loadingSpinner = document.getElementById('loading-spinner');
 
-    if (detectLocationButton) {
-        // Add click event listener
-        detectLocationButton.addEventListener('click', () => {
-            if (navigator.geolocation) {
-                navigator.geolocation.getCurrentPosition(
-                    (position) => {
-                        const userLocation = [position.coords.longitude, position.coords.latitude];
-                        console.log('User Location:', userLocation);
+if (detectLocationButton) {
+    detectLocationButton.addEventListener('click', () => {
+        if (navigator.geolocation) {
+            // Show the loading spinner
+            loadingSpinner.style.display = 'block';
 
-                        // Update the map's center to the user's location
-                        map.setCenter(userLocation);
-                        map.setZoom(14);
+            navigator.geolocation.getCurrentPosition(
+                (position) => {
+                    const userLocation = [position.coords.longitude, position.coords.latitude];
+                    console.log('User Location:', userLocation);
 
-                        // Add a marker at the user's location (optional)
-                        // new mapboxgl.Marker()
-                        //     .setLngLat(userLocation)
-                        //     .setPopup(new mapboxgl.Popup().setHTML('<p>Your Current Location</p>'))
-                        //     .addTo(map);
-                    },
-                    (error) => {
-                        console.error('Error getting location:', error);
-                        alert('Unable to fetch location. Please enable location services.');
-                    }
-                );
-            } else {
-                alert('Geolocation is not supported by your browser.');
-            }
-        });
-    } else {
-        console.error('Button with id "detect-location" not found.');
-    }
+                    // Update the map's center to the user's location
+                    map.setCenter(userLocation);
+                    map.setZoom(14);
+
+                    // Hide the loading spinner
+                    loadingSpinner.style.display = 'none';
+                },
+                (error) => {
+                    console.error('Error getting location:', error);
+                    alert('Unable to fetch location. Please enable location services.');
+                    
+                    // Hide the loading spinner in case of error
+                    loadingSpinner.style.display = 'none';
+                }
+            );
+        } else {
+            alert('Geolocation is not supported by your browser.');
+        }
+    });
+} else {
+    console.error('Button with id "detect-location" not found.');
+}
 
 
     // Get the form and hidden input elements

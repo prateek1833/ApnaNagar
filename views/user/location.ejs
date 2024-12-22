@@ -8,7 +8,9 @@
 <link href="https://api.mapbox.com/mapbox-gl-js/v2.16.0/mapbox-gl.css" rel="stylesheet" />
 <link href="https://api.mapbox.com/mapbox-gl-js/plugins/mapbox-gl-geocoder/v5.0.0/mapbox-gl-geocoder.css" rel="stylesheet" />
 
-
+<div id="loading-spinner" style="display: none;">
+    <img src="https://cdn-icons-png.flaticon.com/512/189/189792.png" alt="Loading..." style="width: 50px; height: 50px;">
+</div>
 <div id="geocoder"></div>
 <div id="map"></div>
 <div class="continue justify-content-center align-items-center">
@@ -53,6 +55,31 @@ h2 {
 
 button {
     margin-right: 10px;
+}
+@keyframes spin {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
+}
+
+#loading-spinner {
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    z-index: 9999;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background-color: rgba(255, 255, 255, 0.2); /* Semi-transparent background */
+    border-radius: 10px;
+    padding: 20px;
+    box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+#loading-spinner img {
+    width: 50px;
+    height: 50px;
+    animation: spin 1s linear infinite;
 }
 
 </style>
