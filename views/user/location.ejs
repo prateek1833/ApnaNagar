@@ -1,4 +1,4 @@
-<% layout('../layout/boilerplate') -%>
+<% layout('../layout/boilerplateLocation') -%>
 <script>
     const mapToken = "<%=process.env.MAP_TOKEN%>";
 </script>
@@ -12,7 +12,7 @@
     <img src="https://cdn-icons-png.flaticon.com/512/189/189792.png" alt="Loading..." style="width: 50px; height: 50px;">
 </div>
 <div id="geocoder"></div>
-<div id="map"></div>
+<div id="map" style="height: 80vh;"></div>
 <div class="continue justify-content-center align-items-center">
     <button class="btn btn-success add-btn" id="detect-location">Use Current Location</button>
     <form id="address-form" method="POST" action="/order/<%= currUser._id %>/update-address">
@@ -83,4 +83,9 @@ button {
 }
 
 </style>
+<script>
+    window.addEventListener('load', () => {
+      window.scrollTo(0, 70);
+    });
+</script>
 

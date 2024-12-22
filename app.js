@@ -103,7 +103,7 @@ app.get("/demouser", async (req, res) => {
 })
 
 app.get('/', (req, res) => {
-    res.redirect('/items');
+    res.redirect('/items/restaurant');
 });
 
 app.use("/owner", ownerRouter);

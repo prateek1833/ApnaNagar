@@ -231,13 +231,13 @@
                             <div class="d-flex justify-content-between align-item-center">
                                 <div>
                                     <p class="mb-0 d-flex justify-content-start"><b><%=review.author.username%></b></p>
-                                    <p class="mb-0">
+                                    <p class="mb-0" style="font-size: 0.75rem; color: grey;">
                                         <%= (() => {
                                           const date = new Date(review.createdAt);
                                           const day = String(date.getDate()).padStart(2, '0');
                                           const month = String(date.getMonth() + 1).padStart(2, '0');
                                           const year = date.getFullYear();
-                                          return `${day}-${month}-${year}`;
+                                          return `${day}.${month}.${year}`;
                                         })() %>
                                       </p> 
                                 </div>
@@ -249,7 +249,7 @@
                             </div>
                                                          
                             <p class="starability-result card-text justify-content-center" data-rating="<%=review.rating%>"></p>
-                            <p class="card-text fs-6"><%=review.comment%></p>
+                            <p class="mb-3"><%=review.comment%></p>
                         </div>
                         
                     </div>
