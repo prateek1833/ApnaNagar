@@ -26,6 +26,7 @@ router
 .get("/:id/quantity",isLoggedIn,isOwner,ownerController.renderQuantity)
 .post("/:id/quantity",isLoggedIn,isOwner,ownerController.quantity)
 
-
+router
+.get("/addItem",isLoggedIn,ownerController.addItem)
 
 module.exports=router;

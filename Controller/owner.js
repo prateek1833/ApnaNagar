@@ -5,6 +5,10 @@ module.exports.index = async (req, res) => {
     const allUser = await User.find({});
     res.render("owner/users.ejs", { allUser });
 }
+
+module.exports.addItem = async (req, res) => {
+    res.render("owner/addItem.ejs");
+}
 module.exports.renderEdit = async (req, res) => {
     let { id } = req.params;
     const user = await User.findById(id);

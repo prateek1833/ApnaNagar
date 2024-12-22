@@ -135,7 +135,10 @@
                                     <button type="button" class="btn btn-success"><%=item.avgRating %><i class="fa-solid fa-star"></i></button>
                                 <% } %>  
                                  </b>
-                            &#8377;<%= item.detail[0].price.toLocaleString("en-In") %>/<%= item.unit %>
+                                 <span>
+                                    <p style="text-decoration: line-through; display: inline; margin: 0;">&#8377;<%= Math.round(item.detail[0].price + (0.3 * item.detail[0].price)).toLocaleString("en-In") %>/<%= item.unit %></p>
+                                    <p style="display: inline; margin: 0 20px;">&#8377;<%= item.detail[0].price.toLocaleString("en-In") %>/<%= item.unit %></p>
+                                </span>                                                                
                         </p>
                 </a>
             </div>

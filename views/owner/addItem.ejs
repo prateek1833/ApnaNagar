@@ -1,0 +1,39 @@
+<% layout('../layout/boilerplate') -%>
+
+<body>
+    <div class="row">
+        <div class="col-10">
+            <br><br>
+            <h3>Tell us about the item you wish to add</h3>
+            <br>
+            <form method="POST" 
+            action="/items/new" 
+            class="needs-validation" 
+            novalidate 
+            enctype="multipart/form-data">
+                <div class="mb-3">
+                    <label for="name" class="form-label"><b>Item name</b></label>
+                    <input type="text" name="name" placeholder="Enter name of item you wish to add" class="form-control" required>
+                </div>
+                <br>
+                <div>
+                    <label for="description" class="form-label"><b>Description</b></label>
+                    <textarea type="text" name="description" placeholder="Enter about the item" class="form-control"></textarea>
+                </div>
+                <br>
+                <label for="category" class="form-label"><b>Select Category</b></label>
+                <select name="category" class="form-control" required>
+                    <option value="">Select Category</option>
+                    <option value="grocery">Grocery</option>
+                    <option value="fast-food">Fast Food</option>
+                    <option value="beverages">Beverages</option>
+                    <option value="snacks">Snacks</option>
+                </select>
+                
+                <br><br>
+                <button class="btn btn-dark add-btn"><b>send</b></button>
+            </form>
+            <br>
+        </div>
+    </div>
+</body>
