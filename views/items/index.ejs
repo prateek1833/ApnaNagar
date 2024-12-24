@@ -1,147 +1,96 @@
 <% layout('../layout/boilerplate') -%>
 
+<div id="filters">
+    <% const filters = [
+        { name: "Burger", search: "burger", img: "https://res.cloudinary.com/dzrxswqur/image/upload/v1735018802/burger_ajrdgn.png" },
+        { name: "Pizza", search: "pizza", img: "https://res.cloudinary.com/dzrxswqur/image/upload/v1735018995/pizza_ta0fmj.png" },
+        { name: "Momos", search: "momos", img: "https://res.cloudinary.com/dzrxswqur/image/upload/v1735019920/momo_rtnbai.webp" },
+        { name: "Manchurian", search: "manchurian", img: "https://res.cloudinary.com/dzrxswqur/image/upload/v1735020276/manchurian_v2tvak.png" },
+        { name: "Samosa", search: "samosa", img: "https://res.cloudinary.com/dzrxswqur/image/upload/v1735021336/samosa_rs3hqu.png" },
+        { name: "Noodles", search: "noodles", img: "https://res.cloudinary.com/dzrxswqur/image/upload/v1735021723/noodles_mnwyfe.png" },
+        { name: "Cake", search: "cake", img: "https://res.cloudinary.com/dzrxswqur/image/upload/v1735021888/cake_lmspb1.png" },
+    ]; %>
+
+    <% filters.forEach(filter => { %>
+        <a class="filter nav-link" href="javascript:void(0)" data-search="<%= filter.search %>">
+            <div><img src="<%= filter.img %>" class="filter-image" alt="<%= filter.name %>"></div>
+            <p><%= filter.name %></p>
+        </a>
+    <% }) %>
+</div>
+
+<form class="d-flex justify-content-center" role="search" method="GET" action="/items/search" id="searchForm" >
+    <input class="form-control me-2" name="keyword" type="search" placeholder="Tell us what you want" aria-label="Search" id="searchInput" style="display: none;">
+    <button class="btn" type="submit"><i class="fa-solid fa-magnifying-glass" style="display: none;"></i></button>
+</form>
+
+
+<hr>
+
+<% if (allItem.length === 0) { %>
+    <h2 style="opacity: 0.5; text-align: center;">Sorry! I don't have this item on my Shop</h2>
+<% } %>
+
+<div class="row row-cols-lg-4 row-cols-md-3 row-cols-sm-2">
+    <% for (let item of allItem) { %>
+        <div class="card" style="width: 22rem;">
+            <a href="/items/<%= item._id %>/show.ejs" class="item-link">
+                <img src="<%= item.image.url %>" class="card-img card-img-top" alt="<%= item.title %>">
+                <div class="card-body">
+                    <p class="card-text">
+                        <b class="card-text d-flex justify-content-between align-items-center">
+                            <%= item.title %>
+                            <% if (item.avgRating != 0) { %>
+                                <button type="button" class="btn btn-success">
+                                    <%= item.avgRating %><i class="fa-solid fa-star"></i>
+                                </button>
+                            <% } %>
+                        </b>
+                        <span>
+                            <p style="text-decoration: line-through; display: inline; margin: 0;">
+                                &#8377;<%= Math.round(item.detail[0].price + (0.3 * item.detail[0].price)).toLocaleString("en-IN") %>/<%= item.unit %>
+                            </p>
+                            <p style="display: inline; margin: 0 20px;">
+                                &#8377;<%= item.detail[0].price.toLocaleString("en-IN") %>/<%= item.unit %>
+                            </p>
+                        </span>
+                    </p>
+                </div>
+            </a>
+        </div>
+    <% } %>
+</div>
+
+<script>
+    // Attach click event listener to filter elements
+    document.querySelectorAll('.filter').forEach(element => {
+        element.addEventListener('click', () => {
+            const keyword = element.getAttribute('data-search');
+            const searchInput = document.querySelector('#searchInput');
+            const searchForm = document.querySelector('#searchForm');
+
+            if (searchInput && searchForm) {
+                searchInput.value = keyword;
+                searchForm.submit();
+            } else {
+                console.error('Search input or form not found.');
+            }
+        });
+    });
+</script>
+
 <style>
-    #filters {
-        display: flex;
-        justify-content: left;
-        align-items: center;
-        flex-wrap: nowrap;
-        margin: -10px 0;
-        overflow-x: auto;
-        left: 10px;
+    .filter-image {
+        height: 3rem;
+        object-fit: cover;
     }
 
-    .filter {
-        text-align: center;
-        margin-right: 0.5rem;
-        padding: 5px 15px;
-        border: 2px solid #ff4e50;
-        border-radius: 25px;
-        background-color: white;
-        color: #ff4e50;
-        font-size: 0.70rem;
-        transition: all 0.3s ease;
-        text-decoration: none;
-        flex: 0 0 auto;
-        white-space: nowrap;
-    }
-
-    .filter:hover {
-        background-color: #ff4e50;
-        color: white;
-        opacity: 1;
-    }
-
-    .filter i {
-        font-size: 1.6rem;
-    }
-
-    
-
-    .card {
-        margin: 0.5rem;
-        border: none;
-        border-radius: 10px;
-        overflow: hidden;
-        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-        transition: transform 0.3s ease;
-    }
-
-    .card:hover {
-        transform: translateY(-10px);
-    }
-
-    .card img {
-        border-top-left-radius: 10px;
-        border-top-right-radius: 10px;
+    .card-img {
         height: 20rem;
         object-fit: cover;
     }
 
-    .card-body {
-        padding: 15px;
-        text-align: center;
-    }
-
-    .card-text {
-        font-size: 1rem;
-        color: #333;
-    }
-
-    .card-text b {
-        font-size: 1.2rem;
-        color: #ff4e50;
-    }
-
-    hr {
-        border: 0;
-        height: 1px;
-        background: #ff4e50;
-        background-image: linear-gradient(to right, #ff4e50, #f9d423);
-        margin: 20px 0;
-    }
-
-    h2 {
-        text-align: center;
-        opacity: 0.5;
-        font-size: 1.5rem;
-        margin: 20px 0;
+    .row {
+        gap: 1rem;
     }
 </style>
-    <div id="filters" >
-        
-        <a class="filter nav-link" href="/items/restaurant">
-            <div><i style="font-size: 1.6rem;" class="fa-solid fa-utensils" ></i></div>
-            <p>Restaurant</p>
-        </a>
-        <a class="filter nav-link" href="/items/grocery">
-            <div><i style="font-size: 1.6rem;" class="fa-solid fa-cookie-bite"></i></div>
-            <p>Grocery</p>
-        </a>
-        <a class="filter nav-link" href="/items/hardware">
-            <div><i style="font-size: 1.6rem;" class="fa-solid fa-gear" ></i></div>
-            <p>Hardware</p>
-        </a>
-        <a class="filter nav-link" href="/items/clothes">
-            <div><i style="font-size: 1.6rem;" class="fa-solid fa-shirt"></i></div>
-            <p>Cloths</p>
-        </a>
-        <a class="filter nav-link" href="/items/accessories">
-            <div><i style="font-size: 1.6rem;" class="fa-solid fa-hammer"></i></div>
-            <p>Accessories</p>
-        </a>
-        <a class="filter nav-link" href="/items/paints">
-            <div><i style="font-size: 1.6rem;" class="fa-solid fa-brush"></i></div>
-            <p>Paints</p>
-        </a>
-    </div>
-    <hr>
-    <%if(allItem.length==0){%>
-        <h2 style="opacity: 0.5;">Sorry! I don't have this item on my Shop</h2>
-        <%}%>
-    
-    <div class="row row-cols-lg-4 row-cols-md-3 row-cols-sm-2 ">
-        
-        <%for(let item of allItem){%>
-            <div class="card" style="width: 22rem">
-                <a href="/items/<%=item._id%>/show.ejs" class="item-link">
-                    <img src="<%=item.image.url%>" class="card-img-top" alt="item_img" style="height: 20rem">
-                    <div class="card-body">
-                        <p class="card-text">
-                            <b class="card-text d-flex justify-content-between align-items-center">
-                                <br>
-                                <%=item.title%>
-                                <% if (item.avgRating != 0) { %>
-                                    <button type="button" class="btn btn-success"><%=item.avgRating %><i class="fa-solid fa-star"></i></button>
-                                <% } %>  
-                                 </b>
-                                 <span>
-                                    <p style="text-decoration: line-through; display: inline; margin: 0;">&#8377;<%= Math.round(item.detail[0].price + (0.3 * item.detail[0].price)).toLocaleString("en-In") %>/<%= item.unit %></p>
-                                    <p style="display: inline; margin: 0 20px;">&#8377;<%= item.detail[0].price.toLocaleString("en-In") %>/<%= item.unit %></p>
-                                </span>                                                                
-                        </p>
-                </a>
-            </div>
-    </div>
-    <%}%>
-        </div>

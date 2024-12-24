@@ -291,7 +291,7 @@ module.exports.createOrder = async (req, res) => {
                 district: user.district,
                 state: user.state,
                 pincode: user.pincode,
-                coordinates:user.coordinates,
+                coordinates: user.coordinates,
                 mobile: user.mobile,
                 distance: user.distance,
                 balance_due: user.balance_due,
@@ -311,12 +311,6 @@ module.exports.createOrder = async (req, res) => {
 
         // Clear the order cookie after the order has been placed
         res.clearCookie('order');
-
-        // Fetch and sort orders by createdAt in descending order
-        const sortedOrders = await Order.find({}).sort({ createdAt: -1 });
-        
-
-        console.log('Sorted Orders:', sortedOrders);
 
         req.flash("success", "Your Order has been placed. Keep Shopping.");
         res.redirect("/items");

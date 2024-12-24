@@ -13,8 +13,8 @@
                 <th>Item</th>
                 <th>Type</th>
                 <th>Price</th>
-                <th>Quantity</th>
-                <th>Rate</th>
+                <th>Quantity </th>
+                <th>Rate(&#8377;)</th>
             </tr>
         </thead>
         <tbody>
@@ -26,8 +26,8 @@
                         <td><%= orderItem.title %></td>
                         <td><%= orderItem.detail.typ %></td>
                         <td><%= orderItem.detail.price.toLocaleString("en-IN") %> &#8377; / <%= orderItem.unit %></td>
-                        <td><%= orderItem.quantity.toLocaleString("en-IN") %> <%= orderItem.unit %></td>
-                        <td><%= (orderItem.quantity * orderItem.detail.price).toLocaleString("en-IN") %> &#8377;</td>
+                        <td><%= orderItem.quantity.toLocaleString("en-IN") %> </td>
+                        <td><%= (orderItem.quantity * orderItem.detail.price).toLocaleString("en-IN") %> </td>
                     </tr>
                     <% sum += orderItem.quantity * orderItem.detail.price; %>
                     <% weight += parseInt(orderItem.quantity); %>
@@ -37,15 +37,24 @@
                     <td></td>
                     <td></td>
                     <td></td>
-                    <td><b><%= (user.distance * 2).toLocaleString("en-IN") %> &#8377;</b></td>
+                    <td><b><%= user.distance > 3 ? (user.distance * 4).toLocaleString("en-IN")  : '0' %></b></td>
                 </tr>
                 <tr>
                     <td><b>Total</b></td>
                     <td></td>
                     <td></td>
                     <td><b></b></td>
-                    <td class="d-flex flex-wrap"><b style="text-decoration: line-through;"><%= (sum + (user.distance * 2)).toFixed(2).toLocaleString("en-IN") %></b>
-                        <b><%= (sum + Math.floor(user.distance * 2)).toFixed(2).toLocaleString("en-IN") %> &#8377;</b></td>
+                    <td class="d-flex flex-wrap">
+                        <% if (user.distance > 3) { %>
+                            <b style="text-decoration: line-through;">
+                                <%= (sum + (user.distance * 4)).toFixed(2).toLocaleString("en-IN") %>
+                            </b>
+                        <% } %>
+                        <b>
+                            <%= (sum + (user.distance > 3 ? Math.floor(user.distance * 4) : 0)).toFixed(2).toLocaleString("en-IN") %>
+                        </b>
+                    </td>
+                    
                 </tr>
             <% } else { %>
                 <tr>

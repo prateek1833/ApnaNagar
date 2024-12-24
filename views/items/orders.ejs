@@ -6,7 +6,7 @@ function getOrderCategory(createdAt) {
     const today = new Date();
     const diffInTime = today - orderDate;
     const diffInDays = Math.floor(diffInTime / (1000 * 60 * 60 * 24));
-    
+
     if (diffInDays === 0) {
         return "Today's Orders";
     } else if (diffInDays === 1) {
@@ -16,26 +16,39 @@ function getOrderCategory(createdAt) {
     }
 }
 
-const groupedOrders = {};
+const groupedOrders = new Map();
 
 for (let order of allOrder) {
     const category = getOrderCategory(order.createdAt);
-    if (!groupedOrders[category]) {
-        groupedOrders[category] = [];
+    if (!groupedOrders.has(category)) {
+        groupedOrders.set(category, []);
     }
-    groupedOrders[category].push(order);
+    groupedOrders.get(category).push(order);
 }
+
+// Sort categories based on priority (today, yesterday, then older orders)
+const sortedCategories = Array.from(groupedOrders.keys()).sort((a, b) => {
+    const categoryToDays = {
+        "Today's Orders": 0,
+        "Yesterday's Orders": 1
+    };
+
+    const daysA = categoryToDays[a] ?? parseInt(a.split(' ')[0]);
+    const daysB = categoryToDays[b] ?? parseInt(b.split(' ')[0]);
+    return daysA - daysB;
+});
 %>
 
-<% for (let category in groupedOrders) { %>
+<% for (let category of sortedCategories) { %>
     <h2><%= category %></h2>
-    <% for (let order of groupedOrders[category]) { %>
+    <% let serialNumber = 1; %>
+    <% for (let order of groupedOrders.get(category)) { %>
         <hr>
         <% let user = order.author %>
-
-        <li class="list-group-item">Order placed at : <%= new Date(order.createdAt).toLocaleString("en-IN", { timeZone: "Asia/Kolkata", hour: "2-digit", minute: "2-digit" }); %>
+        
+        <li class="list-group-item">Order #<%= serialNumber %> placed at : <%= new Date(order.createdAt).toLocaleString("en-IN", { timeZone: "Asia/Kolkata", hour: "2-digit", minute: "2-digit" }); %>
         </li>
-        <ul class="list-group list-group-horizontal justify-content-between" >
+        <ul class="list-group list-group-horizontal justify-content-between">
             <li class="list-group-item"><%= user.name %></li>
             <li class="list-group-item"><%= user.mobile %></li>
             <li class="list-group-item">
@@ -45,27 +58,25 @@ for (let order of allOrder) {
                             <i class="fa-solid fa-location-dot"></i>
                         </button>
                     </a>
-                    <% } else { %>
-                        <% console.log(user.coordinates) %>
+                <% } else { %>
                     <span class="text-danger">Location not available</span>
                 <% } %>
-                
-              </li>              
-              <li class="list-group-item">
-                <form method="POST" action="/order/<%=order._id%>/delete?_method=DELETE">
+            </li>
+            <li class="list-group-item">
+                <form method="POST" action="/order/<%= order._id %>/delete?_method=DELETE" onsubmit="return confirmDelete()">
                     <button class="btn btn-danger"><i class="fa-solid fa-trash"></i></button>
                 </form>
-            </li>            
+            </li>
         </ul>
-        
+
         <table class="table table-primary">
             <thead class="thead-primary">
                 <tr>
                     <th>Item</th>
                     <th>Type</th>
                     <th>Price</th>
-                    <th>Quantity</th>
-                    <th>Rate</th>
+                    <th>Quan.</th>
+                    <th>Rate (&#8377;)</th>
                 </tr>
             </thead>
             <tbody>
@@ -74,86 +85,73 @@ for (let order of allOrder) {
                     <tr>
                         <td><%= orderItem.item.title %></td>
                         <td><%= orderItem.item.typ %></td>
-                        <td><%= orderItem.item.price.toLocaleString("en-In") %> &#8377;/<%= orderItem.item.unit %></td>
-                        <td>
-                            <%= orderItem.item.quantity.toLocaleString("en-In") %> <%= orderItem.item.unit %>
-                        </td>
-                        <td><%= (orderItem.item.quantity * orderItem.item.price).toLocaleString("en-In") %></td>
+                        <td><%= orderItem.item.price.toLocaleString("en-IN") %> &#8377;/<%= orderItem.item.unit %></td>
+                        <td><%= orderItem.item.quantity.toLocaleString("en-IN") %> <%= orderItem.item.unit %></td>
+                        <td><%= (orderItem.item.quantity * orderItem.item.price).toLocaleString("en-IN") %></td>
                     </tr>
                     <% sum += orderItem.item.quantity * orderItem.item.price %>
                 <% } %>
                 <tr>
-                    <td><b>Transport Charge</b></td>
+                    <td><b>Delivery</b></td>
                     <td></td>
                     <td></td>
                     <td></td>
-                    <td><b><%= ((user.distance * 2).toFixed(2)).toLocaleString("en-In") %> &#8377;</b></td>
+                    <td><b><%= (user.distance > 3 ? (user.distance * 4).toFixed(2) : "0.00").toLocaleString("en-IN") %></b></td>
                 </tr>
                 <tr>
                     <td><b>Balance Due</b></td>
                     <td></td>
                     <td></td>
                     <td></td>
-                    <td><b><%= user.balance_due.toLocaleString("en-In") %> &#8377;</b></td>
+                    <td><b><%= user.balance_due.toLocaleString("en-IN") %></b></td>
                 </tr>
                 <tr>
                     <td><b>Total</b></td>
                     <td></td>
                     <td></td>
                     <td></td>
-                    <td><b><%= (Math.floor(sum + user.balance_due + (user.distance * 2))).toLocaleString("en-In") %> &#8377;</b></td>
+                    <td>
+                        <b>
+                            <%= (Math.floor(sum + user.balance_due + (user.distance > 3 ? (user.distance * 4) : 0))).toLocaleString("en-IN") %>
+                        </b>
+                    </td>
                 </tr>
             </tbody>
         </table>
-        
+
         <div class="d-grid gap-2 col-12 mx-auto">
             <form method="POST" action="/owner/<%= order._id %>/status">
-                <div class="form-floating mb-1 ">
-                    <select class="form-select" id="floatingSelect_<%= order._id %>" name="orderStatus" aria-label="Floating label select example">
-                      <option selected><%= order.status %></option>
-                      <option value="1">Order Processing</option>
-                      <option value="2">Shipped</option>
-                      <option value="3">Out for Delivery</option>
-                      <option value="4">Delivered</option>
+                <div class="form-floating mb-1">
+                    <select class="form-select" id="floatingSelect_<%= order._id %>" name="orderStatus">
+                        <option selected><%= order.status %></option>
+                        <option value="1">Order Processing</option>
+                        <option value="2">Shipped</option>
+                        <option value="3">Out for Delivery</option>
+                        <option value="4">Delivered</option>
                     </select>
                     <label for="floatingSelect">Order Status</label>
-                  </div>
-                <button type="submit" class="btn btn-success" id="updateStatusBtn_<%= order._id %>">Update Status</button>
+                </div>
+                <button type="submit" class="btn btn-success" id="updateStatusBtn_<%= order._id %>" disabled>Update Status</button>
             </form>
-            <div class="d-grid gap-2 col-12 mx-auto">
-                <form method="get" action="/owner/<%= order._id %>/quantity">
-                    <button type="submit" class="btn btn-primary">Update Quantity</button>
-                </form>
-            </div>
         </div>
-        <br>
+        <% serialNumber++; %>
     <% } %>
+    <br>
 <% } %>
 
 <script>
-   document.addEventListener('DOMContentLoaded', function () {
-    var selectBoxes = document.querySelectorAll(".form-select");
-    var updateButtons = document.querySelectorAll(".btn-success");
+    document.addEventListener('DOMContentLoaded', function () {
+        const selectBoxes = document.querySelectorAll(".form-select");
 
-    selectBoxes.forEach(function(selectBox) {
-        selectBox.addEventListener('change', function () {
-            toggleUpdateButton(selectBox);
+        selectBoxes.forEach(function(selectBox) {
+            selectBox.addEventListener('change', function () {
+                const orderId = selectBox.id.split("_")[1];
+                const updateButton = document.getElementById("updateStatusBtn_" + orderId);
+                updateButton.disabled = selectBox.value === "";
+            });
         });
     });
-
-    function toggleUpdateButton(selectBox) {
-        var orderId = selectBox.id.split("_")[1];
-        var updateButton = document.getElementById("updateStatusBtn_" + orderId);
-
-        if (selectBox.value === "1" || selectBox.value === "2" || selectBox.value === "3" || selectBox.value === "4") {
-            updateButton.disabled = false;
-        } else {
-            updateButton.disabled = true;
-        }
+    function confirmDelete() {
+        return confirm("Are you sure you want to delete this order?");
     }
-
-    selectBoxes.forEach(function(selectBox) {
-        toggleUpdateButton(selectBox);
-    });
-});
 </script>
