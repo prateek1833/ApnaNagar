@@ -27,8 +27,8 @@ const orderRouter = require("./routes/order.js")
 const userRouter = require("./routes/user.js")
 const ownerRouter = require("./routes/owner.js")
 
-// const dbUrl = "mongodb://localhost:27017/Store";
-const dbUrl = process.env.ATLASDB_URL;
+const dbUrl = "mongodb://localhost:27017/Store";
+// const dbUrl = process.env.ATLASDB_URL;
 
 
 main()
