@@ -88,7 +88,7 @@ if (navigator.geolocation) {
         (position) => {
             const userLocation = [position.coords.longitude, position.coords.latitude];
             map.setCenter(userLocation);
-            map.setZoom(14);
+            map.setZoom(16);
         },
         (error) => {
             console.error('Error getting location:', error);
@@ -147,7 +147,7 @@ if (detectLocationButton) {
 
                     // Update the map's center to the user's location
                     map.setCenter(userLocation);
-                    map.setZoom(14);
+                    map.setZoom(16);
 
                     // Hide the loading spinner
                     loadingSpinner.style.display = 'none';

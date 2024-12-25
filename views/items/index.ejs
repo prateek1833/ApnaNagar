@@ -35,13 +35,13 @@
     <% for (let item of allItem) { %>
         <div class="card" style="width: 22rem;">
             <a href="/items/<%= item._id %>/show.ejs" class="item-link">
-                <img src="<%= item.image.url %>" class="card-img card-img-top" alt="<%= item.title %>">
+                <img src="<%= item.image.url %>" class="card-img card-img-top mb-1" alt="<%= item.title %>">
                 <div class="card-body">
                     <p class="card-text">
                         <b class="card-text d-flex justify-content-between align-items-center">
                             <%= item.title %>
                             <% if (item.avgRating != 0) { %>
-                                <button type="button" class="btn btn-success">
+                                <button type="button" style="height: 35px;" class="btn btn-success">
                                     <%= item.avgRating %><i class="fa-solid fa-star"></i>
                                 </button>
                             <% } %>
