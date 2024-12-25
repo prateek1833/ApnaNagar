@@ -1,7 +1,7 @@
 {
     "name": "Apna Nagar",
     "short_name": "ApnaNagar",
-    "start_url": "/",
+    "start_url": "/items",
     "display": "standalone",
     "background_color": "#ffffff",
     "theme_color": "#FF4E50",
@@ -15,7 +15,8 @@
         {
             "src": "/icons/icon-192x192.png",
             "type": "image/png",
-            "sizes": "192x192"
+            "sizes": "192x192",
+            "purpose": "maskable"
         },
         {
             "src": "/icons/icon-512x512.png",
