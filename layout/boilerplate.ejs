@@ -74,9 +74,25 @@
             <p class="spinner-text">Loading, please wait...</p>
         </div>
     
+        <div class="header">
+            <div class="text-center bg-transparent border-0">
+                <div class="card-body">
+                    <h1 class="card-title" style="text-decoration: underline;">अपना नगर</h1>
+                </div>
+            </div>
+            <div class="navbar-nav ms-auto search-bar">
+                <form class="d-flex justify-content-center" role="search" method="GET" action="/items/search">
+                    <input class="form-control me-2" name="keyword" type="search" placeholder="Tell us what you want" aria-label="Search">
+                    <button class="btn" type="submit"><i class="fa-solid fa-magnifying-glass"></i></button>
+                </form>
+            </div>
+        </div>
+        <%- include("../views/includes/navbar.ejs") %>
         <div class="container mt-5">
+            <%- include("../views/includes/flash.ejs") %>
             <%- body %>
         </div>
+        <%- include("../views/includes/footer.ejs") %>
     
         <!-- Styles -->
         <style>
@@ -183,15 +199,14 @@
                 spinnerOverlay.classList.remove('active');
             }
     
-            // Example usage during an API fetch or navigation
+            // Example usage during an AJAX request or navigation
             document.addEventListener('DOMContentLoaded', () => {
-                // Show the spinner before fetching map data
-                showSpinner();
+                document.querySelectorAll('a, form').forEach(element => {
+                    element.addEventListener('click', showSpinner);
+                });
     
-                // Simulate a delay to represent data fetching (use real API fetch in actual implementation)
-                setTimeout(() => {
-                    hideSpinner();
-                }, 3000); // Simulate data fetching time
+                // Simulate loading completion (remove this in real use)
+                setTimeout(hideSpinner, 3000); // Remove spinner after 3 seconds
             });
         </script>
     
@@ -200,7 +215,7 @@
         <script src="/js/map.js"></script>
         <script src="/js/main.js"></script>
     </body>
-    
+      
 </body>
 
 </html>
