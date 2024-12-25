@@ -2,10 +2,6 @@ const staticCacheName = 'site-static-v1';
 const dynamicCacheName = 'site-dynamic-v1';
 
 const assets = [
-    '/',
-    '/items',
-    '/js/main.js',
-    '/css/style.css',
 ];
 
 // Install event
