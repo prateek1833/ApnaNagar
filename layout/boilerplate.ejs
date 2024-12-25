@@ -63,159 +63,154 @@
         .navbar-nav {
             margin-top: 20px;
         }
+
+        .spinner-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(255, 255, 255, 0.8);
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            z-index: 1050;
+            visibility: hidden;
+            opacity: 0;
+            transition: opacity 0.3s, visibility 0.3s;
+        }
+
+        .spinner-overlay.active {
+            visibility: visible;
+            opacity: 1;
+        }
+
+        .spinner-text {
+            margin-top: 20px;
+            font-size: 1.2rem;
+            font-weight: 500;
+            color: #fc060a;
+        }
+
+        .loader {
+            position: relative;
+            transform: rotateZ(45deg);
+            perspective: 1000px;
+            border-radius: 50%;
+            width: 48px;
+            height: 48px;
+            color: #fff;
+        }
+
+        .loader:before,
+        .loader:after {
+            content: '';
+            display: block;
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: inherit;
+            height: inherit;
+            border-radius: 50%;
+            transform: rotateX(70deg);
+            animation: 1s spin linear infinite;
+        }
+
+        .loader:after {
+            color: #FF3D00;
+            transform: rotateY(70deg);
+            animation-delay: 0.4s;
+        }
+
+        @keyframes spin {
+            0%,
+            100% {
+                box-shadow: 0.2em 0px 0 0px currentcolor;
+            }
+            12% {
+                box-shadow: 0.2em 0.2em 0 0 currentcolor;
+            }
+            25% {
+                box-shadow: 0 0.2em 0 0 currentcolor;
+            }
+            37% {
+                box-shadow: -0.2em 0.2em 0 0 currentcolor;
+            }
+            50% {
+                box-shadow: -0.2em 0 0 0 currentcolor;
+            }
+            62% {
+                box-shadow: -0.2em -0.2em 0 0 currentcolor;
+            }
+            75% {
+                box-shadow: 0px -0.2em 0 0 currentcolor;
+            }
+            87% {
+                box-shadow: 0.2em -0.2em 0 0 currentcolor;
+            }
+        }
     </style>
 </head>
 
 <body>
-    <body>
-        <!-- Fullscreen Spinner -->
-        <div id="spinner-overlay" class="spinner-overlay">
-            <div class="loader"></div>
-            <p class="spinner-text">Loading, please wait...</p>
-        </div>
-    
-        <div class="header">
-            <div class="text-center bg-transparent border-0">
-                <div class="card-body">
-                    <h1 class="card-title" style="text-decoration: underline;">अपना नगर</h1>
-                </div>
-            </div>
-            <div class="navbar-nav ms-auto search-bar">
-                <form class="d-flex justify-content-center" role="search" method="GET" action="/items/search">
-                    <input class="form-control me-2" name="keyword" type="search" placeholder="Tell us what you want" aria-label="Search">
-                    <button class="btn" type="submit"><i class="fa-solid fa-magnifying-glass"></i></button>
-                </form>
+    <!-- Fullscreen Spinner -->
+    <div id="spinner-overlay" class="spinner-overlay">
+        <div class="loader"></div>
+        <p class="spinner-text">Loading, please wait...</p>
+    </div>
+
+    <div class="header">
+        <div class="text-center bg-transparent border-0">
+            <div class="card-body">
+                <h1 class="card-title" style="text-decoration: underline;">अपना नगर</h1>
             </div>
         </div>
-        <%- include("../views/includes/navbar.ejs") %>
-        <div class="container mt-5">
-            <%- include("../views/includes/flash.ejs") %>
-            <%- body %>
+        <div class="navbar-nav ms-auto search-bar">
+            <form class="d-flex justify-content-center" role="search" method="GET" action="/items/search">
+                <input class="form-control me-2" name="keyword" type="search" placeholder="Tell us what you want" aria-label="Search">
+                <button class="btn" type="submit"><i class="fa-solid fa-magnifying-glass"></i></button>
+            </form>
         </div>
-        <%- include("../views/includes/footer.ejs") %>
-    
-        <!-- Styles -->
-        <style>
-            .spinner-overlay {
-                position: fixed;
-                top: 0;
-                left: 0;
-                width: 100%;
-                height: 100%;
-                background: rgba(255, 255, 255, 0.8);
-                display: flex;
-                flex-direction: column;
-                justify-content: center;
-                align-items: center;
-                z-index: 1050;
-                visibility: hidden;
-                opacity: 0;
-                transition: opacity 0.3s, visibility 0.3s;
-            }
-    
-            .spinner-overlay.active {
-                visibility: visible;
-                opacity: 1;
-            }
-    
-            .spinner-text {
-                margin-top: 20px;
-                font-size: 1.2rem;
-                font-weight: 500;
-                color: #fc060a;
-            }
-    
-            /* New Loader Styles */
-            .loader {
-                position: relative;
-                transform: rotateZ(45deg);
-                perspective: 1000px;
-                border-radius: 50%;
-                width: 48px;
-                height: 48px;
-                color: #fff;
-            }
-    
-            .loader:before,
-            .loader:after {
-                content: '';
-                display: block;
-                position: absolute;
-                top: 0;
-                left: 0;
-                width: inherit;
-                height: inherit;
-                border-radius: 50%;
-                transform: rotateX(70deg);
-                animation: 1s spin linear infinite;
-            }
-    
-            .loader:after {
-                color: #FF3D00;
-                transform: rotateY(70deg);
-                animation-delay: 0.4s;
-            }
-    
-            @keyframes spin {
-                0%,
-                100% {
-                    box-shadow: 0.2em 0px 0 0px currentcolor;
-                }
-                12% {
-                    box-shadow: 0.2em 0.2em 0 0 currentcolor;
-                }
-                25% {
-                    box-shadow: 0 0.2em 0 0 currentcolor;
-                }
-                37% {
-                    box-shadow: -0.2em 0.2em 0 0 currentcolor;
-                }
-                50% {
-                    box-shadow: -0.2em 0 0 0 currentcolor;
-                }
-                62% {
-                    box-shadow: -0.2em -0.2em 0 0 currentcolor;
-                }
-                75% {
-                    box-shadow: 0px -0.2em 0 0 currentcolor;
-                }
-                87% {
-                    box-shadow: 0.2em -0.2em 0 0 currentcolor;
-                }
-            }
-        </style>
-    
-        <!-- Scripts -->
-        <script>
-            const spinnerOverlay = document.getElementById('spinner-overlay');
-    
-            // Show Spinner
-            function showSpinner() {
-                spinnerOverlay.classList.add('active');
-            }
-    
-            // Hide Spinner
-            function hideSpinner() {
-                spinnerOverlay.classList.remove('active');
-            }
-    
-            // Example usage during an AJAX request or navigation
-            document.addEventListener('DOMContentLoaded', () => {
-                document.querySelectorAll('a, form').forEach(element => {
-                    element.addEventListener('click', showSpinner);
-                });
-    
-                // Simulate loading completion (remove this in real use)
-                setTimeout(hideSpinner, 3000); // Remove spinner after 3 seconds
+    </div>
+
+    <%- include("../views/includes/navbar.ejs") %>
+    <div class="container mt-5">
+        <%- include("../views/includes/flash.ejs") %>
+        <%- body %>
+    </div>
+    <%- include("../views/includes/footer.ejs") %>
+
+    <script>
+        const spinnerOverlay = document.getElementById('spinner-overlay');
+        let spinnerTimeout;
+
+        // Show Spinner
+        function showSpinner() {
+            spinnerOverlay.classList.add('active');
+
+            // Ensure spinner hides after 30 seconds max
+            spinnerTimeout = setTimeout(hideSpinner, 30000);
+        }
+
+        // Hide Spinner
+        function hideSpinner() {
+            spinnerOverlay.classList.remove('active');
+            clearTimeout(spinnerTimeout);
+        }
+
+        // Example usage during an AJAX request or navigation
+        document.addEventListener('DOMContentLoaded', () => {
+            document.querySelectorAll('a, form').forEach(element => {
+                element.addEventListener('click', showSpinner);
             });
-        </script>
-    
-        <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz" crossorigin="anonymous"></script>
-        <script src="/js/script.js"></script>
-        <script src="/js/map.js"></script>
-        <script src="/js/main.js"></script>
-    </body>
-      
+        });
+    </script>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz" crossorigin="anonymous"></script>
+    <script src="/js/script.js"></script>
+    <script src="/js/map.js"></script>
+    <script src="/js/main.js"></script>
 </body>
 
 </html>

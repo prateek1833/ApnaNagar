@@ -171,27 +171,27 @@
     <!-- Scripts -->
     <script>
         const spinnerOverlay = document.getElementById('spinner-overlay');
-
+    
         // Show Spinner
         function showSpinner() {
             spinnerOverlay.classList.add('active');
         }
-
+    
         // Hide Spinner
         function hideSpinner() {
             spinnerOverlay.classList.remove('active');
         }
-
+    
         // Example usage during an AJAX request or navigation
         document.addEventListener('DOMContentLoaded', () => {
             document.querySelectorAll('a, form').forEach(element => {
                 element.addEventListener('click', showSpinner);
             });
-
-            // Simulate loading completion (remove this in real use)
-            setTimeout(hideSpinner, 3000); // Remove spinner after 3 seconds
+    
+            // Ensure spinner hides after 30 seconds max
+            setTimeout(hideSpinner, 30000); // 30 seconds
         });
-    </script>
+    </script>    
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz" crossorigin="anonymous"></script>
     <script src="/js/script.js"></script>
