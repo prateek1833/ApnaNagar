@@ -201,17 +201,22 @@
 
         // Example usage during an AJAX request or navigation
         document.addEventListener('DOMContentLoaded', () => {
-            document.querySelectorAll('a, form').forEach(element => {
-                element.addEventListener('click', (event) => {
-                    // Check if the clicked element is not an input, select, or textarea
-                    const target = event.target;
-                    const tagName = target.tagName.toLowerCase();
-                
-                    if (!['input', 'select', 'textarea', 'button'].includes(tagName)) {
-                        showSpinner();
-                    }
-                });
-            });
+    document.querySelectorAll('a, form').forEach(element => {
+        element.addEventListener('click', (event) => {
+            const target = event.target;
+
+            const tagName = target.tagName.toLowerCase();
+
+            // Avoid spinner for specific tags or elements with the 'no-spinner' class
+            if (
+                !['input', 'select', 'textarea'].includes(tagName) &&
+                !target.classList.contains('no-spinner') &&
+                !target.closest('.no-spinner')
+            ) {
+                showSpinner();
+            }
+        });
+    });
 });
 
     </script>

@@ -123,13 +123,13 @@
             <form method="POST" action="/order" id="addToCartForm" >
                 <div class="d-flex flex-wrap justify-content-center" >
                     <% item.detail.forEach((detail, index) => { %>
-                        <div class="me-2 mb-2" >
+                        <div class="me-2 mb-2 no-spinner" >
                             <input type="radio" class="btn-check custom-radio" id="type<%= index %>" name="selectedType" value="<%= index %>" <% if (index === 0) { %>checked<% } %>>
                             <label class="btn btn-outline-danger custom-label" for="type<%= index %>"><%= detail.typ %>  |  <%= detail.price.toLocaleString("en-In") %>&#8377;/<%= item.unit %></label>
                         </div>
                     <% }) %>
                 </div>
-                <div class="mb-3 d-flex align-items-center">
+                <div class="mb-3 d-flex align-items-center no-spinner">
                     <label for="quantity" class="form-label me-2 col-5">Quantity in <%= item.unit %>:</label>
                     <div class="input-group" style="max-width: 120px;">
                         <button class="btn  btn-outline-danger" type="button" onclick="adjustQuantity(-1)">-</button>
