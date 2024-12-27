@@ -6,14 +6,16 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Store</title>
     <link rel="stylesheet" href="/css/style.css">
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet"
+        integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
     <link rel="stylesheet" href="/css/rating.css">
     <link href="https://api.mapbox.com/mapbox-gl-js/v3.3.0/mapbox-gl.css" rel="stylesheet">
     <script src="https://api.mapbox.com/mapbox-gl-js/v3.3.0/mapbox-gl.js"></script>
     <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap" />
     <link rel="manifest" href="/js/manifest.json">
-    <link rel="apple-touch-icon" href="https://res.cloudinary.com/dzrxswqur/image/upload/v1734930957/traiapan_logo_awgyzb.png">
+    <link rel="apple-touch-icon"
+        href="https://res.cloudinary.com/dzrxswqur/image/upload/v1734930957/traiapan_logo_awgyzb.png">
     <meta name="apple-mobile-web-app-status-bar" content="FF4E50">
     <meta name="mobile-web-app-capable" content="yes">
     <style>
@@ -100,7 +102,7 @@
             border-radius: 50%;
             width: 48px;
             height: 48px;
-            color: #fff;
+            color: #fce704;
         }
 
         .loader:before,
@@ -124,28 +126,36 @@
         }
 
         @keyframes spin {
+
             0%,
             100% {
                 box-shadow: 0.2em 0px 0 0px currentcolor;
             }
+
             12% {
                 box-shadow: 0.2em 0.2em 0 0 currentcolor;
             }
+
             25% {
                 box-shadow: 0 0.2em 0 0 currentcolor;
             }
+
             37% {
                 box-shadow: -0.2em 0.2em 0 0 currentcolor;
             }
+
             50% {
                 box-shadow: -0.2em 0 0 0 currentcolor;
             }
+
             62% {
                 box-shadow: -0.2em -0.2em 0 0 currentcolor;
             }
+
             75% {
                 box-shadow: 0px -0.2em 0 0 currentcolor;
             }
+
             87% {
                 box-shadow: 0.2em -0.2em 0 0 currentcolor;
             }
@@ -157,7 +167,6 @@
     <!-- Fullscreen Spinner -->
     <div id="spinner-overlay" class="spinner-overlay">
         <div class="loader"></div>
-        <p class="spinner-text">Loading, please wait...</p>
     </div>
 
     <div class="header">
@@ -168,63 +177,66 @@
         </div>
         <div class="navbar-nav ms-auto search-bar">
             <form class="d-flex justify-content-center" role="search" method="GET" action="/items/search">
-                <input class="form-control me-2" name="keyword" type="search" placeholder="Tell us what you want" aria-label="Search">
+                <input class="form-control me-2" name="keyword" type="search" placeholder="Tell us what you want"
+                    aria-label="Search">
                 <button class="btn" type="submit"><i class="fa-solid fa-magnifying-glass"></i></button>
             </form>
         </div>
     </div>
 
     <%- include("../views/includes/navbar.ejs") %>
-    <div class="container mt-5">
-        <%- include("../views/includes/flash.ejs") %>
-        <%- body %>
-    </div>
-    <%- include("../views/includes/footer.ejs") %>
+        <div class="container mt-5">
+            <%- include("../views/includes/flash.ejs") %>
+                <%- body %>
+        </div>
+        <%- include("../views/includes/footer.ejs") %>
 
-    <script>
-        const spinnerOverlay = document.getElementById('spinner-overlay');
-        let spinnerTimeout;
+            <script>
+                const spinnerOverlay = document.getElementById('spinner-overlay');
+                let spinnerTimeout;
 
-        // Show Spinner
-        function showSpinner() {
-            spinnerOverlay.classList.add('active');
+                // Show Spinner
+                function showSpinner() {
+                    spinnerOverlay.classList.add('active');
 
-            // Ensure spinner hides after 30 seconds max
-            spinnerTimeout = setTimeout(hideSpinner, 10000);
-        }
+                    // Ensure spinner hides after 30 seconds max
+                    spinnerTimeout = setTimeout(hideSpinner, 10000);
+                }
 
-        // Hide Spinner
-        function hideSpinner() {
-            spinnerOverlay.classList.remove('active');
-            clearTimeout(spinnerTimeout);
-        }
+                // Hide Spinner
+                function hideSpinner() {
+                    spinnerOverlay.classList.remove('active');
+                    clearTimeout(spinnerTimeout);
+                }
 
-        // Example usage during an AJAX request or navigation
-        document.addEventListener('DOMContentLoaded', () => {
-    document.querySelectorAll('a, form').forEach(element => {
-        element.addEventListener('click', (event) => {
-            const target = event.target;
+                // Example usage during an AJAX request or navigation
+                document.addEventListener('DOMContentLoaded', () => {
+                    document.querySelectorAll('a, form').forEach(element => {
+                        element.addEventListener('click', (event) => {
+                            const target = event.target;
 
-            const tagName = target.tagName.toLowerCase();
+                            const tagName = target.tagName.toLowerCase();
 
-            // Avoid spinner for specific tags or elements with the 'no-spinner' class
-            if (
-                !['input', 'select', 'textarea'].includes(tagName) &&
-                !target.classList.contains('no-spinner') &&
-                !target.closest('.no-spinner')
-            ) {
-                showSpinner();
-            }
-        });
-    });
-});
+                            // Avoid spinner for specific tags or elements with the 'no-spinner' class
+                            if (
+                                !['input', 'select', 'textarea'].includes(tagName) &&
+                                !target.classList.contains('no-spinner') &&
+                                !target.closest('.no-spinner')
+                            ) {
+                                showSpinner();
+                            }
+                        });
+                    });
+                });
 
-    </script>
+            </script>
 
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz" crossorigin="anonymous"></script>
-    <script src="/js/script.js"></script>
-    <script src="/js/map.js"></script>
-    <script src="/js/main.js"></script>
+            <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"
+                integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz"
+                crossorigin="anonymous"></script>
+            <script src="/js/script.js"></script>
+            <script src="/js/map.js"></script>
+            <script src="/js/main.js"></script>
 </body>
 
 </html>

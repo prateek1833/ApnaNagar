@@ -1,121 +1,124 @@
 <style>
-    .navbar {
-        height: 70px;
-    }
+  .navbar {
+      height: 70px;
+  }
 </style>
 <nav class="navbar navbar-expand-lg bg-body-light border-bottom sticky-top">
-    <div class="container-fluid">
-        <a class="navbar-brand" href="/items"><i class="fa-brands fa-unity"></i></a>
-        <button class="navbar-toggler d-block" type="button" data-bs-toggle="offcanvas"
-            data-bs-target="#offcanvasNavbar" aria-controls="offcanvasNavbar" aria-expanded="false"
-            aria-label="Toggle navigation" style="margin-left: auto;">
-            <i class="fa-solid fa-circle-user"></i>
-        </button>
-    </div>
+  <div class="container-fluid">
+      <a class="navbar-brand" href="/items"><i class="fa-brands fa-unity"></i></a>
+      <button class="navbar-toggler d-block" type="button" data-bs-toggle="offcanvas"
+          data-bs-target="#offcanvasNavbar" aria-controls="offcanvasNavbar" aria-expanded="false"
+          aria-label="Toggle navigation" style="margin-left: auto;">
+          <i class="fa-solid fa-circle-user"></i>
+      </button>
+  </div>
 </nav>
 
 <div class="offcanvas offcanvas-end" tabindex="-1" id="offcanvasNavbar" aria-labelledby="offcanvasNavbarLabel">
-    <div class="offcanvas-header">
-      <div class="d-flex">
-        <button type="button" class="btn-close text-reset ms-auto" data-bs-dismiss="offcanvas" aria-label="Close"></button>
-    </div>
-        
-        <% if(currUser) { %>
-            <div class="d-flex flex-column w-100">
-                <button type="button" class="btn-close text-reset" data-bs-dismiss="offcanvas"
-                    aria-label="Close"></button>
-                <h3 class="offcanvas-title" id="offcanvasNavbarLabel">
-                    <%= currUser.username %>
-                </h3>
-                <div class="accordion" id="accordionExample">
-                    <div class="accordion-item">
+  <!-- Close Button -->
+  <div class="offcanvas-header">
+      <button type="button" class="btn-close text-reset" data-bs-dismiss="offcanvas" aria-label="Close"></button>
+  </div>
+
+  <div class="offcanvas-body">
+      <% if (currUser) { %>
+          <div class="d-flex flex-column w-100">
+              <h3 class="offcanvas-title">
+                  <%= currUser.username %>
+              </h3>
+              <div class="accordion" id="accordionExample">
+                  <!-- Accordion Sections -->
+                  <div class="accordion-item">
                       <h2 class="accordion-header">
-                        <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseOne" aria-expanded="false" aria-controls="collapseOne">
-                          Address
-                        </button>
+                          <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse"
+                              data-bs-target="#collapseOne" aria-expanded="false" aria-controls="collapseOne">
+                              Address
+                          </button>
                       </h2>
-                      <div id="collapseOne" class="accordion-collapse collapse show" data-bs-parent="#accordionExample">
-                        <div class="accordion-body">
-                          <%= currUser.area %>, <%= currUser.district %>, <%= currUser.state %>
-                        </div>
+                      <div id="collapseOne" class="accordion-collapse collapse" data-bs-parent="#accordionExample">
+                          <div class="accordion-body">
+                              <%= currUser.area %>, <%= currUser.district %>, <%= currUser.state %>
+                          </div>
                       </div>
-                    </div>
-                    <div class="accordion-item">
+                  </div>
+                  <!-- Additional Accordion Items -->
+                  <div class="accordion-item">
                       <h2 class="accordion-header">
-                        <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseTwo" aria-expanded="false" aria-controls="collapseTwo">
-                          Mobile Number
-                        </button>
+                          <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse"
+                              data-bs-target="#collapseTwo" aria-expanded="false" aria-controls="collapseTwo">
+                              Mobile Number
+                          </button>
                       </h2>
                       <div id="collapseTwo" class="accordion-collapse collapse" data-bs-parent="#accordionExample">
-                        <div class="accordion-body">
-                          <%= currUser.mobile %>
-                        </div>
+                          <div class="accordion-body">
+                              <%= currUser.mobile %>
+                          </div>
                       </div>
-                    </div>
-                    <div class="accordion-item">
+                  </div>
+                  <div class="accordion-item">
                       <h2 class="accordion-header">
-                        <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseThree" aria-expanded="false" aria-controls="collapseThree">
-                          Balance Due
-                        </button>
+                          <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse"
+                              data-bs-target="#collapseThree" aria-expanded="false" aria-controls="collapseThree">
+                              Balance Due
+                          </button>
                       </h2>
                       <div id="collapseThree" class="accordion-collapse collapse" data-bs-parent="#accordionExample">
-                        <div class="accordion-body">
-                            <%= currUser.balance_due %>
-                        </div>
+                          <div class="accordion-body">
+                              <%= currUser.balance_due %>
+                          </div>
                       </div>
-                    </div>
-                    <div class="accordion-item">
+                  </div>
+                  <div class="accordion-item">
                       <h2 class="accordion-header">
-                        <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseFour" aria-expanded="false" aria-controls="collapseFour">
-                          Contact us
-                        </button>
+                          <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse"
+                              data-bs-target="#collapseFour" aria-expanded="false" aria-controls="collapseFour">
+                              Contact us
+                          </button>
                       </h2>
                       <div id="collapseFour" class="accordion-collapse collapse" data-bs-parent="#accordionExample">
-                        <div class="accordion-body">
-                            <i class="fa-solid fa-phone"></i> : <a style="text-decoration: none;" href="tel:6391837992">6391837992</a>
-                            <br>
-                            <i class="fa-solid fa-envelope"></i> : <a href="mailto:kumarprateek1833@gmail.com" style="text-decoration: none;">kumarprateek1833@gmail.com</a>
+                          <div class="accordion-body">
+                              <i class="fa-solid fa-phone"></i>: <a style="text-decoration: none;"
+                                  href="tel:6391837992">6391837992</a>
+                              <br>
+                              <i class="fa-solid fa-envelope"></i>: <a style="text-decoration: none;"
+                                  href="mailto:kumarprateek1833@gmail.com">kumarprateek1833@gmail.com</a>
                           </div>
                       </div>
-                    </div>
-                    <div class="accordion-item">
+                  </div>
+                  <div class="accordion-item">
                       <h2 class="accordion-header">
-                        <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseFive" aria-expanded="false" aria-controls="collapseFive">
-                          About the developer
-                        </button>
+                          <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse"
+                              data-bs-target="#collapseFive" aria-expanded="false" aria-controls="collapseFive">
+                              About the developer
+                          </button>
                       </h2>
                       <div id="collapseFive" class="accordion-collapse collapse" data-bs-parent="#accordionExample">
-                        <div class="accordion-body">
-                            <i class="fa-solid fa-link"></i> : <a style="text-decoration: none;" href="http://prateek1833.github.io/">Prateek Kumar</a>
+                          <div class="accordion-body">
+                              <i class="fa-solid fa-link"></i>: <a style="text-decoration: none;"
+                                  href="http://prateek1833.github.io/">Prateek Kumar</a>
                           </div>
                       </div>
-                    </div>
                   </div>
-                  
-            </div>
-            <% } %>
-                
-    </div>
-    <div class="offcanvas-body">
-        <div class="navbar-nav">
-            <% if(currUser && currUser.owner._id.equals(currUser._id)){ %>
-                <a class="nav-link" href="/items/new">Add New Item</a>
-                <a class="nav-link" href="/items/orders">Orders</a>
-                <a class="nav-link" href="/owner">Customers</a>
-                <% } %>
-        </div>
+              </div>
+          </div>
+      <% } %>
 
-        <div class="navbar-nav ms-auto mt-3">
-          <% if(!currUser){ %>
+      <div class="navbar-nav">
+          <% if (currUser && currUser.owner._id.equals(currUser._id)) { %>
+              <a class="nav-link" href="/items/new">Add New Item</a>
+              <a class="nav-link" href="/items/orders">Orders</a>
+              <a class="nav-link" href="/owner">Customers</a>
+          <% } %>
+      </div>
+
+      <div class="navbar-nav ms-auto mt-3">
+          <% if (!currUser) { %>
               <a class="nav-link" href="/signup"><b>Sign Up</b></a>
               <a class="nav-link" href="/login"><b>Log in</b></a>
           <% } %>
-          <% if(currUser) { %>
+          <% if (currUser) { %>
               <a class="nav-link" href="/logout"><b>Log Out</b></a>
           <% } %>
       </div>
-      <!-- Close button moved outside and aligned to the right -->
-     
-      
-    </div>
+  </div>
 </div>
