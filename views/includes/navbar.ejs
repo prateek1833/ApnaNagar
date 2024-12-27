@@ -16,6 +16,9 @@
 
 <div class="offcanvas offcanvas-end" tabindex="-1" id="offcanvasNavbar" aria-labelledby="offcanvasNavbarLabel">
     <div class="offcanvas-header">
+      <div class="d-flex">
+        <button type="button" class="btn-close text-reset ms-auto" data-bs-dismiss="offcanvas" aria-label="Close"></button>
+    </div>
         
         <% if(currUser) { %>
             <div class="d-flex flex-column w-100">
@@ -103,13 +106,16 @@
         </div>
 
         <div class="navbar-nav ms-auto mt-3">
-            <% if(!currUser){ %>
-                <a class="nav-link" href="/signup"><b>Sign Up</b></a>
-                <a class="nav-link" href="/login"><b>Log in</b></a>
-                <% } %>
-                    <% if(currUser) { %>
-                        <a class="nav-link" href="/logout"><b>Log Out</b></a>
-                        <% } %>
-        </div>
+          <% if(!currUser){ %>
+              <a class="nav-link" href="/signup"><b>Sign Up</b></a>
+              <a class="nav-link" href="/login"><b>Log in</b></a>
+          <% } %>
+          <% if(currUser) { %>
+              <a class="nav-link" href="/logout"><b>Log Out</b></a>
+          <% } %>
+      </div>
+      <!-- Close button moved outside and aligned to the right -->
+     
+      
     </div>
 </div>

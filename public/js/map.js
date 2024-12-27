@@ -3,7 +3,7 @@ mapboxgl.accessToken = mapToken;
 // Initialize map with Satellite Streets style
 const map = new mapboxgl.Map({
     container: 'map', // Ensure an element with id="map" exists in your HTML
-    style: 'mapbox://styles/mapbox/satellite-streets-v12',
+    style: 'mapbox://styles/mapbox/streets-v12',
     center: [82.678557, 26.726058], // Initial center coordinates
     zoom: 14,
 });

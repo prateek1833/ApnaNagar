@@ -8,7 +8,7 @@
         { name: "Manchurian", search: "manchurian", img: "https://res.cloudinary.com/dzrxswqur/image/upload/v1735020276/manchurian_v2tvak.png" },
         { name: "Samosa", search: "samosa", img: "https://res.cloudinary.com/dzrxswqur/image/upload/v1735021336/samosa_rs3hqu.png" },
         { name: "Noodles", search: "noodles", img: "https://res.cloudinary.com/dzrxswqur/image/upload/v1735231532/noodles_c0gfen.png" },
-        { name: "Bakery", search: "Bakery cake", img: "https://res.cloudinary.com/dzrxswqur/image/upload/v1735021888/cake_lmspb1.png" },
+        { name: "Bakery", search: "Bakery, cake", img: "https://res.cloudinary.com/dzrxswqur/image/upload/v1735021888/cake_lmspb1.png" },
         { name: "Sweets", search: "Sweets", img: "https://res.cloudinary.com/dzrxswqur/image/upload/v1735230854/laddu_liklwj.png" },
     ]; %>
 
@@ -32,26 +32,34 @@
     <h2 style="opacity: 0.5; text-align: center;">Sorry! I don't have this item on my Shop</h2>
 <% } %>
 
-<div class="row row-cols-lg-4 row-cols-md-3 row-cols-sm-2">
+<div class="row row-cols-lg-4 row-cols-md-3 row-cols-sm-2 g-4">
     <% for (let item of allItem) { %>
-        <div class="card" style="width: 22rem;">
-            <a href="/items/<%= item._id %>/show.ejs" class="item-link">
-                <img src="<%= item.image.url %>" class="card-img card-img-top mb-1" alt="<%= item.title %>">
+        <div class="card shadow-sm h-100" style="width: 22rem; border: none;">
+            <a href="/items/<%= item._id %>/show.ejs" class="item-link text-decoration-none text-dark">
+                <img 
+                    src="<%= item.image.url %>" 
+                    class="card-img-top mb-1 rounded" 
+                    alt="<%= item.title %>"
+                    style="height: 325px; object-fit: cover;"
+                >
                 <div class="card-body">
                     <p class="card-text">
-                        <b class="card-text d-flex justify-content-between align-items-center">
-                            <%= item.title %>
+                        <b class="card-text d-flex justify-content-between align-items-center mb-2">
+                            <span style="font-size: 1.2rem;"><%= item.title %></span>
                             <% if (item.avgRating != 0) { %>
-                                <button type="button" style="height: 35px;" class="btn btn-success">
-                                    <%= item.avgRating %><i class="fa-solid fa-star"></i>
+                                <button type="button" class="btn btn-success btn-sm d-flex align-items-center">
+                                    <%= item.avgRating %><i class="fa-solid fa-star ms-1"></i>
                                 </button>
                             <% } %>
                         </b>
-                        <span>
-                            <p style="text-decoration: line-through; display: inline; margin: 0;">
+                        <span class="d-block">
+                            <p 
+                                style="text-decoration: line-through; display: inline; margin: 0; color: #888;"
+                                class="me-2">
                                 &#8377;<%= Math.round(item.detail[0].price + (0.3 * item.detail[0].price)).toLocaleString("en-IN") %>/<%= item.unit %>
                             </p>
-                            <p style="display: inline; margin: 0 20px;">
+                            <p 
+                                style="display: inline; margin: 0; font-size: 1.1rem; color: #d9534f; font-weight: bold;">
                                 &#8377;<%= item.detail[0].price.toLocaleString("en-IN") %>/<%= item.unit %>
                             </p>
                         </span>
@@ -61,6 +69,7 @@
         </div>
     <% } %>
 </div>
+
 
 <script>
     // Attach click event listener to filter elements
@@ -92,6 +101,6 @@
     }
 
     .row {
-        gap: 1rem;
+        /* gap: 0.25rem; */
     }
 </style>

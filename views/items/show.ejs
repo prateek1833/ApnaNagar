@@ -103,6 +103,9 @@
         color: #ff4e50;
         font-weight: bold;
     }
+    .buy-btn{
+        color: white;
+    }
 </style>
 
 <div class="row mt-3">
@@ -130,7 +133,7 @@
                     <% }) %>
                 </div>
                 <div class="mb-3 d-flex align-items-center no-spinner">
-                    <label for="quantity" class="form-label me-2 col-5">Quantity in <%= item.unit %>:</label>
+                    <label for="quantity" class="form-label me-2 col-5">Quantity (in <%= item.unit %>):</label>
                     <div class="input-group" style="max-width: 120px;">
                         <button class="btn  btn-outline-danger" type="button" onclick="adjustQuantity(-1)">-</button>
                         <input 
@@ -167,7 +170,7 @@
                 <input type="text" name="selectedType" id="selectedTypeBuyNow" value="<%= item.detail[0].typ %>" hidden>
                 <input type="number" name="quantity" id="quantityBuyNow" value="1" hidden>
                 <div class="d-grid gap-2 col-6 mx-auto mt-2">
-                    <button type="submit" class="btn btn-warning buy-btn">Buy Now</button>
+                    <button type="submit" class="btn btn-warning buy-btn"><b>Buy Now</b></button>
                 </div>
             </form>
             <% } %>
