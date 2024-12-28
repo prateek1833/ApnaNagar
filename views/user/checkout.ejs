@@ -18,7 +18,7 @@
         <div class="accordion-item">
             <h2 class="accordion-header">
                 <button 
-                    class="accordion-button collapsed d-flex justify-content-between align-items-center p-3 shadow-sm border-0" 
+                    class="accordion-button collapsed d-flex justify-content-between align-items-center p-3 shadow-sm border-0 show-spinner" 
                     type="button" 
                     data-bs-toggle="collapse" 
                     data-bs-target="#collapseOne" 
@@ -28,7 +28,7 @@
                     <% if (order && order.length > 0) { %>
                         <div class="d-flex flex-row align-items-center justify-content-between w-100">
                             <form method="POST" action="/order/checkout" class="mb-0">
-                                <button class="btn btn-success ms-3 shadow-sm" style="border-radius: 5px;">Place Order</button>
+                                <button class="btn btn-success ms-3 shadow-sm show-spinner" style="border-radius: 5px;">Place Order</button>
                             </form>
                             <span class="me-auto fs-3 text-muted ms-3">
                                 Total: <strong>₹<%= totalPrice.toLocaleString("en-IN") %></strong>
@@ -90,3 +90,25 @@
     </div>
     </div>
 <% } %>
+
+<script>
+   document.addEventListener('DOMContentLoaded', () => {
+    document.querySelectorAll('form').forEach(form => {
+        form.addEventListener('submit', (event) => {
+            event.preventDefault(); // Prevent default form submission
+            showSpinner(); // Show the spinner
+            setTimeout(() => {
+                form.submit(); // Submit the form after showing the spinner
+            }, 100); // Delay to allow spinner to appear
+        });
+    });
+});
+
+// Spinner function (define this)
+function showSpinner() {
+    const spinnerOverlay = document.querySelector('.spinner-overlay'); // Ensure spinner-overlay exists
+    if (spinnerOverlay) {
+        spinnerOverlay.classList.add('active');
+    }
+}
+</script>
