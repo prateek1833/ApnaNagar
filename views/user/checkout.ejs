@@ -1,72 +1,92 @@
 <% layout('../layout/boilerplate') -%>
 
 <% user = currUser %>
+<% let deliveryCost = user.distance > 3 ? Math.floor(user.distance * 4) : 0; %>
 
-<%if(user.distance>50){%>
-        <h1 style="color: gray;">Sorry, we are not here yet!</h1>
-        <p style="color: gray;">This app is not available at this location at the moment. Please try a different location</p>
-<%}else{%>
-<div class="container">
-    <table class="table table-default">
-        <thead class="thead-default">
-            <tr>
-                <th>Item</th>
-                <th>Type</th>
-                <th>Price</th>
-                <th>Quantity </th>
-                <th>Rate(&#8377;)</th>
-            </tr>
-        </thead>
-        <tbody>
-            <% if (order && order.length > 0) { %>
-                <% let sum = 0; %>
-                <% let weight = 0; %>
-                <% order.forEach(orderItem => { %>
-                    <tr>
-                        <td><%= orderItem.title %></td>
-                        <td><%= orderItem.detail.typ %></td>
-                        <td><%= orderItem.detail.price.toLocaleString("en-IN") %> &#8377; / <%= orderItem.unit %></td>
-                        <td><%= orderItem.quantity.toLocaleString("en-IN") %> <%= orderItem.unit %> </td>
-                        <td><%= (orderItem.quantity * orderItem.detail.price).toLocaleString("en-IN") %> </td>
-                    </tr>
-                    <% sum += orderItem.quantity * orderItem.detail.price; %>
-                    <% weight += parseInt(orderItem.quantity); %>
-                <% }) %>
-                <tr>
-                    <td><b>Delivery</b></td>
-                    <td></td>
-                    <td></td>
-                    <td></td>
-                    <td><b><%= user.distance > 3 ? (user.distance * 4).toLocaleString("en-IN")  : '0' %></b></td>
-                </tr>
-                <tr>
-                    <td><b>Total</b></td>
-                    <td></td>
-                    <td></td>
-                    <td><b></b></td>
-                    <td class="d-flex flex-wrap">
-                        <% if (user.distance > 3) { %>
-                            <b style="text-decoration: line-through;">
-                                <%= (sum + (user.distance * 4)).toFixed(2).toLocaleString("en-IN") %>
-                            </b>
-                        <% } %>
-                        <b>
-                            <%= (sum + (user.distance > 3 ? Math.floor(user.distance * 4) : 0)).toFixed(2).toLocaleString("en-IN") %>
-                        </b>
-                    </td>
-                    
-                </tr>
-            <% } else { %>
-                <tr>
-                    <td colspan="5">No items in the cart</td>
-                </tr>
-            <% } %>
-        </tbody>
-    </table>
+<% if (user.distance > 50) { %>
+    <h1 style="color: gray;">Sorry, we are not here yet!</h1>
+    <p style="color: gray;">This app is not available at this location at the moment. Please try a different location.</p>
+<% } else { %>
+    <% let sum = 0; %>
     <% if (order && order.length > 0) { %>
-        <form method="POST" action="/order/checkout">
-            <button class="btn btn-success">Place Your Order</button>
-        </form>
+        <% order.forEach(orderItem => { %>
+            <% sum += orderItem.quantity * orderItem.detail.price; %>
+        <% }); %>
     <% } %>
-</div>
-<%}%>
+    <% let totalPrice = sum + deliveryCost; %>
+    <div class="accordion" id="accordionExample">
+        <div class="accordion-item">
+            <h2 class="accordion-header">
+                <button 
+                    class="accordion-button collapsed d-flex justify-content-between align-items-center p-3 shadow-sm border-0" 
+                    type="button" 
+                    data-bs-toggle="collapse" 
+                    data-bs-target="#collapseOne" 
+                    aria-expanded="false" 
+                    aria-controls="collapseOne" 
+                    style="background-color: #f8f9fa; border-radius: 5px; transition: background-color 0.3s ease;">
+                    <% if (order && order.length > 0) { %>
+                        <div class="d-flex flex-row align-items-center justify-content-between w-100">
+                            <form method="POST" action="/order/checkout" class="mb-0">
+                                <button class="btn btn-success ms-3 shadow-sm" style="border-radius: 5px;">Place Order</button>
+                            </form>
+                            <span class="me-auto fs-3 text-muted ms-3">
+                                Total: <strong>₹<%= totalPrice.toLocaleString("en-IN") %></strong>
+                            </span>
+                        </div>
+                    <% } else { %>
+                        <strong class="text-danger">No items to display</strong>
+                    <% } %>
+                </button>
+            </h2>
+            
+        <div id="collapseOne" class="accordion-collapse collapse" data-bs-parent="#accordionExample">
+            <div class="accordion-body">
+                <div class="container">
+                    <% if (order && order.length > 0) { %>
+                        <table class="table table-default">
+                            <thead class="thead-default">
+                                <tr>
+                                    <th>Item</th>
+                                    <th>Type</th>
+                                    <th>Price</th>
+                                    <th>Quantity</th>
+                                    <th>Rate (&#8377;)</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <% order.forEach(orderItem => { %>
+                                    <tr>
+                                        <td><%= orderItem.title %></td>
+                                        <td><%= orderItem.detail.typ %></td>
+                                        <td><%= orderItem.detail.price.toLocaleString("en-IN") %> &#8377;/<%= orderItem.unit %></td>
+                                        <td><%= orderItem.quantity.toLocaleString("en-IN") %> <%= orderItem.unit %></td>
+                                        <td><%= (orderItem.quantity * orderItem.detail.price).toLocaleString("en-IN") %></td>
+                                    </tr>
+                                <% }); %>
+                                <tr>
+                                    <td><strong>Delivery</strong></td>
+                                    <td></td>
+                                    <td></td>
+                                    <td></td>
+                                    <td><strong>₹<%= deliveryCost.toLocaleString("en-IN") %></strong></td>
+                                </tr>
+                                <tr>
+                                    <td><strong>Total</strong></td>
+                                    <td></td>
+                                    <td></td>
+                                    <td></td>
+                                    <td><strong>₹<%= totalPrice.toLocaleString("en-IN") %></strong></td>
+                                </tr>
+                            </tbody>
+                        </table>
+                        
+                    <% } else { %>
+                        <p>No items in the cart</p>
+                    <% } %>
+                </div>
+            </div>
+        </div>
+    </div>
+    </div>
+<% } %>

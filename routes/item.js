@@ -1,10 +1,6 @@
 const express=require("express");
 const router=express.Router();
 const wrapAsync = require("../utils/wrapAsync.js")
-const ExpressError = require("../utils/ExpressError.js")
-const { itemSchemaSchema, reviewSchema } = require("../schema.js");
-const Item = require("../models/item.js");
-const User = require("../models/user.js");
 const {isLoggedIn,validateItem,isOwner}=require("../middleware.js");
 const multer  = require('multer')
 const {storage}=require("../cloudConfig.js")
@@ -25,8 +21,8 @@ router.get("/grocery", wrapAsync(itemController.indexGrocery))
 router.get("/search", wrapAsync(itemController.search))
 
 router.get("/:id/show.ejs", wrapAsync(itemController.showItem));
-router.get("/orders", wrapAsync(itemController.orders));
-router.get("/:id/myOrders", wrapAsync(itemController.myOrders));
+router.get("/orders",isOwner,isLoggedIn, wrapAsync(itemController.orders));
+router.get("/:id/myOrders",isLoggedIn, wrapAsync(itemController.myOrders));
 
 router.get("/new", isLoggedIn, async (req, res) => {
     res.render("items/new.ejs");
