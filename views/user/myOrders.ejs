@@ -3,12 +3,13 @@
 <% if (allOrder.length === 0) { %>
     <h2 style="opacity: 0.5;">You haven't made any orders yet.</h2>
 <% } else { %>
-    <% allOrder.forEach(order => { %>
+    <% for (let i = allOrder.length - 1; i >= 0; i--) { %>
+        <% let order = allOrder[i]; %>
         <% let user = order.author; %>
-        <div class="accordion" id="orderAccordion">
-            <div class="accordion-item">
-                <h2 class="accordion-header" id="heading<%= order._id %>">
-                    <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse"
+        <div class="accordion"  id="orderAccordion">
+            <div class="accordion-item" >
+                <h2 class="accordion-header"  id="heading<%= order._id %>">
+                    <button class="accordion-button collapsed"  type="button" data-bs-toggle="collapse"
                         data-bs-target="#collapse<%= order._id %>" aria-expanded="false" aria-controls="collapse<%= order._id %>">
                         <div>
                             <!-- Order Details -->
@@ -25,7 +26,6 @@
                         </div>
                     </button>
                 </h2>
-                >
                 <div id="collapse<%= order._id %>" class="accordion-collapse collapse" 
                     aria-labelledby="heading<%= order._id %>" data-bs-parent="#orderAccordion">
                     <div class="accordion-body">
@@ -35,14 +35,15 @@
                                     <th>Item</th>
                                     <th>Type</th>
                                     <th>Price</th>
-                                    <th>Quantity</th>
+                                    <th>Quant.</th>
                                     <th>Rate</th>
                                 </tr>
                             </thead>
                             <tbody>
                                 <% let sum = 0; %>
                                 <% let weight = 0; %>
-                                <% order.items.forEach(orderItem => { %>
+                                <% for (let j = order.items.length - 1; j >= 0; j--) { %>
+                                    <% let orderItem = order.items[j]; %>
                                     <tr>
                                         <td><%= orderItem.item.title %></td>
                                         <td><%= orderItem.item.typ %></td>
@@ -52,7 +53,7 @@
                                     </tr>
                                     <% sum += orderItem.item.quantity * orderItem.item.price; %> 
                                     <% weight += parseInt(orderItem.item.quantity); %>
-                                <% }); %>
+                                <% } %>
                                 <tr>
                                     <td><b>Delivery</b></td>
                                     <td></td>
@@ -103,7 +104,8 @@
                 </div>
             </div>
         </div>
-    <% }); %>
+        <br>
+    <% } %>
 <% } %>
 
 <!-- CSS for Progress Bar and Order Steps -->
@@ -132,6 +134,9 @@
         height: 10px;
         border-radius: 50%;
         background-color: #ddd;
+    }
+    .progress-bar {
+        background-color: #007bff !important;
     }
     .completed:before {
         background-color: #007bff;
