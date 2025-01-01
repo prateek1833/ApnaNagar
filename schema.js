@@ -22,3 +22,8 @@ module.exports.orderSchema = Joi.object({
         comment: Joi.string(),
     }).required(),
 });
+
+module.exports.restaurantSchema = Joi.object({
+    name: Joi.string().required(),
+    
+});

@@ -29,7 +29,13 @@
 <hr>
 
 <% if (allItem.length === 0) { %>
-    <h2 style="opacity: 0.5; text-align: center;">Sorry! I don't have this item on my Shop</h2>
+    <p style="text-align: center;">Can't find what you're looking for? Don't worry!</p>
+    <h3 style="opacity: 0.8; text-align: center;">Let us know, and we'll add it for you.</h3>
+    <a class="filter nav-link" style="border: #d9534f, solid; margin: 0 40%; border-radius: 50;" href="/owner/addItem" aria-label="Add Item">
+        <i class="fa-solid fa-plus"></i>
+        <p>Add Item</p>
+    </a>    
+
 <% } %>
 
 <div class="row row-cols-lg-4 row-cols-md-3 row-cols-sm-2 g-4">

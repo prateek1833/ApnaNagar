@@ -1,0 +1,91 @@
+<% layout('../layout/boilerplate') -%>
+
+<% if (allRestaurant.length === 0) { %>
+    <div style="text-align: center; margin-top: 50px;">
+        <p style="font-size: 1.5rem; font-weight: 500; color: #555;">No Restaurants Registered</p>
+        <h3 style="font-size: 1.2rem; opacity: 0.8; margin: 10px 0;">We’ll add it for you.</h3>
+        <a class="btn btn-danger" href="/owner/addItem" style="font-size: 1rem; padding: 10px 20px; border-radius: 25px;">
+            <i class="fa-solid fa-plus me-2"></i>Add Item
+        </a>
+    </div>
+<% } %>
+
+<div class="row row-cols-lg-4 row-cols-md-3 row-cols-sm-2 g-4" style="margin: 20px 0;">
+    <% for (let restaurant of allRestaurant) { %>
+        <div class="card shadow-sm h-100" style="width: 22rem; border-radius: 10px; overflow: hidden;">
+            <a href="/restaurant/<%= restaurant._id %>/items" class="item-link text-decoration-none text-dark">
+                <img 
+                    src="<%= restaurant.image.url %>" 
+                    class="card-img-top mb-1" 
+                    alt="<%= restaurant.username %>"
+                    style="height: 200px; object-fit: cover; width: 100%;">
+                <div class="card-body" style="background-color: #fff; padding: 15px;">
+                    <p class="card-text">
+                        <b class="card-text d-flex justify-content-between align-items-center mb-2">
+                            <span style="font-size: 1.3rem; font-weight: bold; color: #333;"><%= restaurant.username %></span>
+                            <% if (restaurant.avgRating != 0) { %>
+                                <button type="button" class="btn btn-success btn-sm d-flex align-items-center">
+                                    <%= restaurant.avgRating %><i class="fa-solid fa-star ms-1"></i>
+                                </button>
+                            <% } %>
+                        </b>
+                        <span class="d-block" style="color: #777; font-size: 0.9rem;">
+                            <i class="fa-solid fa-location-dot me-2"></i><%=restaurant.address%>
+                        </span>
+                    </p>
+                </div>
+            </a>
+        </div>
+    <% } %>
+</div>
+
+<style>
+    body {
+        font-family: 'Roboto', sans-serif;
+        background-color: #f8f9fa;
+    }
+
+    .filter-image {
+        height: 3rem;
+        object-fit: cover;
+    }
+
+    .card-img {
+        height: 20rem;
+        object-fit: cover;
+    }
+
+    .card {
+        border: none;
+        transition: transform 0.2s, box-shadow 0.2s;
+    }
+
+    .card:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+    }
+
+    .btn {
+        text-transform: uppercase;
+        font-weight: bold;
+    }
+
+    a {
+        color: inherit;
+        text-decoration: none;
+    }
+
+    a:hover {
+        text-decoration: none;
+        color: #d9534f;
+    }
+
+    .btn-danger {
+        background-color: #d9534f;
+        border: none;
+    }
+
+    .btn-danger:hover {
+        background-color: #c9302c;
+    }
+</style>

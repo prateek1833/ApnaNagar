@@ -45,9 +45,9 @@
     <% if(currUser && !currUser.owner._id.equals(currUser._id)) { %>
     <nav class="navbar navbar-expand-lg fixed-bottom navbar-custom">
         <div class="container-fluid d-flex justify-content-between align-items-center">
-            <a class="filter nav-link" href="/items" aria-label="Home">
+            <a class="filter nav-link" href="" aria-label="Home">
                 <i class="fa-solid fa-house"></i>
-                <p>Home</p>
+                <p>My Items</p>
             </a>
             <a class="filter nav-link" href="/items/<%= currUser._id %>/myOrders" aria-label="My Orders">
                 <i class="fa-solid fa-bag-shopping"></i>
@@ -55,11 +55,11 @@
             </a>
             <a class="filter nav-link" href="/<%= currUser._id %>/cart" aria-label="My Cart">
                 <i class="fa-solid fa-cart-shopping"></i>
-                <p>My Cart</p>
+                <p>Statistc</p>
             </a>
-            <a class="filter nav-link" href="/restaurant/index" aria-label="Restaurant">
+            <a class="filter nav-link" href="/<%= currUser._id %>/cart" aria-label="My Cart">
                 <i class="fa-solid fa-utensils"></i>
-                <p>Restaurants</p>
+                <p>Profile</p>
             </a>
         </div>
     </nav>

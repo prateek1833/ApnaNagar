@@ -2,6 +2,7 @@ const ExpressError = require("./utils/ExpressError.js");
 const { itemSchema,reviewSchema, orderSchema } = require("./schema.js");
 const Review = require("./models/review.js");
 const Item = require("./models/item.js");
+const Restaurant = require("./models/restaurant.js");
 
 
 module.exports.isLoggedIn=(req,res,next)=>{
@@ -68,3 +69,13 @@ module.exports.reviewAuthor=async (req,res,next)=>{
     }
     next();
 }
+
+module.exports.isRestaurant = async (req, res, next) => {
+    let { id } = req.params;
+    let restaurant = await Restaurant.findById(id);
+    if (!restaurant || !restaurant.owner.equals(res.locals.currUser._id)) {
+        req.flash("error", "You don't have permission to access this restaurant");
+        return res.redirect("/restaurants");
+    }
+    next();
+};

@@ -1,25 +1,124 @@
 <% layout('../layout/boilerplate') -%>
 
-<div class="row mt-3">
-    <h3 class="col-10">SignUp on Apna Nagar</h3>
-    <div class="col-10">
-        <form action="/signup" method="POST" class="needs-validation" novalidate>
-            <div class="mb-3">
-                <label for="username" id="username" class="form-label">Username</label>
-                <input type="text" name="username" placeholder="Enter catchy username" class="form-control" required>
-                <div class="valid-feedback">Looks good</div>
+<div class="row">
+    <h3 class="col-12 text-center">Sign Up on Apna Nagar</h3>
+    <div class="col-12 col-md-6 offset-md-3 mt-4">
+        <ul class="nav nav-tabs" id="signupTab" role="tablist">
+            <li class="nav-item" role="presentation">
+                <button class="nav-link active" id="customer-signup-tab" data-bs-toggle="tab" data-bs-target="#customer-signup" type="button" role="tab" aria-controls="customer-signup" aria-selected="true">Customer</button>
+            </li>
+            <li class="nav-item" role="presentation">
+                <button class="nav-link" id="restaurant-signup-tab" data-bs-toggle="tab" data-bs-target="#restaurant-signup" type="button" role="tab" aria-controls="restaurant-signup" aria-selected="false">Restaurant</button>
+            </li>
+        </ul>
+        <div class="tab-content mt-3" id="signupTabContent">
+            <!-- Customer Sign Up -->
+            <div class="tab-pane fade show active" id="customer-signup" role="tabpanel" aria-labelledby="customer-signup-tab">
+                <form action="/signup" method="POST" class="needs-validation" novalidate>
+                    <div class="mb-3">
+                        <label for="customer-username" class="form-label">Username</label>
+                        <input type="text" name="username" id="customer-username" placeholder="Enter catchy username" class="form-control" required>
+                        <div class="valid-feedback">Looks good</div>
+                    </div>
+                    <div class="mb-3">
+                        <label for="customer-mobile" class="form-label">Mobile No.</label>
+                        <input type="number" name="mobile" id="customer-mobile" placeholder="Enter your Mobile Number" class="form-control" required>
+                        <div class="valid-feedback">Looks good</div>
+                    </div>
+                    <div class="mb-3">
+                        <label for="customer-password" class="form-label">Password</label>
+                        <input type="password" name="password" id="customer-password" placeholder="Enter strong password" class="form-control" required>
+                        <div class="valid-feedback">Looks good</div>
+                    </div>
+                    <button class="btn btn-success w-100">Sign Up as Customer</button>
+                </form>
             </div>
-            <div class="mb-3">
-                <label for="mobile" id="mobile" class="form-label">Mobile No.</label>
-                <input type="number" name="mobile" placeholder="Enter your Mobile Number" class="form-control" required>
-                <div class="valid-feedback">Looks good</div>
+
+            <!-- Restaurant Sign Up -->
+            <div class="tab-pane fade" id="restaurant-signup" role="tabpanel" aria-labelledby="restaurant-signup-tab">
+                <form action="/restaurant/signup" method="POST" class="needs-validation" novalidate enctype="multipart/form-data">
+                    <div class="mb-3">
+                        <label for="restaurant-name" class="form-label">Restaurant Name</label>
+                        <input type="text" name="username" id="restaurant-name" placeholder="Enter your restaurant name" class="form-control" required>
+                        <div class="valid-feedback">Looks good</div>
+                    </div>
+                    <div class="mb-3">
+                        <label for="restaurant-address" class="form-label">Address</label>
+                        <input type="text" name="address" id="restaurant-address" placeholder="Enter your restaurant address" class="form-control" required>
+                        <div class="valid-feedback">Looks good</div>
+                    </div>
+                    <div class="row mb-3">
+                        <div class="col-6">
+                            <label for="restaurant-latitude" class="form-label">Latitude</label>
+                            <input 
+                                type="number" 
+                                name="latitude" 
+                                id="restaurant-latitude" 
+                                placeholder="Enter latitude" 
+                                class="form-control" 
+                                required 
+                                step="any" 
+                                title="Enter valid latitude"
+                            >
+                            <div class="valid-feedback">Looks good</div>
+                            <div class="invalid-feedback">Please provide valid latitude</div>
+                        </div>
+                        <div class="col-6">
+                            <label for="restaurant-longitude" class="form-label">Longitude</label>
+                            <input 
+                                type="number" 
+                                name="longitude" 
+                                id="restaurant-longitude" 
+                                placeholder="Enter longitude" 
+                                class="form-control" 
+                                step="any" 
+                                required 
+                                title="Enter valid longitude"
+                            >
+                            <div class="valid-feedback">Looks good</div>
+                            <div class="invalid-feedback">Please provide valid longitude</div>
+                        </div>
+                    </div>
+                                      
+                    <div class="mb-3">
+                        <label for="restaurant-category" class="form-label">Category</label>
+                        <select name="category" id="restaurant-category" class="form-select" required>
+                            <option value="Fast Food">Fast Food</option>
+                            <option value="Casual Dining">Casual Dining</option>
+                            <option value="Fine Dining">Fine Dining</option>
+                            <option value="Cafe">Cafe</option>
+                            <option value="Buffet">Buffet</option>
+                            <option value="Other">Other</option>
+                        </select>
+                        <div class="valid-feedback">Looks good</div>
+                    </div>
+                    <div class="mb-3">
+                        <label for="restaurant-image" class="form-label">Upload Restaurant Image</label>
+                        <input type="file" name="image" id="restaurant-image" class="form-control" accept="image/*" required>
+                        <div class="valid-feedback">Looks good</div>
+                    </div>
+                    <div class="mb-3">
+                        <label for="restaurant-password" class="form-label">Password</label>
+                        <input type="password" name="password" id="restaurant-password" placeholder="Enter strong password" class="form-control" required>
+                        <div class="valid-feedback">Looks good</div>
+                    </div>
+                    <button class="btn btn-primary w-100">Sign Up as Restaurant</button>
+                </form>
             </div>
-            <div class="mb-3">
-                <label for="password" id="password" class="form-label">Password</label>
-                <input type="password" name="password" placeholder="Enter strong password" class="form-control" required>
-                <div class="valid-feedback">Looks good</div>
-            </div>
-            <button class="btn btn-success">SignUp</button>
-        </form>
+        </div>
     </div>
 </div>
+
+
+<script>
+    // JavaScript for maintaining tab switching and validations
+    document.addEventListener('DOMContentLoaded', function () {
+        const tabs = document.querySelectorAll('[data-bs-toggle="tab"]');
+        tabs.forEach(tab => {
+            tab.addEventListener('shown.bs.tab', (event) => {
+                console.log(`Switched to ${event.target.id}`);
+            });
+        });
+    });
+
+</script>

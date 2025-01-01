@@ -1,19 +1,64 @@
 <% layout('../layout/boilerplate') -%>
 
-    <div class="row mt-3">
-        <h3 class="col-10 ">Log in</h3>
-        <div class="col-10 ">
-            <form action="/login" method="POST" class="needs-validation" novalidate>
-                <div class="mb-3">
-                    <label for="username" id="username" class="form-label" >Username</label>
-                    <input type="text" name="username" placeholder="Enter your username" class="form-control" required>
-                </div>
-                <div class="mb-3">
-                    <label for="password" id="password" class="form-label" >Password</label>
-                    <input type="password" name="password" placeholder="Enter your password" class="form-control" required>
-                </div>
-                <button class="btn btn-success">Log In</button>
-            </form>
-            <p>Don't have an account? <a href="/signup"><b>Sign Up</b></a></p>
+<div class="row mt-3">
+    <h3 class="col-12 text-center">Log In</h3>
+    <div class="col-12 col-md-6 offset-md-3 mt-4">
+        <ul class="nav nav-tabs" id="loginTab" role="tablist">
+            <li class="nav-item" role="presentation">
+                <button class="nav-link active" id="customer-tab" data-bs-toggle="tab" data-bs-target="#customer" type="button" role="tab" aria-controls="customer" aria-selected="true">Customer</button>
+            </li>
+            <li class="nav-item" role="presentation">
+                <button class="nav-link" id="restaurant-tab" data-bs-toggle="tab" data-bs-target="#restaurant" type="button" role="tab" aria-controls="restaurant" aria-selected="false">Restaurant</button>
+            </li>
+        </ul>
+        <div class="tab-content mt-3" id="loginTabContent">
+            <!-- Customer Login -->
+            <div class="tab-pane fade show active" id="customer" role="tabpanel" aria-labelledby="customer-tab">
+                <form action="/login" method="POST" class="needs-validation" novalidate>
+                    <div class="mb-3">
+                        <label for="customer-username" class="form-label">Username</label>
+                        <input type="text" name="username" id="customer-username" placeholder="Enter your username" class="form-control" required>
+                    </div>
+                    <div class="mb-3">
+                        <label for="customer-password" class="form-label">Password</label>
+                        <input type="password" name="password" id="customer-password" placeholder="Enter your password" class="form-control" required>
+                    </div>
+                    <button class="btn btn-success w-100">Log In as Customer</button>
+                </form>
+                <p class="text-center mt-3">Don't have an account? <a href="/signup"><b>Sign Up</b></a></p>
+            </div>
+
+            <!-- Restaurant Login -->
+            <div class="tab-pane fade" id="restaurant" role="tabpanel" aria-labelledby="restaurant-tab">
+                <form action="/login/restaurant" method="POST" class="needs-validation" novalidate>
+                    <div class="mb-3">
+                        <label for="restaurant-username" class="form-label">Username</label>
+                        <input type="text" name="username" id="restaurant-username" placeholder="Enter your username" class="form-control" required>
+                    </div>
+                    <div class="mb-3">
+                        <label for="restaurant-password" class="form-label">Password</label>
+                        <input type="password" name="password" id="restaurant-password" placeholder="Enter your password" class="form-control" required>
+                    </div>
+                    <button class="btn btn-primary w-100">Log In as Restaurant</button>
+                </form>
+                <p class="text-center mt-3">Don't have an account? <a href="/signup/restaurant"><b>Sign Up</b></a></p>
+            </div>
         </div>
     </div>
+</div>
+
+
+
+<script>
+    // Example custom JavaScript for validation or interaction, if needed
+    document.addEventListener('DOMContentLoaded', function () {
+        // Ensure proper tab switching behavior is maintained.
+        const tabs = document.querySelectorAll('[data-bs-toggle="tab"]');
+        tabs.forEach(tab => {
+            tab.addEventListener('shown.bs.tab', (event) => {
+                // Perform actions on tab switch, if required.
+                console.log(`Switched to ${event.target.id}`);
+            });
+        });
+    });
+</script>

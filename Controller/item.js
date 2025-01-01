@@ -7,29 +7,15 @@ module.exports.index = async (req, res) => {
     res.render("items/index.ejs", { allItem });
 }
 module.exports.indexRestaurant = async (req, res) => {
-    const allItem = await Item.find({ category: "Restaurant" });
+    const allItem = await Item.find({ RestaurantId: "Restaurant" });
     res.render("items/index.ejs", { allItem });
 }
-module.exports.indexHardware = async (req, res) => {
-    const allItem = await Item.find({ category: "Hardware" });
-    res.render("items/index.ejs", { allItem });
+module.exports.restaurantItem = async (req, res) => {
+    const { id } = req.params; // Extract the id from the route params
+    const allItem = await Item.find({ RestaurantId: id }); // Query items based on the restaurant's id
+    res.render("items/index.ejs", { allItem }); // Render the page with the items
 }
-module.exports.indexClothes = async (req, res) => {
-    const allItem = await Item.find({ category: "Clothes" });
-    res.render("items/index.ejs", { allItem });
-}
-module.exports.indexAccessories = async (req, res) => {
-    const allItem = await Item.find({ category: "Accessories" });
-    res.render("items/index.ejs", { allItem });
-}
-module.exports.indexPaint = async (req, res) => {
-    const allItem = await Item.find({ category: "Paint" });
-    res.render("items/index.ejs", { allItem });
-}
-module.exports.indexGrocery = async (req, res) => {
-    const allItem = await Item.find({ category: "Grocery" });
-    res.render("items/index.ejs", { allItem });
-}
+
 module.exports.search = async (req, res) => {
     const keyword = req.query.keyword; // Assuming keyword is sent in the query parameters
     console.log(keyword);
