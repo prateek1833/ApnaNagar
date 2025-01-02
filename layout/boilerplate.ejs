@@ -189,7 +189,7 @@
             <%- include("../views/includes/flash.ejs") %>
                 <%- body %>
         </div>
-        <% if(currUser.type==="Restaurant"){%>
+        <% if(currUser && currUser.type && currUser.type==="Restaurant"){%>
             <%- include("../views/includes/footerRes.ejs") %>
             <%}else{%>
         <%- include("../views/includes/footer.ejs") %>
