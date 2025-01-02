@@ -189,7 +189,11 @@
             <%- include("../views/includes/flash.ejs") %>
                 <%- body %>
         </div>
+        <% if(currUser.type==="Restaurant"){%>
+            <%- include("../views/includes/footerRes.ejs") %>
+            <%}else{%>
         <%- include("../views/includes/footer.ejs") %>
+        <%}%>
 
             <script>
                 const spinnerOverlay = document.getElementById('spinner-overlay');

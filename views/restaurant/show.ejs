@@ -1,0 +1,181 @@
+<% layout('../layout/boilerplate') -%>
+
+<style>
+    body {
+        background-color: #ffffff;
+        font-family: 'Arial', sans-serif;
+    }
+
+    .show-img {
+        border-radius: 15px;
+        height: auto;
+        object-fit: cover;
+        box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
+    }
+
+    .card {
+        margin: 2rem auto;
+        border: none;
+        border-radius: 15px;
+        overflow: hidden;
+        background-color: #fefefe;
+        transition: transform 0.3s ease, box-shadow 0.3s ease;
+    }
+
+    .card:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 10px 20px rgba(0, 0, 0, 0.2);
+    }
+
+    .card-body {
+        padding: 20px;
+        text-align: center;
+    }
+
+    .card-text {
+        font-size: 1rem;
+        color: #444;
+        margin: 10px 0;
+    }
+
+    .card-text b {
+        font-size: 1.6rem;
+        color: #e63946;
+    }
+
+    .btn {
+        font-size: 1rem;
+        padding: 12px 24px;
+        border-radius: 50px;
+        transition: all 0.3s ease;
+        text-transform: uppercase;
+        font-weight: bold;
+    }
+
+    .btn-warning {
+        background: linear-gradient(to right, #ff6f61, #ffa69e);
+        border: none;
+        color: white;
+    }
+
+    .btn-warning:hover {
+        background: linear-gradient(to right, #ff3b3f, #ff6f61);
+        box-shadow: 0 8px 12px rgba(0, 0, 0, 0.3);
+        transform: translateY(-2px);
+    }
+
+    h3, h4 {
+        color: #e63946;
+        font-weight: bold;
+        text-align: center;
+    }
+
+    hr {
+        border: 0;
+        height: 2px;
+        background-image: linear-gradient(to right, #ff6f61, #f9d423);
+        margin: 20px auto;
+        width: 80%;
+    }
+
+    .owner-info {
+        font-size: 0.9rem;
+        color: #555;
+    }
+
+    .action-buttons {
+        margin-top: 20px;
+    }
+
+
+    .restaurant-details {
+        text-align: center;
+        padding: 20px;
+    }
+
+    .restaurant-details h3 {
+        font-size: 2rem;
+    }
+
+    .restaurant-details p {
+        font-size: 1.2rem;
+        color: #666;
+    }
+
+    .item-card {
+        border: none;
+        border-radius: 15px;
+        overflow: hidden;
+        transition: transform 0.3s ease, box-shadow 0.3s ease;
+        background-color: #f8f9fa;
+    }
+
+    .item-card:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 10px 20px rgba(0, 0, 0, 0.2);
+    }
+
+    .item-card img {
+        border-radius: 15px 15px 0 0;
+        object-fit: cover;
+        height: 200px;
+    }
+
+    .item-card .card-body {
+        padding: 15px;
+    }
+
+    .item-title {
+        font-size: 1.4rem;
+        font-weight: bold;
+        color: #333;
+    }
+
+    .item-price {
+        font-size: 1.2rem;
+        color: #e63946;
+        font-weight: bold;
+    }
+
+</style>
+
+<div class="container mt-5">
+    <div class="card col-md-8">
+        <img src="<%=restaurant.image.url%>" class="card-img-top show-img" alt="restaurant_image">
+        <div class="card-body restaurant-details pt-3">
+            <h3><%=restaurant.username%></h3>
+            <p><%=restaurant.description%></p>
+
+            <% if (currUser && (currUser.type === 'Restaurant' && currUser.id === restaurant.id || restaurant.owner._id.equals(currUser._id))) { %>
+                    <a href="/restaurant/<%=restaurant._id%>/edit" class="btn btn-primary">Edit</a>
+                    <a href="/restaurant/<%=restaurant._id%>/edit" class="btn btn-primary">Add Item</a>
+                </div>
+            <% } %>
+        </div>
+    </div>
+
+    <div class="row row-cols-lg-4 row-cols-md-3 row-cols-sm-2 g-4">
+        <% for (let item of allItem) { %>
+            <div class="col">
+                <div class="item-card shadow-sm h-100">
+                    <a href="/items/<%= item._id %>/show.ejs" class="item-link text-decoration-none text-dark">
+                        <img 
+                            src="<%= item.image.url %>" 
+                            class="card-img-top" 
+                            alt="<%= item.title %>">
+                        <div class="card-body">
+                            <div class="d-flex justify-content-between align-items-center">
+                                <span class="item-title"><%= item.title %></span>
+                            </div>
+                            <div>
+                                <span class="item-price">
+                                    &#8377;<%= item.detail[0].price.toLocaleString("en-IN") %>/<%= item.unit %>
+                                </span>
+                            </div>
+                        </div>
+                    </a>
+                </div>
+            </div>
+        <% } %>
+    </div>
+</div>

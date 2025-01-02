@@ -45,22 +45,22 @@
     <% if(currUser && !currUser.owner._id.equals(currUser._id)) { %>
     <nav class="navbar navbar-expand-lg fixed-bottom navbar-custom">
         <div class="container-fluid d-flex justify-content-between align-items-center">
-            <a class="filter nav-link" href="" aria-label="Home">
+            <a class="filter nav-link" href="/restaurant/<%= currUser.id %>/show" aria-label="Home">
                 <i class="fa-solid fa-house"></i>
-                <p>My Items</p>
+                <p>Home</p>
             </a>
-            <a class="filter nav-link" href="/items/<%= currUser._id %>/myOrders" aria-label="My Orders">
+            <a class="filter nav-link" href="/restaurant/<%= currUser.id %>/show" aria-label="My Orders">
                 <i class="fa-solid fa-bag-shopping"></i>
                 <p>My Orders</p>
             </a>
-            <a class="filter nav-link" href="/<%= currUser._id %>/cart" aria-label="My Cart">
+            <a class="filter nav-link" href="restaurant/<%= currUser._id %>/Statistc" aria-label="My Cart">
                 <i class="fa-solid fa-cart-shopping"></i>
                 <p>Statistc</p>
             </a>
-            <a class="filter nav-link" href="/<%= currUser._id %>/cart" aria-label="My Cart">
+            <!-- <a class="filter nav-link" href="/<%= currUser._id %>/cart" aria-label="My Cart">
                 <i class="fa-solid fa-utensils"></i>
                 <p>Profile</p>
-            </a>
+            </a> -->
         </div>
     </nav>
     <% } %>

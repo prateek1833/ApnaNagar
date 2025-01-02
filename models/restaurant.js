@@ -50,7 +50,8 @@ const restaurantSchema = new Schema({
     createdAt: {
         type: Date,
         default: Date.now,
-    }
+    },
+    type: String,
 });
 
 // Add a username field for authentication

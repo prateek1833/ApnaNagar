@@ -38,6 +38,7 @@ const userSchema=new Schema({
         required: true
       },
     balance_due: Number,
+    type: String,
 
 })
 

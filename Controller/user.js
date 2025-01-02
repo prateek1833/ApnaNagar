@@ -23,8 +23,9 @@ module.exports.signup = async (req, res) => {
         const state = "Unknown";
         const district = "Unknown";
         const area = "Unknown";
+        const type="User";
 
-        const newUser = new User({ mobile, username, owner, pincode, state, district, area });
+        const newUser = new User({ mobile, username, owner, pincode, state, district, area, type });
         const registerUser = await User.register(newUser, password);
 
         // Update the user's balance_due field
