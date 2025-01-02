@@ -14,7 +14,7 @@
                         <div>
                             <!-- Order Details -->
                             <div> <%= order.status %></div>
-                            <div style="font-size: 0.85rem; color: gray;">Created on: <%= new Date(order.createdAt).toLocaleString("en-IN") %></div>
+                            <div style="font-size: 0.85rem; color: gray;">Created on: <%= new Date(order.createdAt).toLocaleString("en-IN", { timeZone: "Asia/Kolkata" }) %></div>
                             
                             <!-- Order Items (small font) -->
                             <div style="font-size: 0.75rem; color: #6c757d;">

@@ -1,0 +1,119 @@
+<% layout('../layout/boilerplate') -%>
+
+<% 
+function getOrderCategory(createdAt) {
+    const orderDate = new Date(createdAt);
+    const orderDateIST = new Date(orderDate.toLocaleString("en-US", { timeZone: "Asia/Kolkata" }));
+
+    const today = new Date();
+    const todayIST = new Date(today.toLocaleString("en-US", { timeZone: "Asia/Kolkata" }));
+    const midnightTodayIST = new Date(todayIST.getFullYear(), todayIST.getMonth(), todayIST.getDate());
+
+    const midnightYesterdayIST = new Date(midnightTodayIST);
+    midnightYesterdayIST.setDate(midnightYesterdayIST.getDate() - 1);
+
+    if (orderDateIST >= midnightTodayIST) {
+        return "Today's Orders";
+    } else if (orderDateIST >= midnightYesterdayIST) {
+        return "Yesterday's Orders";
+    } else {
+        const diffInTime = midnightTodayIST - orderDateIST;
+        const diffInDays = Math.ceil(diffInTime / (1000 * 60 * 60 * 24));
+        return `${diffInDays} Days Ago`;
+    }
+}
+
+const groupedOrders = new Map();
+
+for (const order of orders) {
+    const category = getOrderCategory(order.createdAt);
+    if (!groupedOrders.has(category)) {
+        groupedOrders.set(category, []);
+    }
+    groupedOrders.get(category).push(order);
+}
+
+const sortedCategories = Array.from(groupedOrders.keys()).sort((a, b) => {
+    const categoryToDays = {
+        "Today's Orders": 0,
+        "Yesterday's Orders": 1
+    };
+
+    const daysA = categoryToDays[a] ?? parseInt(a.split(' ')[0]);
+    const daysB = categoryToDays[b] ?? parseInt(b.split(' ')[0]);
+    return daysA - daysB;
+});
+%>
+
+<% for (const category of sortedCategories) { %>
+    <br>
+    <h2><%= category %></h2>
+    <% let serialNumber = 1; %>
+    <% for (const order of groupedOrders.get(category)) { %>
+        <hr>
+        <% const user = order.author; %>
+
+        <li class="list-group-item">
+            Order #<%= serialNumber %> placed at: <%= new Date(order.createdAt).toLocaleString("en-IN", {
+                timeZone: "Asia/Kolkata",
+                year: "numeric",
+                month: "short",
+                day: "numeric",
+                hour: "2-digit",
+                minute: "2-digit"
+            }) %>
+        </li>
+
+        <table class="table table-primary">
+            <thead class="thead-primary">
+                <tr>
+                    <th>Item</th>
+                    <th>Type</th>
+                    <th>Price</th>
+                    <th>Quan.</th>
+                    <th>Rate (&#8377;)</th>
+                </tr>
+            </thead>
+            <tbody>
+                <% let sum = 0; %>
+                <% for (const orderItem of order.items) { %>
+                    <tr>
+                        <td><%= orderItem.item.title %></td>
+                        <td><%= orderItem.item.typ %></td>
+                        <td><%= orderItem.item.price.toLocaleString("en-IN") %> &#8377;/<%= orderItem.item.unit %></td>
+                        <td><%= orderItem.item.quantity.toLocaleString("en-IN") %> <%= orderItem.item.unit %></td>
+                        <td><%= (orderItem.item.quantity * orderItem.item.price).toLocaleString("en-IN") %></td>
+                    </tr>
+                    <% sum += orderItem.item.quantity * orderItem.item.price; %>
+                <% } %>
+                <tr>
+                    <td><b>Total</b></td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                    <td><b><%= sum.toLocaleString("en-IN") %></b></td>
+                </tr>
+            </tbody>
+        </table>
+
+        <% serialNumber++; %>
+    <% } %>
+<% } %>
+
+<script>
+document.addEventListener('DOMContentLoaded', function () {
+    const selectBoxes = document.querySelectorAll(".form-select");
+
+    selectBoxes.forEach(function (selectBox) {
+        selectBox.addEventListener('change', function () {
+            const orderId = selectBox.id.split("_")[1];
+            const updateButton = document.getElementById("updateStatusBtn_" + orderId);
+            updateButton.disabled = selectBox.value === "";
+        });
+    });
+});
+
+function confirmDelete() {
+    return confirm("Are you sure you want to delete this order?");
+}
+</script>

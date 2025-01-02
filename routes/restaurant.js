@@ -30,6 +30,12 @@ router.get("/:id/show", wrapAsync(restaurantController.showRestaurant));
 router
 .route("/:id/edit")
 .get(isLoggedIn, restaurantController.renderEdit)
-.put(isLoggedIn,upload.single('image'), restaurantController.update)
+.put(isLoggedIn,upload.single('image'), restaurantController.update);
+
+router.get("/statistics",isLoggedIn, wrapAsync(restaurantController.statistics));
+
+router.get("/order",isLoggedIn, wrapAsync(restaurantController.orders));
+
+
 
 module.exports = router;

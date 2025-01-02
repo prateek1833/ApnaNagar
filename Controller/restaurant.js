@@ -62,7 +62,7 @@ module.exports.createRestaurant = async (req, res) => {
         const registeredRestaurant = await Restaurant.register(newRestaurant, password);
 
         req.flash("success", "New restaurant created successfully");
-        res.redirect("/restaurant/show.ejs");
+        res.redirect(`/restaurant/${id}/show`);
     } catch (err) {
         console.error("Error creating restaurant:", err);
         req.flash("error", "Error creating new restaurant");
@@ -119,5 +119,114 @@ module.exports.update = async (req, res) => {
     res.redirect(`/restaurant/${id}/show`);
 };
 
+module.exports.orders = async (req, res, next) => {
+    try {
+        let { id } = req.user; // Restaurant ID from logged-in user
+        const restaurant = await Restaurant.findById(id);
+        if (!restaurant) {
+            return res.status(404).send("Restaurant not found");
+        }
 
+        // Fetch detailed orders using the stored order IDs
+        const orders = await Orders.find({ _id: { $in: restaurant.orders } });
+        console.log(orders);
+        res.render("restaurant/order.ejs", { orders });
+    } catch (error) {
+        next(error);
+    }
+};
 
+// Backend Code
+module.exports.statistics = async (req, res, next) => {
+    try {
+        
+        const { id } = req.user; // Assuming req.user contains the authenticated restaurant owner's details
+        const restaurant = await Restaurant.findById(id).populate('orders');
+
+        if (!restaurant) {
+            return res.status(404).send("Restaurant not found");
+        }
+
+        const monthlyEarnings = {};
+        const weekdayOrders = Array(7).fill(0);
+        const orders = restaurant.orders;
+        const currentYear = new Date().getFullYear();
+
+        let totalProfit = 0;
+        let totalEarnings = 0;
+        let totalOrders = 0;
+
+        orders.forEach(order => {
+            if (order.items && order.createdAt) {
+                const date = new Date(order.createdAt);
+                const month = date.toLocaleString('en-US', { month: 'long', year: 'numeric' });
+                const weekday = date.getDay();
+                const total = order.items.reduce((sum, item) => sum + item.item.price * item.item.quantity, 0);
+                const cost = order.items.reduce((sum, item) => sum + item.item.cost * item.item.quantity, 0);
+
+                monthlyEarnings[month] = (monthlyEarnings[month] || 0) + total;
+                weekdayOrders[weekday]++;
+
+                totalEarnings += total;
+                totalProfit += (total - cost);
+                totalOrders++;
+            }
+        });
+
+        const orderDates = [];
+        const orderCounts = {};
+        orders.forEach(order => {
+            const date = new Date(order.createdAt).toISOString().split('T')[0];
+            orderDates.push(date);
+            orderCounts[date] = (orderCounts[date] || 0) + 1;
+        });
+        const sortedOrderDates = [...new Set(orderDates)].sort();
+        const sortedOrderCounts = sortedOrderDates.map(date => orderCounts[date]);
+
+        const itemSales = {};
+        orders.forEach(order => {
+            if (order.items) {
+                order.items.forEach(({ item }) => {
+                    if (!itemSales[item.title]) {
+                        itemSales[item.title] = 0;
+                    }
+                    itemSales[item.title] += item.quantity;
+                });
+            }
+        });
+
+        const topSellingItems = Object.entries(itemSales)
+            .map(([name, quantitySold]) => ({ name, quantitySold }))
+            .sort((a, b) => b.quantitySold - a.quantitySold)
+            .slice(0, 10); // Limit to top 10 items
+
+        const categorySales = {};
+        orders.forEach(order => {
+            if (order.items) {
+                order.items.forEach(({ item }) => {
+                    const category = item.typ || 'Others';
+                    categorySales[category] = (categorySales[category] || 0) + item.quantity;
+                });
+            }
+        });
+
+        const categoryLabels = Object.keys(categorySales);
+        const categoryData = Object.values(categorySales);
+
+        res.render('restaurant/statistics.ejs', {
+            monthlyEarnings,
+            orderDates: sortedOrderDates,
+            orderCounts: sortedOrderCounts,
+            topSellingItems,
+            categoryLabels,
+            categoryData,
+            weekdayOrders,
+            totalProfit,
+            totalEarnings,
+            totalOrders
+        });
+        console.log({ monthlyEarnings, orderDates, orderCounts, categoryLabels, categoryData });
+    } catch (error) {
+        next(error);
+    }
+};

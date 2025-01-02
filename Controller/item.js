@@ -95,7 +95,7 @@ module.exports.createItem = async (req, res) => {
         await newItem.save();
         console.log("New item saved");
         req.flash("success", "New Item Created");
-        res.redirect("/items");
+        res.redirect("/restaurant");
     } catch (err) {
         console.log(err);
         req.flash("error", "Error creating new item");

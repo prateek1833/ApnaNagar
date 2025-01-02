@@ -212,7 +212,7 @@
         <hr>
     </div>
     <div class="col-md-6 offset-md-2">
-        <% if(currUser) { %>
+        <% if(currUser && (!currUser.type || currUser.type!="Restaurant")) { %>
             <h4>Leave a Review</h4>
             <form action="/items/<%=item._id%>/reviews" method="POST" class="needs-validation" novalidate>
                 <div class="mb-3 mt-3 no-spinner">

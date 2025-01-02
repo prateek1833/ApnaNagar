@@ -17,6 +17,7 @@ const orderSchema = new Schema({
                 price: Number,
                 typ:String,
                 quantity: Number,
+                RestaurantId:String,
                 owner: String,
                 __v: Number,
             },

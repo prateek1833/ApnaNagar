@@ -3,6 +3,7 @@ const Review = require("../models/review.js");
 const Order = require("../models/order.js");
 const User = require("../models/user.js"); // Assuming User model exists for storing user details
 const axios = require('axios'); // To fetch location details using an API
+const Restaurant = require("../models/restaurant.js");
 
 
 const calculateDistance = async (userCoordinates) => {
@@ -112,7 +113,6 @@ module.exports.updateAddress = async (req, res) => {
 
 module.exports.addToCart = async (req, res) => {
     try {
-        const allItem = await Item.find({});
         const item = await Item.findById(req.body.item);
 
         // Extract the selected type and quantity from the request body
@@ -122,6 +122,7 @@ module.exports.addToCart = async (req, res) => {
         const category=item.category;
         const unit=item.unit;
         const id=item._id;
+        const RestaurantId=item.RestaurantId;
 
         // Check if the item exists
         if (!item) {
@@ -139,7 +140,7 @@ module.exports.addToCart = async (req, res) => {
         }
 
         // Create the new order with the selected type and quantity
-        const newOrder = { title: title,category:category,unit:unit, detail: selectedType, quantity:quantity,id:id };
+        const newOrder = { title: title,category:category,unit:unit, detail: selectedType, quantity:quantity,id:id, RestaurantId:RestaurantId };
 
         // Get the current order array from the cookie, or initialize it as an empty array if it doesn't exist
         let orders = req.cookies.order ? JSON.parse(req.cookies.order) : [];
@@ -163,8 +164,6 @@ module.exports.addToCart = async (req, res) => {
 
 module.exports.buy = async (req, res) => {
     try {
-        console.log(req.body);
-        console.log(req.params);
         const item = await Item.findById(req.body.item);
         const userId = req.params.id;
 
@@ -192,7 +191,8 @@ module.exports.buy = async (req, res) => {
             unit: item.unit,
             detail: selectedDetail,
             quantity: quantity,
-            id: item._id
+            id: item._id,
+            RestaurantId:item.RestaurantId,
         };
 
         // Get the current order array from the cookie, or initialize it as an empty array if it doesn't exist
@@ -257,68 +257,105 @@ module.exports.destroyFromCart = async (req, res) => {
 
 module.exports.createOrder = async (req, res) => {
     try {
-        const user = res.locals.currUser;
-        const orders = req.cookies.order ? JSON.parse(req.cookies.order) : [];
+        const user = res.locals.currUser; // Current logged-in user
+        const orders = req.cookies.order ? JSON.parse(req.cookies.order) : []; // Orders from cookie
 
-        // Initialize an empty array to store order items
-        const items = [];
+        if (!orders || orders.length === 0) {
+            req.flash("error", "No items in the cart to place an order.");
+            return res.redirect("/items");
+        }
 
-        // Iterate through each orderItem and construct the items array
-        orders.forEach(orderItem => {
-            items.push({
-                item: {
-                    _id: orderItem.id,
-                    title: orderItem.title,
-                    price: orderItem.detail.price,
-                    quantity: orderItem.quantity,
-                    unit: orderItem.unit,
-                    typ: orderItem.detail.typ,
-                    // Add other properties if necessary
+        // Group items by RestaurantId and validate
+const itemsGroupedByRestaurant = orders.reduce((groupedItems, orderItem) => {
+    const restaurantId = orderItem.RestaurantId; // Check correct property path
+
+    // Validate RestaurantId
+    if (!restaurantId || typeof restaurantId !== "string") {
+        console.error(`Invalid or Missing RestaurantId: ${restaurantId}, for item: ${JSON.stringify(orderItem)}`);
+        throw new Error("Invalid order data: Missing or invalid RestaurantId.");
+    }
+
+    // Validate Item ID
+    if (!orderItem.id || typeof orderItem.id !== "string") {
+        console.error(`Invalid or Missing Item ID: ${orderItem.id}, for item: ${JSON.stringify(orderItem)}`);
+        throw new Error("Invalid order data: Missing or invalid Item ID.");
+    }
+
+    // Group by RestaurantId
+    if (!groupedItems[restaurantId]) {
+        groupedItems[restaurantId] = [];
+    }
+
+    groupedItems[restaurantId].push({
+        item: {
+            _id: orderItem.id,
+            title: orderItem.title,
+            price: orderItem.detail.price,
+            quantity: orderItem.quantity,
+            unit: orderItem.unit,
+            typ: orderItem.detail.typ,
+            RestaurantId: restaurantId,
+        },
+    });
+    return groupedItems;
+}, {});
+
+        // Process each restaurant's orders
+        for (const restaurantId in itemsGroupedByRestaurant) {
+            const items = itemsGroupedByRestaurant[restaurantId];
+
+            // Validate restaurant existence
+            const restaurant = await Restaurant.findById(restaurantId);
+            if (!restaurant) {
+                console.error(`Restaurant not found: ${restaurantId}`);
+                throw new Error("Invalid order data: Restaurant not found.");
+            }
+
+            const newOrder = new Order({
+                items,
+                status: "Order Processing",
+                author: {
+                    _id: user._id,
+                    name: user.username,
+                    area: user.area,
+                    district: user.district,
+                    state: user.state,
+                    pincode: user.pincode,
+                    coordinates: user.coordinates,
+                    mobile: user.mobile,
+                    distance: user.distance,
+                    balance_due: user.balance_due,
                 },
-                // You may want to include other properties from the orderItem or additional properties if needed
+                createdAt: new Date(),
             });
-        });
 
-        // Create a new order with the constructed items array
-        const newOrder = new Order({
-            items: items,
-            status: "Order Processing",
-            author: {
-                _id: user._id,
-                name: user.username,
-                area: user.area,
-                district: user.district,
-                state: user.state,
-                pincode: user.pincode,
-                coordinates: user.coordinates,
-                mobile: user.mobile,
-                distance: user.distance,
-                balance_due: user.balance_due,
-                // Add other user properties if necessary
-            },
-            createdAt: new Date()
-        });
+            const savedOrder = await newOrder.save();
 
-        // Save the new order
-        await newOrder.save();
+            // Link order to restaurant
+            await Restaurant.findByIdAndUpdate(restaurantId, { $push: { orders: savedOrder._id } });
 
-        // Add the order ID to user's orders array
-        user.orders.push(newOrder._id);
+            // Link restaurant ID to order
+            savedOrder.RestaurantId = restaurantId;
+            await savedOrder.save();
 
-        // Save the updated user
+            // Add order to user's orders
+            user.orders.push(savedOrder._id);
+        }
+
         await user.save();
 
-        // Clear the order cookie after the order has been placed
-        res.clearCookie('order');
+        // Clear order cookie
+        res.clearCookie("order");
 
-        req.flash("success", "Your Order has been placed. Keep Shopping.");
+        req.flash("success", "Your orders have been placed. Keep shopping!");
         res.redirect("/items");
     } catch (error) {
         console.error(error);
-        req.flash("error", "Error placing your order. Please try again later.");
-        res.redirect("/items/orders");
+        req.flash("error", `Error placing your order: ${error.message}`);
+        res.redirect("/order/checkout");
     }
 };
+
 
 module.exports.destroyOrder = async (req, res) => {
     let { id } = req.params;
