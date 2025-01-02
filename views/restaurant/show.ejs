@@ -126,7 +126,7 @@
     }
 
     .item-title {
-        font-size: 1.4rem;
+        font-size: 1.2rem;
         font-weight: bold;
         color: #333;
     }
@@ -148,7 +148,7 @@
 
             <% if (currUser && (currUser.type === 'Restaurant' && currUser.id === restaurant.id || restaurant.owner._id.equals(currUser._id))) { %>
                     <a href="/restaurant/<%=restaurant._id%>/edit" class="btn btn-primary">Edit</a>
-                    <a href="/restaurant/<%=restaurant._id%>/edit" class="btn btn-primary">Add Item</a>
+                    <a href="/items/new" class="btn btn-primary">Add Item</a>
                 </div>
             <% } %>
         </div>

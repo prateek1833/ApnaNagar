@@ -77,5 +77,47 @@ module.exports.login = async (req, res) => {
     res.redirect(redirectUrl);
 }
 
+module.exports.renderEdit = async (req, res) => {
+    let { id } = req.params;
+    const restaurant = await Restaurant.findById(id);
+    if(!restaurant){
+        res.flash("error","restaurant you requested does not exist!");
+        res.redirect("/restaurant");
+    }
+    let originalImageUrl=restaurant.image.url;
+    originalImageUrl=originalImageUrl.replace("/upload","/upload/w_250");
+    res.render("restaurant/edit.ejs", { restaurant,originalImageUrl });
+}
+
+module.exports.update = async (req, res) => {
+    const { id } = req.params;
+    const { address, coordinates, category, type } = req.body;
+    console.log('reached');
+    // Parse coordinates from string to an array of numbers
+    const parsedCoordinates = coordinates.split(',').map(coord => parseFloat(coord.trim()));
+
+    // Find the existing restaurant
+    let restaurant = await Restaurant.findById(id);
+
+    // Update restaurant details
+    restaurant.address = address;
+    restaurant.coordinates = parsedCoordinates;
+    restaurant.category = category;
+    restaurant.type = type;
+
+    // Handle image upload
+    if (req.file) {
+        const url = req.file.path;
+        const filename = req.file.filename;
+        restaurant.image = { url, filename };
+    }
+
+    // Save the updated restaurant
+    await restaurant.save();
+
+    req.flash("success", "Restaurant Updated");
+    res.redirect(`/restaurant/${id}/show`);
+};
+
 
 

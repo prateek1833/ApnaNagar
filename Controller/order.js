@@ -257,7 +257,6 @@ module.exports.destroyFromCart = async (req, res) => {
 
 module.exports.createOrder = async (req, res) => {
     try {
-        console.log(res.locals.currUser);
         const user = res.locals.currUser;
         const orders = req.cookies.order ? JSON.parse(req.cookies.order) : [];
 

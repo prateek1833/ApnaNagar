@@ -1,0 +1,41 @@
+<% layout('../layout/boilerplate') -%>
+
+<div class="row">
+    <div class="col-10">     
+        <br>
+        <form method="POST" action="/restaurant/<%= restaurant._id %>/edit?_method=PUT" novalidate class="needs-validation" enctype="multipart/form-data">
+            <div class="mb-3">
+                <label for="address" class="form-label">Address</label>
+                <input type="text" name="address" value="<%= restaurant.address %>" class="form-control" required>
+            </div>
+            <div class="mb-3">
+                <label for="coordinates" class="form-label">Coordinates</label>
+                <input type="text" name="coordinates" value="<%= restaurant.coordinates.join(', ') %>" class="form-control" placeholder="Enter as 'latitude, longitude'" required>
+            </div>
+            <div class="mb-3">
+                <label for="category" class="form-label">Category</label>
+                <select name="category" class="form-select">
+                    <option value="Fast Food" <%= restaurant.category === 'Fast Food' ? 'selected' : '' %>>Fast Food</option>
+                    <option value="Casual Dining" <%= restaurant.category === 'Casual Dining' ? 'selected' : '' %>>Casual Dining</option>
+                    <option value="Fine Dining" <%= restaurant.category === 'Fine Dining' ? 'selected' : '' %>>Fine Dining</option>
+                    <option value="Cafe" <%= restaurant.category === 'Cafe' ? 'selected' : '' %>>Cafe</option>
+                    <option value="Buffet" <%= restaurant.category === 'Buffet' ? 'selected' : '' %>>Buffet</option>
+                    <option value="Other" <%= restaurant.category === 'Other' ? 'selected' : '' %>>Other</option>
+                </select>
+            </div>
+            <div class="mb-3">
+                <label for="type" class="form-label">Type</label>
+                <input type="text" name="type" value="<%= restaurant.type %>" class="form-control">
+            </div>
+            <div class="mb-3">
+                <img src="<%= restaurant.image.url %>" alt="<%= restaurant.image.filename %>" class="img-thumbnail">
+            </div>
+            <div class="mb-3">
+                <label for="image" class="form-label">Upload New Image</label>
+                <input type="file" name="image" class="form-control">
+            </div>
+            <button class="btn btn-dark add-btn">Submit</button>
+        </form>
+        <br>
+    </div>
+</div>

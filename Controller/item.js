@@ -79,8 +79,8 @@ module.exports.createItem = async (req, res) => {
     }
 
     try {
-        let newItem = await new Item({
-            owner: req.user._id,
+        let newItem = new Item({
+            owner: "6637e25345e0bb950e6a0fbe",
             title: title,
             description: description,
             category: category,
@@ -88,7 +88,8 @@ module.exports.createItem = async (req, res) => {
             unit: unit,
             key: key.split(" "),
             image: { url, filename },
-            detail: detail, // Assign the detail array
+            detail: detail,
+            RestaurantId:req.user._id
         });
 
         await newItem.save();

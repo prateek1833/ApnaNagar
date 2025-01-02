@@ -171,7 +171,7 @@
                     <label for="item" class="form-label"></label>
                     <input type="text" name="item" value="<%= item._id %>" class="form-control" required>
                 </div>
-                <% if(currUser) {%>
+                <% if(currUser && (!currUser.type || currUser.type!="Restaurant")) {%>
                 <div class="d-grid gap-2 col-6 mx-auto">
                     <button type="submit" class="btn btn-dark add-btn">Add to Cart</button>
                 </div>
@@ -183,7 +183,7 @@
                 <% } %>                
             </form>
             
-            <% if(currUser) {%>
+            <% if(currUser && (!currUser.type || currUser.type!="Restaurant")) {%>
             <form method="POST" action="/order/<%=currUser._id%>/buy" id="buyNowForm">
                 <input type="text" name="item" value="<%= item._id %>" hidden>
                 <input type="text" name="selectedType" id="selectedTypeBuyNow" value="<%= item.detail[0].typ %>" hidden>
@@ -201,7 +201,7 @@
         </div>
         <br>
 
-        <% if(currUser && item.owner._id.equals(currUser._id)) { %>
+        <% if(currUser && currUser.type && currUser.type==="Restaurant" && currUser.id==item.RestaurantId) { %>
             <a href="/items/<%=item._id%>/edit" class="btn btn-primary d-grid gap-2 col-6 mx-auto">Edit</a>
             <br>
             <form method="POST" action="/items/<%=item._id%>/delete?_method=DELETE">
