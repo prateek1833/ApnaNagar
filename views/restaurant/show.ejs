@@ -87,7 +87,6 @@
         margin-top: 20px;
     }
 
-
     .restaurant-details {
         text-align: center;
         padding: 20px;
@@ -119,6 +118,7 @@
         border-radius: 15px 15px 0 0;
         object-fit: cover;
         height: 200px;
+        transition: filter 0.3s ease;
     }
 
     .item-card .card-body {
@@ -137,24 +137,63 @@
         font-weight: bold;
     }
 
+    .info-list {
+        list-style-type: none;
+        padding: 0;
+        font-size: 1rem;
+        color: #555;
+        text-align: left;
+    }
+
+    .info-list li {
+        margin: 10px 0;
+    }
+
+    .info-list li b {
+        color: #333;
+    }
+
+    /* Grayscale filter when restaurant is closed */
+    .closed-restaurant .item-card img {
+        filter: grayscale(100%);
+    }
+    .closed-restaurant img {
+        filter: grayscale(100%);
+    }
+
+    .closed-restaurant .item-title, 
+    .closed-restaurant .item-price {
+        color: #888;
+    }
 </style>
 
 <div class="container mt-5">
-    <div class="card col-md-8">
+    <div class="card col-md-8 <%= restaurant.isOpen ? '' : 'closed-restaurant' %>"">
         <img src="<%=restaurant.image.url%>" class="card-img-top show-img" alt="restaurant_image">
         <div class="card-body restaurant-details pt-3">
             <h3><%=restaurant.username%></h3>
-            <p><%=restaurant.description%></p>
+            <ul class="info-list justify-content-start p-3">
+                <li><b>Address:</b> <%= restaurant.address %></li>
+                <li><b>Mobile:</b> <%= restaurant.mobile %></li>
+                <li><b>Open Hours:</b> <%= restaurant.open_time %> - <%= restaurant.close_time %></li>
+            </ul>
 
             <% if (currUser && (currUser.type === 'Restaurant' && currUser.id === restaurant.id || restaurant.owner._id.equals(currUser._id))) { %>
                     <a href="/restaurant/<%=restaurant._id%>/edit" class="btn btn-primary">Edit</a>
                     <a href="/items/new" class="btn btn-primary">Add Item</a>
+                    <br>
+                    <form action="/restaurant/<%=restaurant._id%>/toggle" method="POST" class="d-inline">
+                        <button type="submit" class="btn btn-warning">
+                            <%= restaurant.isOpen ? 'Mark as Closed' : 'Mark as Open' %>
+                        </button>
+                    </form>
                 </div>
             <% } %>
         </div>
     </div>
 
-    <div class="row row-cols-lg-2 row-cols-md-2 row-cols-sm-2 row-cols-2 g-4">
+    <!-- Add a class to the container based on whether the restaurant is open -->
+    <div class="row row-cols-lg-2 row-cols-md-2 row-cols-sm-2 row-cols-2 g-4 <%= restaurant.isOpen ? '' : 'closed-restaurant' %>">
         <% for (let item of allItem) { %>
             <div class="col">
                 <div class="item-card shadow-sm h-100">
@@ -178,4 +217,4 @@
             </div>
         <% } %>
     </div>    
-</div>    
+</div>

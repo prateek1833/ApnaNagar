@@ -28,6 +28,18 @@
                 <input type="text" name="type" value="<%= restaurant.type %>" class="form-control">
             </div>
             <div class="mb-3">
+                <label for="mobile" class="form-label">Mobile Number</label>
+                <input type="text" name="mobile" value="<%= restaurant.mobile %>" class="form-control" required>
+            </div>
+            <div class="mb-3">
+                <label for="open_time" class="form-label">Opening Time</label>
+                <input type="time" name="open_time" value="<%= restaurant.open_time %>" class="form-control" required>
+            </div>
+            <div class="mb-3">
+                <label for="close_time" class="form-label">Closing Time</label>
+                <input type="time" name="close_time" value="<%= restaurant.close_time %>" class="form-control" required>
+            </div>
+            <div class="mb-3">
                 <img src="<%= restaurant.image.url %>" alt="<%= restaurant.image.filename %>" class="img-thumbnail">
             </div>
             <div class="mb-3">

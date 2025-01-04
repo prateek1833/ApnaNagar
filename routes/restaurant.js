@@ -11,7 +11,7 @@ const upload = multer({ storage });
 const restaurantController = require("../Controller/restaurant.js");
 
 // Route to display the main restaurant page
-router.get("/", wrapAsync(restaurantController.index))
+router.get("/", wrapAsync(restaurantController.index));
 
 // Route for restaurant sign-up
 router.post("/signUp", upload.single("image"), wrapAsync(restaurantController.createRestaurant));
@@ -28,14 +28,15 @@ router
 router.get("/:id/show", wrapAsync(restaurantController.showRestaurant));
 
 router
-.route("/:id/edit")
-.get(isLoggedIn, restaurantController.renderEdit)
-.put(isLoggedIn,upload.single('image'), restaurantController.update);
+  .route("/:id/edit")
+  .get(isLoggedIn, restaurantController.renderEdit)
+  .put(isLoggedIn, upload.single("image"), restaurantController.update);
 
-router.get("/statistics",isLoggedIn, wrapAsync(restaurantController.statistics));
+router.get("/statistics", isLoggedIn, wrapAsync(restaurantController.statistics));
 
-router.get("/order",isLoggedIn, wrapAsync(restaurantController.orders));
+router.get("/order", isLoggedIn, wrapAsync(restaurantController.orders));
 
-
+// Route to toggle the restaurant's open/closed status
+router.post("/:id/toggle", isLoggedIn, wrapAsync(restaurantController.toggleStatus));
 
 module.exports = router;

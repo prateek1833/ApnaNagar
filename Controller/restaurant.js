@@ -27,7 +27,7 @@ module.exports.showRestaurant = async (req, res) => {
 };
 
 module.exports.createRestaurant = async (req, res) => {
-    const { username, address, latitude, longitude, category, password } = req.body;
+    const { username, address, latitude, longitude, category, password, mobile, open_time, close_time } = req.body;
     const owner = "6638779c9bfc94fc81a42508"; // Assign a static owner ID for now
     let url, filename;
 
@@ -41,8 +41,15 @@ module.exports.createRestaurant = async (req, res) => {
     }
 
     // Validate input
-    if (!username || !address || !latitude || !longitude || !category || !password) {
+    if (!username || !address || !latitude || !longitude || !category || !password || !mobile || !open_time || !close_time) {
         req.flash("error", "All fields are required");
+        return res.redirect("/user/signup.ejs");
+    }
+
+    // Validate mobile number format (optional)
+    const mobileRegex = /^[0-9]{10}$/;
+    if (!mobileRegex.test(mobile)) {
+        req.flash("error", "Invalid mobile number. Please enter a valid 10-digit number.");
         return res.redirect("/user/signup.ejs");
     }
 
@@ -55,14 +62,17 @@ module.exports.createRestaurant = async (req, res) => {
             category,
             image: { url, filename },
             owner,
-            type:"Restaurant"
+            type: "Restaurant",
+            mobile,
+            open_time,
+            close_time
         });
 
         // Register the restaurant with hashed password
         const registeredRestaurant = await Restaurant.register(newRestaurant, password);
 
         req.flash("success", "New restaurant created successfully");
-        res.redirect(`/restaurant/${id}/show`);
+        res.redirect(`/restaurant/${registeredRestaurant._id}/show`);
     } catch (err) {
         console.error("Error creating restaurant:", err);
         req.flash("error", "Error creating new restaurant");
@@ -89,35 +99,68 @@ module.exports.renderEdit = async (req, res) => {
     res.render("restaurant/edit.ejs", { restaurant,originalImageUrl });
 }
 
-module.exports.update = async (req, res) => {
+module.exports.toggleStatus = async (req, res) => {
     const { id } = req.params;
-    const { address, coordinates, category, type } = req.body;
-    console.log('reached');
-    // Parse coordinates from string to an array of numbers
-    const parsedCoordinates = coordinates.split(',').map(coord => parseFloat(coord.trim()));
+    const restaurant = await Restaurant.findById(id);
 
-    // Find the existing restaurant
-    let restaurant = await Restaurant.findById(id);
-
-    // Update restaurant details
-    restaurant.address = address;
-    restaurant.coordinates = parsedCoordinates;
-    restaurant.category = category;
-    restaurant.type = type;
-
-    // Handle image upload
-    if (req.file) {
-        const url = req.file.path;
-        const filename = req.file.filename;
-        restaurant.image = { url, filename };
+    if (!restaurant) {
+        req.flash("error", "Restaurant not found.");
+        return res.redirect("/restaurant");
     }
 
-    // Save the updated restaurant
+    // Toggle the isOpen status
+    restaurant.isOpen = !restaurant.isOpen;
     await restaurant.save();
 
-    req.flash("success", "Restaurant Updated");
+    req.flash("success", `Restaurant is now marked as ${restaurant.isOpen ? "Open" : "Closed"}.`);
     res.redirect(`/restaurant/${id}/show`);
 };
+
+module.exports.update = async (req, res) => {
+    const { id } = req.params;
+    const { address, coordinates, category, type, mobile, open_time, close_time } = req.body;
+    console.log('Update request received for restaurant:', id);
+
+    try {
+        // Parse coordinates from string to an array of numbers
+        const parsedCoordinates = coordinates.split(',').map(coord => parseFloat(coord.trim()));
+
+        // Find the existing restaurant
+        let restaurant = await Restaurant.findById(id);
+
+        if (!restaurant) {
+            req.flash("error", "Restaurant not found");
+            return res.redirect("/restaurants");
+        }
+
+        // Update restaurant details
+        restaurant.address = address;
+        restaurant.coordinates = parsedCoordinates;
+        restaurant.category = category;
+        restaurant.type = type;
+        restaurant.mobile = mobile;
+        restaurant.open_time = open_time;
+        restaurant.close_time = close_time;
+
+        // Handle image upload
+        if (req.file) {
+            const url = req.file.path;
+            const filename = req.file.filename;
+            restaurant.image = { url, filename };
+        }
+
+        // Save the updated restaurant
+        await restaurant.save();
+
+        req.flash("success", "Restaurant updated successfully");
+        res.redirect(`/restaurant/${id}/show`);
+    } catch (err) {
+        console.error("Error updating restaurant:", err);
+        req.flash("error", "Failed to update restaurant details");
+        res.redirect(`/restaurant/${id}/edit`);
+    }
+};
+
 
 module.exports.orders = async (req, res, next) => {
     try {

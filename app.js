@@ -127,6 +127,9 @@ app.get("/demouser", async (req, res) => {
 app.get("/", (req, res) => {
     res.redirect("/items/restaurant");
 });
+app.get("/restaurant/", (req, res) => {
+    res.redirect(`/restaurant/${req.user.id}/show`);
+});
 
 app.use("/owner", ownerRouter);
 app.use("/items", itemRouter);

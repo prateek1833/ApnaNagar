@@ -2,10 +2,59 @@ const Item = require("../models/item");
 const Orders = require("../models/order");
 const User = require("../models/user");
 
+const Restaurant = require("../models/restaurant");
+
+
 module.exports.index = async (req, res) => {
-    const allItem = await Item.find({});
-    res.render("items/index.ejs", { allItem });
-}
+    try {
+        const allItem = await Item.find({});
+        const currentTime = new Date(); // Current server time
+
+        // Fetch all unique restaurant IDs
+        const restaurantIds = [...new Set(allItem.map(item => item.RestaurantId))];
+
+        // Fetch restaurant data for all items in one go
+        const restaurants = await Restaurant.find({ _id: { $in: restaurantIds } });
+
+        // Create a map for quick access to restaurant data
+        const restaurantMap = restaurants.reduce((acc, restaurant) => {
+            acc[restaurant._id.toString()] = restaurant;
+            return acc;
+        }, {});
+
+        // Helper function to determine if a restaurant is open
+        const isRestaurantOpen = (restaurant, currentTime) => {
+            if (!restaurant) return false;
+
+            const openingTime = new Date(currentTime.toDateString() + ' ' + restaurant.open_time);
+            const closingTime = new Date(currentTime.toDateString() + ' ' + restaurant.close_time);
+
+            // Adjust for closing times past midnight
+            if (closingTime <= openingTime) closingTime.setDate(closingTime.getDate() + 1);
+
+            // Check if the restaurant is open based on the time and the isOpen field
+            return restaurant.isOpen && currentTime >= openingTime && currentTime <= closingTime;
+        };
+
+        // Update all items with the isOpen status
+        const updatedItems = allItem.map(item => {
+            const restaurant = restaurantMap[item.RestaurantId.toString()];
+            const isOpen = isRestaurantOpen(restaurant, currentTime);
+            return { ...item.toObject(), isOpen };
+        });
+
+        // Render the items view
+        res.render("items/index.ejs", { allItem: updatedItems });
+    } catch (err) {
+        console.error("Error fetching items or restaurants:", err);
+        res.status(500).send("Internal Server Error");
+    }
+};
+
+
+
+
+
 module.exports.indexRestaurant = async (req, res) => {
     const allItem = await Item.find({ RestaurantId: "Restaurant" });
     res.render("items/index.ejs", { allItem });
@@ -41,14 +90,28 @@ module.exports.showItem = async (req, res) => {
                 path: "author",
             },
         })
-        .populate("owner");;
+        .populate("owner");
+
     if (!item) {
-        req.flash("error", "Item you trying to access does not exist");
-        res.redirect("/items");
+        req.flash("error", "Item you are trying to access does not exist");
+        return res.redirect("/items");
     }
-   
-    res.render("items/show.ejs", { item });
+
+    // Assume you have a way to get the restaurant by its ID
+    const restaurant = await Restaurant.findById(item.RestaurantId);
+
+    if (!restaurant) {
+        req.flash("error", "Restaurant not found");
+        return res.redirect("/items");
+    }
+
+    // Check if the restaurant is open
+    const isRestaurantOpen = restaurant.isOpen; // Replace this with the actual logic to check open status
+
+    res.render("items/show.ejs", { item, isRestaurantOpen });
 }
+
+
 module.exports.orders = async (req, res) => {
     const allOrder = await Orders.find({});
     res.render("items/orders.ejs", { allOrder,User });
@@ -165,5 +228,5 @@ module.exports.destroyItem = async (req, res) => {
     let { id } = req.params;
     let deleted = await Item.findByIdAndDelete(id);
     req.flash("success", " Item deleted");
-    res.redirect("/items");
+    res.redirect("/restaurant");
 }

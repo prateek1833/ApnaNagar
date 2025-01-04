@@ -3,10 +3,7 @@ const Schema = mongoose.Schema;
 const passportLocalMongoose = require("passport-local-mongoose");
 
 const restaurantSchema = new Schema({
-    // username: {
-    //     type: String,
-    //     required: true,
-    // },
+    // username field will be added by passport-local-mongoose plugin
     address: {
         type: String,
         required: true,
@@ -47,11 +44,35 @@ const restaurantSchema = new Schema({
         url: String,
         filename: String,
     },
+    mobile: {
+        type: String,
+        required: true,
+        validate: {
+            validator: function(v) {
+                return /^[0-9]{10}$/.test(v); // Validates a 10-digit number
+            },
+            message: props => `${props.value} is not a valid mobile number!`
+        }
+    },
+    open_time: {
+        type: String,
+        required: true,
+    },
+    close_time: {
+        type: String,
+        required: true,
+    },
     createdAt: {
         type: Date,
         default: Date.now,
     },
-    type: String,
+    type: {
+        type: String,
+    },
+    isOpen: {
+        type: Boolean,
+        default: true,
+    }    
 });
 
 // Add a username field for authentication

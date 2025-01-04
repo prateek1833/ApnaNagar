@@ -47,6 +47,12 @@
                         <input type="text" name="address" id="restaurant-address" placeholder="Enter your restaurant address" class="form-control" required>
                         <div class="valid-feedback">Looks good</div>
                     </div>
+                    <div class="mb-3">
+                        <label for="restaurant-mobile" class="form-label">Mobile Number</label>
+                        <input type="tel" name="mobile" id="restaurant-mobile" placeholder="Enter your mobile number" class="form-control" pattern="[0-9]{10}" required>
+                        <div class="valid-feedback">Looks good</div>
+                        <div class="invalid-feedback">Please provide a valid 10-digit mobile number</div>
+                    </div>
                     <div class="row mb-3">
                         <div class="col-6">
                             <label for="restaurant-latitude" class="form-label">Latitude</label>
@@ -79,7 +85,18 @@
                             <div class="invalid-feedback">Please provide valid longitude</div>
                         </div>
                     </div>
-                                      
+                    <div class="row mb-3">
+                        <div class="col-6">
+                            <label for="restaurant-open-time" class="form-label">Opening Time</label>
+                            <input type="time" name="open_time" id="restaurant-open-time" class="form-control" required>
+                            <div class="valid-feedback">Looks good</div>
+                        </div>
+                        <div class="col-6">
+                            <label for="restaurant-close-time" class="form-label">Closing Time</label>
+                            <input type="time" name="close_time" id="restaurant-close-time" class="form-control" required>
+                            <div class="valid-feedback">Looks good</div>
+                        </div>
+                    </div>
                     <div class="mb-3">
                         <label for="restaurant-category" class="form-label">Category</label>
                         <select name="category" id="restaurant-category" class="form-select" required>
@@ -104,7 +121,7 @@
                     </div>
                     <button class="btn btn-primary w-100">Sign Up as Restaurant</button>
                 </form>
-            </div>
+            </div>            
         </div>
     </div>
 </div>

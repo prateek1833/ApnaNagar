@@ -1,109 +1,124 @@
 <% layout('../layout/boilerplate') -%>
 
-<div id="filters">
-    <% const filters = [
-        { name: "Burger", search: "burger", img: "https://res.cloudinary.com/dzrxswqur/image/upload/v1735018802/burger_ajrdgn.png" },
-        { name: "Pizza", search: "pizza", img: "https://res.cloudinary.com/dzrxswqur/image/upload/v1735018995/pizza_ta0fmj.png" },
-        { name: "Momos", search: "momos", img: "https://res.cloudinary.com/dzrxswqur/image/upload/v1735019920/momo_rtnbai.webp" },
-        { name: "Manchurian", search: "manchurian", img: "https://res.cloudinary.com/dzrxswqur/image/upload/v1735020276/manchurian_v2tvak.png" },
-        { name: "Samosa", search: "samosa", img: "https://res.cloudinary.com/dzrxswqur/image/upload/v1735021336/samosa_rs3hqu.png" },
-        { name: "Noodles", search: "noodles", img: "https://res.cloudinary.com/dzrxswqur/image/upload/v1735231532/noodles_c0gfen.png" },
-        { name: "Bakery", search: "Bakery", img: "https://res.cloudinary.com/dzrxswqur/image/upload/v1735021888/cake_lmspb1.png" },
-        { name: "Sweets", search: "Sweets", img: "https://res.cloudinary.com/dzrxswqur/image/upload/v1735230854/laddu_liklwj.png" },
-    ]; %>
+    <div id="filters">
+        <% const filters=[ { name: "Burger" , search: "burger" ,
+            img: "https://res.cloudinary.com/dzrxswqur/image/upload/v1735018802/burger_ajrdgn.png" }, { name: "Pizza" ,
+            search: "pizza" , img: "https://res.cloudinary.com/dzrxswqur/image/upload/v1735018995/pizza_ta0fmj.png" }, {
+            name: "Momos" , search: "momos" ,
+            img: "https://res.cloudinary.com/dzrxswqur/image/upload/v1735019920/momo_rtnbai.webp" }, {
+            name: "Manchurian" , search: "manchurian" ,
+            img: "https://res.cloudinary.com/dzrxswqur/image/upload/v1735020276/manchurian_v2tvak.png" }, {
+            name: "Samosa" , search: "samosa" ,
+            img: "https://res.cloudinary.com/dzrxswqur/image/upload/v1735021336/samosa_rs3hqu.png" }, { name: "Noodles"
+            , search: "noodles" ,
+            img: "https://res.cloudinary.com/dzrxswqur/image/upload/v1735231532/noodles_c0gfen.png" }, { name: "Bakery"
+            , search: "Bakery" , img: "https://res.cloudinary.com/dzrxswqur/image/upload/v1735021888/cake_lmspb1.png" },
+            { name: "Sweets" , search: "Sweets" ,
+            img: "https://res.cloudinary.com/dzrxswqur/image/upload/v1735230854/laddu_liklwj.png" }, ]; %>
 
-    <% filters.forEach(filter => { %>
-        <a class="filter nav-link" href="javascript:void(0)" data-search="<%= filter.search %>">
-            <div><img src="<%= filter.img %>" class="filter-image" alt="<%= filter.name %>"></div>
-            <p><%= filter.name %></p>
-        </a>
-    <% }) %>
-</div>
-
-<form class="d-flex justify-content-center" role="search" method="GET" action="/items/search" id="searchForm" >
-    <input class="form-control me-2" name="keyword" type="search" placeholder="Tell us what you want" aria-label="Search" id="searchInput" style="display: none;">
-    <button class="btn" type="submit"><i class="fa-solid fa-magnifying-glass" style="display: none;"></i></button>
-</form>
-
-
-<hr>
-
-<% if (allItem.length === 0) { %>
-    <p style="text-align: center;">Can't find what you're looking for? Don't worry!</p>
-    <h3 style="opacity: 0.8; text-align: center;">Let us know, and we'll add it for you.</h3>
-    <a class="filter nav-link" style="border: #d9534f, solid; margin: 0 40%; border-radius: 50;" href="/owner/addItem" aria-label="Add Item">
-        <i class="fa-solid fa-plus"></i>
-        <p>Add Item</p>
-    </a>    
-
-<% } %>
-
-<div class="row row-cols-lg-4 row-cols-md-3 row-cols-sm-2 g-4">
-    <% for (let item of allItem) { %>
-        <div class="card shadow-sm h-100" style="width: 22rem; border: none;">
-            <a href="/items/<%= item._id %>/show.ejs" class="item-link text-decoration-none text-dark">
-                <img 
-                    src="<%= item.image.url %>" 
-                    class="card-img-top mb-1 rounded" 
-                    alt="<%= item.title %>"
-                    style="height: 200px; object-fit: cover;"
-                >
-                <div class="card-body">
-                    <p class="card-text">
-                        <b class="card-text d-flex justify-content-between align-items-center">
-                            <span style="font-size: 1.2rem;"><%= item.title %></span>
-                            <% if (item.avgRating != 0) { %>
-                                <button type="button" class="btn btn-success btn-sm d-flex align-items-center">
-                                    <%= item.avgRating %><i class="fa-solid fa-star ms-1"></i>
-                                </button>
-                            <% } %>
-                        </b>
-                        <span class="d-block">
-                            <p 
-                                style="text-decoration: line-through; display: inline; margin: 0; color: #888;"
-                                class="me-2">
-                                &#8377;<%= Math.round(item.detail[0].price + (0.3 * item.detail[0].price)).toLocaleString("en-IN") %>/<%= item.unit %>
-                            </p>
-                            <p 
-                                style="display: inline; margin: 0; font-size: 1.1rem; color: #d9534f; font-weight: bold;">
-                                &#8377;<%= item.detail[0].price.toLocaleString("en-IN") %>/<%= item.unit %>
-                            </p>
-                        </span>
+            <% filters.forEach(filter=> { %>
+                <a class="filter nav-link" href="javascript:void(0)" data-search="<%= filter.search %>">
+                    <div><img src="<%= filter.img %>" class="filter-image" alt="<%= filter.name %>"></div>
+                    <p>
+                        <%= filter.name %>
                     </p>
-                </div>
-            </a>
-        </div>
-    <% } %>
-</div>
+                </a>
+                <% }) %>
+    </div>
+
+    <form class="d-flex justify-content-center" role="search" method="GET" action="/items/search" id="searchForm">
+        <input class="form-control me-2" name="keyword" type="search" placeholder="Tell us what you want"
+            aria-label="Search" id="searchInput" style="display: none;">
+        <button class="btn" type="submit"><i class="fa-solid fa-magnifying-glass" style="display: none;"></i></button>
+    </form>
 
 
-<script>
-    // Attach click event listener to filter elements
-    document.querySelectorAll('.filter').forEach(element => {
-        element.addEventListener('click', () => {
-            const keyword = element.getAttribute('data-search');
-            const searchInput = document.querySelector('#searchInput');
-            const searchForm = document.querySelector('#searchForm');
+    <hr>
 
-            if (searchInput && searchForm) {
-                searchInput.value = keyword;
-                searchForm.submit();
-            } else {
-                console.error('Search input or form not found.');
-            }
-        });
-    });
-</script>
+    <% if (allItem.length===0) { %>
+        <p style="text-align: center;">Can't find what you're looking for? Don't worry!</p>
+        <h3 style="opacity: 0.8; text-align: center;">Let us know, and we'll add it for you.</h3>
+        <a class="filter nav-link" style="border: #d9534f, solid; margin: 0 40%; border-radius: 50;"
+            href="/owner/addItem" aria-label="Add Item">
+            <i class="fa-solid fa-plus"></i>
+            <p>Add Item</p>
+        </a>
 
-<style>
-    .filter-image {
-        height: 3rem;
-        object-fit: cover;
-    }
+        <% } %>
 
-    .card-img {
-        height: 20rem;
-        object-fit: cover;
-    }
+            <div class="row row-cols-lg-4 row-cols-md-3 row-cols-sm-2 g-4">
+                <% for (let item of allItem) { %>
+                    <div class="card shadow-sm h-100" style="width: 22rem; border: none;">
+                        <a href="/items/<%= item._id %>/show.ejs" class="item-link text-decoration-none text-dark">
+                            <img src="<%= item.image.url %>" class="card-img-top mb-1 rounded" alt="<%= item.title %>"
+                                style="
+                                        height: 200px; 
+                                        object-fit: cover; 
+                                        filter: <%= item.isOpen ? 'none' : 'grayscale(100%)' %>;
+                                        opacity: <%= item.isOpen ? '1' : '0.6' %>;
+                                    ">
+                            <% if (!item.isOpen) { %>
+                                <i class="fa-solid fa-triangle-exclamation" style="color: red;"> Closed</i>
+                            <% } %>
 
-</style>
+                            <div class="card-body">
+                                <p class="card-text">
+                                    <b class="card-text d-flex justify-content-between align-items-center">
+                                        <span style="font-size: 1.2rem;">
+                                            <%= item.title %>
+                                        </span>
+                                        <% if (item.avgRating !=0) { %>
+                                            <button type="button"
+                                                class="btn btn-success btn-sm d-flex align-items-center">
+                                                <%= item.avgRating %><i class="fa-solid fa-star ms-1"></i>
+                                            </button>
+                                            <% } %>
+                                    </b>
+                                    <span class="d-block">
+                                        <p style="text-decoration: line-through; display: inline; margin: 0; color: #888;"
+                                            class="me-2">
+                                            &#8377;<%= Math.round(item.detail[0].price + (0.3 *
+                                                item.detail[0].price)).toLocaleString("en-IN") %>/<%= item.unit %>
+                                        </p>
+                                        <p
+                                            style="display: inline; margin: 0; font-size: 1.1rem; color: #d9534f; font-weight: bold;">
+                                            &#8377;<%= item.detail[0].price.toLocaleString("en-IN") %>/<%= item.unit %>
+                                        </p>
+                                    </span>
+                                </p>
+                            </div>
+                        </a>
+                    </div>
+                    <% } %>
+            </div>
+
+
+            <script>
+                // Attach click event listener to filter elements
+                document.querySelectorAll('.filter').forEach(element => {
+                    element.addEventListener('click', () => {
+                        const keyword = element.getAttribute('data-search');
+                        const searchInput = document.querySelector('#searchInput');
+                        const searchForm = document.querySelector('#searchForm');
+
+                        if (searchInput && searchForm) {
+                            searchInput.value = keyword;
+                            searchForm.submit();
+                        } else {
+                            console.error('Search input or form not found.');
+                        }
+                    });
+                });
+            </script>
+
+            <style>
+                .filter-image {
+                    height: 3rem;
+                    object-fit: cover;
+                }
+
+                .card-img {
+                    height: 20rem;
+                    object-fit: cover;
+                }
+            </style>
