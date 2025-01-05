@@ -261,6 +261,7 @@
 
                                     const voiceBtn = document.getElementById('voice-btn');
                                     const searchInput = document.getElementById('search-input');
+                                    const searchButton = document.querySelector('button[type="submit"]'); // Select the search button
 
                                     // Start speech recognition on button click
                                     voiceBtn.addEventListener('click', () => {
@@ -280,9 +281,12 @@
                                         alert('Error occurred while recognizing your speech. Please try again.');
                                     });
 
-                                    // Reset button state after speech recognition ends
+                                    // Trigger the search button click after speech recognition ends
                                     recognition.addEventListener('end', () => {
                                         voiceBtn.classList.remove('active'); // Remove active state
+                                        if (searchInput.value.trim() !== '') {
+                                            searchButton.click(); // Simulate click on the search button
+                                        }
                                     });
                                 } else {
                                     console.warn('Speech Recognition API not supported in this browser.');

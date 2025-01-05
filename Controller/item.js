@@ -42,32 +42,76 @@ module.exports.index = async (req, res) => {
 };
 
 
-
-module.exports.indexRestaurant = async (req, res) => {
-    const allItem = await Item.find({ RestaurantId: "Restaurant" });
-    res.render("items/index.ejs", { allItem });
-}
 module.exports.restaurantItem = async (req, res) => {
-    const { id } = req.params; // Extract the id from the route params
-    const allItem = await Item.find({ RestaurantId: id }); // Query items based on the restaurant's id
-    res.render("items/index.ejs", { allItem }); // Render the page with the items
-}
+    try {
+        const { id } = req.params; // Extract the restaurant ID from route params
+        const allItem = await Item.find({ RestaurantId: id }); // Query items based on restaurant ID
+
+        // Fetch the associated restaurant
+        const restaurant = await Restaurant.findById(id);
+
+        // Determine isOpen status
+        const isOpen = restaurant ? restaurant.isOpen : false;
+
+        // Add isOpen status to items
+        const updatedItems = allItem.map(item => ({
+            ...item.toObject(),
+            isOpen,
+        }));
+
+        res.render("items/index.ejs", { allItem: updatedItems });
+    } catch (err) {
+        console.error("Error fetching restaurant items:", err);
+        res.status(500).send("Internal Server Error");
+    }
+};
+
 
 module.exports.search = async (req, res) => {
-    const keyword = req.query.keyword; // Assuming keyword is sent in the query parameters
-    console.log(keyword);
-    // Find items where title or description contains the keyword
-    const allItem = await Item.find({
-        $or: [
-            { title: { $regex: new RegExp(keyword, 'i') } }, // Case-insensitive regex search for title
-            { description: { $regex: new RegExp(keyword, 'i') } }, // Case-insensitive regex search for description
-            { key: { $regex: new RegExp(keyword, 'i') } },
-            { category: { $regex: new RegExp(keyword, 'i') } },
-        ]
-    });
+    try {
+        const keyword = req.query.keyword; // Get the search keyword
+        // Find items matching the keyword in title, description, key, or category
+        const allItem = await Item.find({
+            $or: [
+                { title: { $regex: new RegExp(keyword, 'i') } },
+                { description: { $regex: new RegExp(keyword, 'i') } },
+                { key: { $regex: new RegExp(keyword, 'i') } },
+                { category: { $regex: new RegExp(keyword, 'i') } },
+            ]
+        });
 
-    res.render("items/index.ejs", { allItem });
-}
+        // Fetch all unique restaurant IDs from the search results
+        const restaurantIds = [...new Set(allItem.map(item => item.RestaurantId))];
+
+        // Fetch restaurant data for all items in one go
+        const restaurants = await Restaurant.find({ _id: { $in: restaurantIds } });
+
+        // Create a map for quick access to restaurant data
+        const restaurantMap = restaurants.reduce((acc, restaurant) => {
+            acc[restaurant._id.toString()] = restaurant;
+            return acc;
+        }, {});
+
+        // Simplified helper function to determine if a restaurant is open
+        const isRestaurantOpen = (restaurant) => {
+            return restaurant ? restaurant.isOpen : false;
+        };
+
+        // Update all items with the isOpen status
+        const updatedItems = allItem.map(item => {
+            const restaurant = restaurantMap[item.RestaurantId.toString()];
+            const isOpen = isRestaurantOpen(restaurant);
+            return { ...item.toObject(), isOpen };
+        });
+
+        // Render the page with updated items
+        res.render("items/index.ejs", { allItem: updatedItems });
+    } catch (err) {
+        console.error("Error during search:", err);
+        res.status(500).send("Internal Server Error");
+    }
+};
+
 
 module.exports.showItem = async (req, res) => {
     let { id } = req.params;
