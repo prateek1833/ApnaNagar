@@ -1,389 +1,348 @@
 <% layout('../layout/boilerplate') -%>
 
-    <style>
-        .show-img {
-            border-radius: 10px 10px 0 0;
-            height: auto;
-            object-fit: cover;
-        }
+<style>
+    .show-img {
+        border-radius: 10px 10px 0 0;
+        height: auto;
+        object-fit: cover;
+    }
 
-        .card {
-            margin-bottom: 1.5rem;
-            border: none;
-            border-radius: 10px;
-            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-            overflow: hidden;
-        }
+    .card {
+        margin-bottom: 1.5rem;
+        border: none;
+        border-radius: 10px;
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        overflow: hidden;
+    }
 
-        .card-body {
-            padding: 15px;
-            text-align: center;
-        }
+    .card-body {
+        padding: 15px;
+        text-align: center;
+    }
 
-        .card-text {
-            font-size: 1rem;
-            color: #333;
-        }
+    .card-text {
+        font-size: 1rem;
+        color: #333;
+    }
 
-        .card-text b {
-            font-size: 1.2rem;
-            color: #ff4e50;
-        }
+    .card-text b {
+        font-size: 1.2rem;
+        color: #ff4e50;
+    }
 
-        .btn-outline-danger {
-            color: #ff4e50;
-            border-color: #ff4e50;
-        }
+    .btn-outline-danger{
+        color:  #ff4e50;
+        border-color: #ff4e50;
+    }
+    .custom-radio:checked + .custom-label{
+    background-color: #ff4e50;
+    color: white;
+    border-color: #ff4e50;
+    }
 
-        .custom-radio:checked+.custom-label {
-            background-color: #ff4e50;
-            color: white;
-            border-color: #ff4e50;
-        }
+    .add-btn {
+        background-color: #ff4e50;
+        border-color: #ff4e50;
+    }
 
-        .add-btn {
-            background-color: #ff4e50;
-            border-color: #ff4e50;
-        }
+    .add-btn:hover {
+        background-color: #ff3b3f;
+        border-color: #ff3b3f;
+    }
 
-        .add-btn:hover {
-            background-color: #ff3b3f;
-            border-color: #ff3b3f;
-        }
+    .starability-growRotate .input-no-rate:checked~label,
+    .starability-growRotate .input-no-rate:checked~label~label,
+    .starability-growRotate .input-no-rate:checked~label~label~label,
+    .starability-growRotate .input-no-rate:checked~label~label~label~label,
+    .starability-growRotate .input-no-rate:checked~label~label~label~label~label {
+        color: #bbb;
+    }
 
-        .starability-growRotate .input-no-rate:checked~label,
-        .starability-growRotate .input-no-rate:checked~label~label,
-        .starability-growRotate .input-no-rate:checked~label~label~label,
-        .starability-growRotate .input-no-rate:checked~label~label~label~label,
-        .starability-growRotate .input-no-rate:checked~label~label~label~label~label {
-            color: #bbb;
-        }
+    .btn-dark {
+        background-color: #ff4e50;
+        border-color: #ff4e50;
+    }
 
-        .btn-dark {
-            background-color: #ff4e50;
-            border-color: #ff4e50;
-        }
+    .btn-dark:hover {
+        background-color: #ff3b3f;
+        border-color: #ff3b3f;
+    }
 
-        .btn-dark:hover {
-            background-color: #ff3b3f;
-            border-color: #ff3b3f;
-        }
+    .form-label {
+        font-weight: bold;
+    }
 
-        .form-label {
-            font-weight: bold;
-        }
+    .invalid-feedback {
+        color: #ff4e50;
+    }
 
-        .invalid-feedback {
-            color: #ff4e50;
-        }
+    h3, h4 {
+        color: #ff4e50;
+        font-weight: bold;
+    }
 
-        h3,
-        h4 {
-            color: #ff4e50;
-            font-weight: bold;
-        }
+    hr {
+        border: 0;
+        height: 1px;
+        background: #ff4e50;
+        background-image: linear-gradient(to right, #ff4e50, #f9d423);
+        margin: 20px 0;
+    }
 
-        hr {
-            border: 0;
-            height: 1px;
-            background: #ff4e50;
-            background-image: linear-gradient(to right, #ff4e50, #f9d423);
-            margin: 20px 0;
-        }
+    .review-card {
+        border: none;
+        border-radius: 10px;
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    }
 
-        .review-card {
-            border: none;
-            border-radius: 10px;
-            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-        }
+    .review-card .card-body {
+        padding: 10px;
+    }
 
-        .review-card .card-body {
-            padding: 10px;
-        }
+    .review-card .card-title {
+        color: #ff4e50;
+        font-weight: bold;
+    }
+    .buy-btn{
+        color: white;
+    }
+    .custom-radio-group {
+                        flex-wrap: nowrap; /* Prevent wrapping to keep items in one row */
+                    }
+                    .custom-label.square-label {
+                        display: inline-block;
+                        width: 85px; /* Adjust width to your desired size */
+                        height: 70px; /* Adjust height to make it square */
+                        text-align: center;
+                        line-height: 1; /* Adjust for text centering */
+                        vertical-align: middle;
+                        font-size: 14px;
+                        padding: 10px;
+                    }
+                    .btn-check:checked + .custom-label.square-label {
+                        background-color: #ff4e50; /* Change to active color */
+                        color: #fff;
+                    }
+                    /* Hide spinner controls */
+    input[type="number"]::-webkit-inner-spin-button, 
+    input[type="number"]::-webkit-outer-spin-button {
+        -webkit-appearance: none;
+        margin: 0;
+    }
+    input[type="number"] {
+        -moz-appearance: textfield;
+    }
+</style>            
 
-        .review-card .card-title {
-            color: #ff4e50;
-            font-weight: bold;
-        }
-
-        .buy-btn {
-            color: white;
-        }
-
-        .custom-radio-group {
-            flex-wrap: nowrap;
-            /* Prevent wrapping to keep items in one row */
-        }
-
-        .custom-label.square-label {
-            display: inline-block;
-            width: 85px;
-            /* Adjust width to your desired size */
-            height: 70px;
-            /* Adjust height to make it square */
-            text-align: center;
-            line-height: 1;
-            /* Adjust for text centering */
-            vertical-align: middle;
-            font-size: 14px;
-            padding: 10px;
-        }
-
-        .btn-check:checked+.custom-label.square-label {
-            background-color: #ff4e50;
-            /* Change to active color */
-            color: #fff;
-        }
-
-        .grayscale {
-            filter: grayscale(100%);
-            transition: filter 0.3s ease-in-out;
-            opacity: 0.7;
-        }
-    </style>
-
-    <div class="row mt-3">
-        <div class="col-md-8 offset-md-2 d-flex justify-content-between align-item-center">
-            <h3>
-                <%=item.title%>
-            </h3>
-            <% if (item.avgRating !=0) { %>
-                <button type="button" class="btn btn-success">
-                    <%=item.avgRating %><i class="fa-solid fa-star"></i>
-                </button>
-                <% } %>
-        </div>
-
-        <div class="card col-md-6 offset-md-2 col-12">
-            <img src="<%= item.image.url %>" class="card-img-top show-img <%= !isRestaurantOpen ? 'grayscale' : '' %>"
-                alt="item_image">
-            <p style="font-size: 0.75rem;"><i>Owner: <%=item.owner.username%></i></p>
-            <div class="card-body">
-                <p class="card-text"><b>
-                        <%=item.title%>
-                    </b></p>
-                <p class="card-text">
-                    <%=item.description%>
-                </p>
-
-                <form method="POST" action="/order" id="addToCartForm">
-                    <div
-                        class="d-flex flex-wrap border pt-2 justify-content-center align-items-center custom-radio-group no-spinner">
-                        <% item.detail.forEach((detail, index)=> { %>
-                            <div class="me-2 mb-2">
-                                <input type="radio" class="btn-check custom-radio" id="type<%= index %>"
-                                    name="selectedType" value="<%= index %>" <% if (index===0) { %>checked<% } %>>
-                                    <label class="btn btn-outline-danger custom-label square-label"
-                                        for="type<%= index %>">
-                                        <p><b>
-                                                <%= detail.typ %>
-                                            </b></p>
-                                        <p style="font-size: x-large;">
-                                            <%= detail.price.toLocaleString("en-In") %>&#8377;
-                                        </p>
-                                    </label>
-                            </div>
-                            <% }) %>
-                    </div>
-                    <div class="mb-3 d-flex flex-column border pb-3 align-items-center no-spinner">
-                        <label style="font-size: x-small; color: #ff4e50; opacity: 0.5;" for="quantity"
-                            class="form-label col-5">Enter Quantity (in <%= item.unit %>)</label>
-                        <div class="input-group" style="max-width: 120px;">
-                            <button class="btn  btn-outline-danger" type="button"
-                                onclick="adjustQuantity(-1)">-</button>
-                            <input type="number" id="quantity" name="quantity" value="1"
-                                class="form-control text-center" min="1" step="1" required>
-                            <button class="btn btn-outline-danger" type="button" onclick="adjustQuantity(1)">+</button>
-                        </div>
-                    </div>
-                    <div class="mb-3" hidden>
-                        <label for="item" class="form-label"></label>
-                        <input type="text" name="item" value="<%= item._id %>" class="form-control" required>
-                    </div>
-                    <% if(currUser && (!currUser.type || currUser.type!="Restaurant" )) {%>
-                        <div class="d-grid gap-2 col-6 mx-auto">
-                            <button type="submit" class="btn btn-dark add-btn">Add to Cart</button>
-                        </div>
-                        <% } %>
-                            <% if(!currUser) { %>
-                                <div class="d-grid gap-2 col-6 mx-auto">
-                                    <button type="submit" class="btn btn-success add-btn" disabled>Add to Cart</button>
-                                </div>
-                                <% } %>
-                </form>
-
-                <% if(currUser && (!currUser.type || currUser.type!="Restaurant" )) { %>
-                    <div class="d-grid gap-2 col-6 mx-auto mt-2">
-                        <% if (isRestaurantOpen) { %>
-                            <button type="submit" class="btn btn-warning buy-btn"><b>Buy Now</b></button>
-                            <% } else { %>
-                                <button type="button" class="btn btn-warning buy-btn" disabled>Closed</button>
-                                <% } %>
-                    </div>
-                    <% } %>
-                        <% if(!currUser) { %>
-                            <div class="d-grid gap-2 col-6 mx-auto mt-2">
-                                <button type="submit" class="btn btn-warning buy-btn" disabled>Buy Now</button>
-                                <p><a href="/login"><b>Log in</b></a> to buy this item.</p>
-                            </div>
-                            <% } %>
-
-            </div>
-            <br>
-
-            <% if(currUser && currUser.type && currUser.type==="Restaurant" && currUser.id==item.RestaurantId) { %>
-                <a href="/items/<%=item._id%>/edit" class="btn btn-primary d-grid gap-2 col-6 mx-auto">Edit</a>
-                <br>
-                <form method="POST" action="/items/<%=item._id%>/delete?_method=DELETE">
-                    <button class="btn btn-danger d-grid gap-2 col-6 mx-auto">Delete</button>
-                </form>
-                <br>
-                <% } %>
-                    <hr>
-        </div>
-        <div class="col-md-6 offset-md-2">
-            <% if(currUser && (!currUser.type || currUser.type!="Restaurant" )) { %>
-                <h4>Leave a Review</h4>
-                <form action="/items/<%=item._id%>/reviews" method="POST" class="needs-validation" novalidate>
-                    <div class="mb-3 mt-3 no-spinner">
-                        <label for="rating" class="form-label ">Rating</label>
-                        <fieldset class="starability-growRotate">
-                            <input type="radio" id="no-rate" class="input-no-rate" name="review[rating]" value="3"
-                                checked aria-label="No rating." />
-                            <input type="radio" id="first-rate1" name="review[rating]" value="1" />
-                            <label for="first-rate1" title="Terrible"></label>
-                            <input type="radio" id="first-rate2" name="review[rating]" value="2" />
-                            <label for="first-rate2" title="Not good"></label>
-                            <input type="radio" id="first-rate3" name="review[rating]" value="3" />
-                            <label for="first-rate3" title="Average"></label>
-                            <input type="radio" id="first-rate4" name="review[rating]" value="4" />
-                            <label for="first-rate4" title="Very good"></label>
-                            <input type="radio" id="first-rate5" name="review[rating]" value="5" />
-                            <label for="first-rate5" title="Amazing"></label>
-                        </fieldset>
-                    </div>
-
-                    <div class="mt-3">
-                        <label for="comment" class="form-label">Comments</label>
-                        <textarea name="review[comment]" id="comment" cols="30" rows="5" class="form-control"
-                            required></textarea>
-                        <div class="invalid-feedback">Please write some comment</div>
-                    </div>
-                    <br>
-                    <button class="btn btn-dark add-btn">Submit</button>
-                    <br>
-                    <br>
-                </form>
-                <hr>
-                <% } %>
-                    <% if(item.reviews.length> 0) { %>
-                        <p><b>All Reviews</b></p>
-                        <div class="row">
-                            <% item.reviews.forEach(review=> { %>
-                                <div class="card col-10 ms-3 mb-3 review-card ">
-                                    <div class="card-body">
-                                        <div class="d-flex justify-content-between align-item-center">
-                                            <div>
-                                                <p class="mb-0 d-flex justify-content-start"><b>
-                                                        <%=review.author.username%>
-                                                    </b></p>
-                                                <p class="mb-0" style="font-size: 0.75rem; color: grey;">
-                                                    <%= (()=> {
-                                                        const date = new Date(review.createdAt);
-                                                        const day = String(date.getDate()).padStart(2, '0');
-                                                        const month = String(date.getMonth() + 1).padStart(2, '0');
-                                                        const year = date.getFullYear();
-                                                        return `${day}.${month}.${year}`;
-                                                        })() %>
-                                                </p>
-                                            </div>
-                                            <% if(currUser && review.author.username==currUser.username) { %>
-                                                <form class="mb-3" method="POST"
-                                                    action="/items/<%=item._id%>/reviews/<%=review._id%>?_method=DELETE">
-                                                    <button class="btn btn-sm btn-dark"><i
-                                                            class="fa-solid fa-trash"></i></button>
-                                                </form>
-                                                <% } %>
-                                        </div>
-
-                                        <p class="starability-result card-text justify-content-center"
-                                            data-rating="<%=review.rating%>"></p>
-                                        <p class="mb-3">
-                                            <%=review.comment%>
-                                        </p>
-                                    </div>
-
-                                </div>
-                                <br>
-                                <% }) %>
-                        </div>
-                        <% } %>
-        </div>
+<div class="row mt-3">
+    <div class="col-md-8 offset-md-2 d-flex justify-content-between align-item-center">
+        <h3><%=item.title%></h3>
+        <% if (item.avgRating != 0) { %>
+            <button type="button" class="btn btn-success"><%=item.avgRating %><i class="fa-solid fa-star"></i></button>
+        <% } %> 
     </div>
 
-    <script>
-        document.addEventListener("DOMContentLoaded", function () {
-            const addToCartForm = document.getElementById("addToCartForm");
-            const buyNowForm = document.getElementById("buyNowForm");
-            const selectedTypeBuyNow = document.getElementById("selectedTypeBuyNow");
-            const quantityBuyNow = document.getElementById("quantityBuyNow");
+    <div class="card col-md-6 offset-md-2 col-12">
+        <img src="<%=item.image.url%>" 
+             class="card-img-top show-img <%= isRestaurantOpen ? '' : 'grayscale' %>" 
+             alt="item_image">
+        <div class="card-body">
+            <p class="card-text"><b><%=item.title%></b></p>
+            <p class="card-text"><%=item.description%></p>
 
-            // Update the hidden fields in buyNowForm when the radio buttons change
-            addToCartForm.addEventListener("change", function (event) {
-                if (event.target.name === "selectedType") {
-                    selectedTypeBuyNow.value = event.target.value;
-                }
-            });
+            <form method="POST" action="/order" id="addToCartForm">
+                <div class="d-flex flex-wrap border pt-2 justify-content-center align-items-center custom-radio-group no-spinner">
+                    <% item.detail.forEach((detail, index) => { %>
+                        <div class="me-2 mb-2">
+                            <input type="radio" class="btn-check custom-radio" id="type<%= index %>" name="selectedType" value="<%= index %>" <% if (index === 0) { %>checked<% } %>>
+                            <label class="btn btn-outline-danger custom-label square-label" for="type<%= index %>">
+                                <p><b><%= detail.typ %></b></p><p style="font-size: x-large;"><%= detail.price.toLocaleString("en-In") %>&#8377;</p>
+                            </label>
+                        </div>
+                    <% }) %>
+                </div>
+                <div class="mb-3 d-flex flex-column border pb-3 align-items-center no-spinner">
+                    <label style="font-size: x-small; color: #ff4e50; opacity: 0.5;" for="quantity" class="form-label col-5">Enter Quantity (in <%= item.unit %>)</label>
+                    <div class="input-group" style="max-width: 120px;">
+                        <button class="btn  btn-outline-danger" type="button" onclick="adjustQuantity(-1)">-</button>
+                        <input 
+                            type="number" 
+                            id="quantity" 
+                            name="quantity" 
+                            value="1" 
+                            class="form-control text-center" 
+                            min="1" 
+                            step="1" 
+                            required>
+                        <button class="btn btn-outline-danger" type="button" onclick="adjustQuantity(1)">+</button>
+                    </div>
+                </div>
+                <div class="mb-3" hidden>
+                    <label for="item" class="form-label"></label>
+                    <input type="text" name="item" value="<%= item._id %>" class="form-control" required>
+                </div>
+                <% if(currUser && (!currUser.type || currUser.type!="Restaurant")) {%>
+                <div class="d-grid gap-2 col-6 mx-auto">
+                    <button type="submit" class="btn btn-dark add-btn">Add to Cart</button>
+                </div>
+                <% } %>
+                <% if(!currUser) { %>
+                    <div class="d-grid gap-2 col-6 mx-auto">
+                        <button type="submit" class="btn btn-success add-btn" disabled>Add to Cart</button>
+                    </div>
+                <% } %>                
+            </form>
 
-            // Update the hidden quantity in buyNowForm when quantity changes in addToCartForm
-            addToCartForm.querySelector('input[name="quantity"]').addEventListener('input', function (event) {
-                quantityBuyNow.value = event.target.value;
-            });
+            <% if(currUser && (!currUser.type || currUser.type!="Restaurant")) {%>
+                <%if(!isRestaurantOpen){%>
+                    <div class="d-grid gap-2 col-6 mx-auto mt-2">
+                        <button type="button" class="btn btn-warning buy-btn disabled"><b>Closed</b></button>
+                    </div>
+                <% }else{ %>
+                    <form method="POST" action="/order/<%=currUser._id%>/buy" id="buyNowForm">
+                        <input type="text" name="item" value="<%= item._id %>" hidden>
+                        <input type="text" name="selectedType" id="selectedTypeBuyNow" value="<%= item.detail[0].typ %>" hidden>
+                        <input type="number" name="quantity" id="quantityBuyNow" value="1" hidden>
+                        <div class="d-grid gap-2 col-6 mx-auto mt-2">
+                            <button type="submit" class="btn btn-warning buy-btn"><b>Buy Now</b></button>
+                        </div>
+                    </form>
+                <% } %>
+            <% } %>
+            <% if(!currUser) { %>
+                <div class="d-grid gap-2 col-6 mx-auto mt-2">
+                    <button type="submit" class="btn btn-warning buy-btn" disabled>Buy Now</button>
+                    <p><a href="/login"><b>Log in</b></a> to buy this item.</p>
+                </div>
+            <% } %> 
+        </div>
+        <br>
 
-            // Ensure selected type is updated on page load
-            const selectedTypeRadio = addToCartForm.querySelector('input[name="selectedType"]:checked');
-            if (selectedTypeRadio) {
-                selectedTypeBuyNow.value = selectedTypeRadio.value;
+        <% if(currUser && currUser.type && currUser.type==="Restaurant" && currUser.id==item.RestaurantId) { %>
+            <a href="/items/<%=item._id%>/edit" class="btn btn-primary d-grid gap-2 col-6 mx-auto">Edit</a>
+            <br>
+            <form method="POST" action="/items/<%=item._id%>/delete?_method=DELETE">
+                <button class="btn btn-danger d-grid gap-2 col-6 mx-auto">Delete</button>
+            </form>
+            <br>
+        <% } %>
+        <hr>
+    </div>
+    <div class="col-md-6 offset-md-2">
+        <% if(currUser && (!currUser.type || currUser.type!="Restaurant")) { %>
+            <h4>Leave a Review</h4>
+            <form action="/items/<%=item._id%>/reviews" method="POST" class="needs-validation" novalidate>
+                <div class="mb-3 mt-3 no-spinner">
+                    <label for="rating" class="form-label">Rating</label>
+                    <fieldset class="starability-growRotate">
+                        <input type="radio" id="no-rate" class="input-no-rate" name="review[rating]" value="3" checked aria-label="No rating." />
+                        <input type="radio" id="first-rate1" name="review[rating]" value="1" />
+                        <label for="first-rate1" title="Terrible"></label>
+                        <input type="radio" id="first-rate2" name="review[rating]" value="2" />
+                        <label for="first-rate2" title="Not good"></label>
+                        <input type="radio" id="first-rate3" name="review[rating]" value="3" />
+                        <label for="first-rate3" title="Average"></label>
+                        <input type="radio" id="first-rate4" name="review[rating]" value="4" />
+                        <label for="first-rate4" title="Very good"></label>
+                        <input type="radio" id="first-rate5" name="review[rating]" value="5" />
+                        <label for="first-rate5" title="Amazing"></label>
+                    </fieldset>
+                </div>
+
+                <div class="mt-3">
+                    <label for="comment" class="form-label">Comments</label>
+                    <textarea name="review[comment]" id="comment" cols="30" rows="5" class="form-control" required></textarea>
+                    <div class="invalid-feedback">Please write some comment</div>
+                </div>
+                <br>
+                <button class="btn btn-dark add-btn">Submit</button>
+                <br>
+                <br>
+            </form>
+            <hr>
+        <% } %>
+        <% if(item.reviews.length > 0) { %>
+            <p><b>All Reviews</b></p>
+            <div class="row">
+                <% item.reviews.forEach(review => { %>
+                    <div class="card col-10 ms-3 mb-3 review-card ">
+                        <div class="card-body">
+                            <div class="d-flex justify-content-between align-item-center">
+                                <div>
+                                    <p class="mb-0 d-flex justify-content-start"><b><%=review.author.username%></b></p>
+                                    <p class="mb-0" style="font-size: 0.75rem; color: grey;">
+                                        <%= (() => {
+                                          const date = new Date(review.createdAt);
+                                          const day = String(date.getDate()).padStart(2, '0');
+                                          const month = String(date.getMonth() + 1).padStart(2, '0');
+                                          const year = date.getFullYear();
+                                          return `${day}.${month}.${year}`;
+                                        })() %>
+                                      </p> 
+                                </div>
+                                <% if(currUser && review.author.username==currUser.username) { %>
+                                <form class="mb-3" method="POST" action="/items/<%=item._id%>/reviews/<%=review._id%>?_method=DELETE">
+                                    <button class="btn btn-sm btn-dark"><i class="fa-solid fa-trash"></i></button>
+                                </form>
+                                <% } %>
+                            </div>
+                                                          
+                            <p class="starability-result card-text justify-content-center" data-rating="<%=review.rating%>"></p>
+                            <p class="mb-3"><%=review.comment%></p>
+                        </div>
+
+                    </div>
+                    <br>
+                <% }) %>
+            </div>
+        <% } %>
+    </div>
+</div>
+
+<style>
+    .grayscale {
+        filter: grayscale(100%);
+    }
+</style>
+
+<script>
+    document.addEventListener("DOMContentLoaded", function() {
+        const addToCartForm = document.getElementById("addToCartForm");
+        const buyNowForm = document.getElementById("buyNowForm");
+        const selectedTypeBuyNow = document.getElementById("selectedTypeBuyNow");
+        const quantityBuyNow = document.getElementById("quantityBuyNow");
+        const quantityInput = document.getElementById('quantity');
+
+        // Initialize hidden quantity field
+        quantityBuyNow.value = quantityInput.value;
+
+        // Update hidden fields in buyNowForm when the radio buttons change
+        addToCartForm.addEventListener("change", function(event) {
+            if (event.target.name === "selectedType") {
+                selectedTypeBuyNow.value = event.target.value;
             }
         });
-        document.addEventListener("DOMContentLoaded", function () {
-            const addToCartForm = document.getElementById("addToCartForm");
-            const buyNowForm = document.getElementById("buyNowForm");
-            const selectedTypeBuyNow = document.getElementById("selectedTypeBuyNow");
-            const quantityBuyNow = document.getElementById("quantityBuyNow");
-            const quantityInput = document.getElementById('quantity');
 
-            // Initialize hidden quantity field
-            quantityBuyNow.value = quantityInput.value;
-
-            // Update hidden fields in buyNowForm when the radio buttons change
-            addToCartForm.addEventListener("change", function (event) {
-                if (event.target.name === "selectedType") {
-                    selectedTypeBuyNow.value = event.target.value;
-                }
-            });
-
-            // Synchronize quantity field on user input
-            quantityInput.addEventListener('input', function (event) {
-                let currentValue = parseInt(event.target.value) || 1;
-                currentValue = Math.max(1, currentValue); // Ensure minimum value is 1
-                event.target.value = currentValue;
-                quantityBuyNow.value = currentValue; // Update buyNowForm's quantity field
-            });
-
-            // Adjust quantity via buttons
-            window.adjustQuantity = function (change) {
-                let currentValue = parseInt(quantityInput.value) || 1;
-                currentValue = Math.max(1, currentValue + change); // Ensure the value doesn't go below 1
-                quantityInput.value = currentValue;
-                quantityBuyNow.value = currentValue; // Update buyNowForm's quantity field
-            };
-
-            // Ensure selected type is updated on page load
-            const selectedTypeRadio = addToCartForm.querySelector('input[name="selectedType"]:checked');
-            if (selectedTypeRadio) {
-                selectedTypeBuyNow.value = selectedTypeRadio.value;
-            }
+        // Synchronize quantity field on user input
+        quantityInput.addEventListener('input', function(event) {
+            let currentValue = parseInt(event.target.value) || 1;
+            currentValue = Math.max(1, currentValue); // Ensure minimum value is 1
+            event.target.value = currentValue;
+            quantityBuyNow.value = currentValue; // Update buyNowForm's quantity field
         });
 
-    </script>
+        // Adjust quantity via buttons
+        window.adjustQuantity = function(change) {
+            let currentValue = parseInt(quantityInput.value) || 1;
+            currentValue = Math.max(1, currentValue + change); // Ensure the value doesn't go below 1
+            quantityInput.value = currentValue;
+            quantityBuyNow.value = currentValue; // Update buyNowForm's quantity field
+        };
+
+        // Ensure selected type is updated on page load
+        const selectedTypeRadio = addToCartForm.querySelector('input[name="selectedType"]:checked');
+        if (selectedTypeRadio) {
+            selectedTypeBuyNow.value = selectedTypeRadio.value;
+        }
+    });
+</script>

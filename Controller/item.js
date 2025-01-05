@@ -8,8 +8,7 @@ const Restaurant = require("../models/restaurant");
 module.exports.index = async (req, res) => {
     try {
         const allItem = await Item.find({});
-        const currentTime = new Date(); // Current server time
-
+        
         // Fetch all unique restaurant IDs
         const restaurantIds = [...new Set(allItem.map(item => item.RestaurantId))];
 
@@ -22,24 +21,15 @@ module.exports.index = async (req, res) => {
             return acc;
         }, {});
 
-        // Helper function to determine if a restaurant is open
-        const isRestaurantOpen = (restaurant, currentTime) => {
-            if (!restaurant) return false;
-
-            const openingTime = new Date(currentTime.toDateString() + ' ' + restaurant.open_time);
-            const closingTime = new Date(currentTime.toDateString() + ' ' + restaurant.close_time);
-
-            // Adjust for closing times past midnight
-            if (closingTime <= openingTime) closingTime.setDate(closingTime.getDate() + 1);
-
-            // Check if the restaurant is open based on the time and the isOpen field
-            return restaurant.isOpen && currentTime >= openingTime && currentTime <= closingTime;
+        // Simplified helper function to determine if a restaurant is open
+        const isRestaurantOpen = (restaurant) => {
+            return restaurant ? restaurant.isOpen : false;
         };
 
         // Update all items with the isOpen status
         const updatedItems = allItem.map(item => {
             const restaurant = restaurantMap[item.RestaurantId.toString()];
-            const isOpen = isRestaurantOpen(restaurant, currentTime);
+            const isOpen = isRestaurantOpen(restaurant);
             return { ...item.toObject(), isOpen };
         });
 
@@ -50,8 +40,6 @@ module.exports.index = async (req, res) => {
         res.status(500).send("Internal Server Error");
     }
 };
-
-
 
 
 

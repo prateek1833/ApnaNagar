@@ -54,14 +54,6 @@ const restaurantSchema = new Schema({
             message: props => `${props.value} is not a valid mobile number!`
         }
     },
-    open_time: {
-        type: String,
-        required: true,
-    },
-    close_time: {
-        type: String,
-        required: true,
-    },
     createdAt: {
         type: Date,
         default: Date.now,
