@@ -47,7 +47,7 @@
         .search-bar .form-control {
             border-radius: 25px;
             padding: 10px 20px;
-            border: 2px solid #f99223;
+            border: 2px solid #fff;
         }
 
         .search-bar .btn {
@@ -56,13 +56,9 @@
             margin-left: 10px;
             background-color: white;
             color: #fc060a;
-            border: 2px solid #f9d423;
+            border: 2px solid #fff;
         }
 
-        .search-bar .btn:hover {
-            background-color: #fd2f32;
-            color: white;
-        }
 
         .navbar-nav {
             margin-top: 20px;
@@ -162,6 +158,21 @@
                 box-shadow: 0.2em -0.2em 0 0 currentcolor;
             }
         }
+
+        .voice-btn {
+            background-color: white;
+            color: #f99223;
+            font-size: 18px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border: 4px solid #fff;
+        }
+
+        .voice-btn i {
+            background-color: white;
+            color: #f99223;
+        }
     </style>
 </head>
 
@@ -179,9 +190,14 @@
         </div>
         <div class="navbar-nav ms-auto search-bar">
             <form class="d-flex justify-content-center" role="search" method="GET" action="/items/search">
-                <input class="form-control me-2" name="keyword" type="search" placeholder="Tell us what you want"
-                    aria-label="Search">
-                <button class="btn" type="submit"><i class="fa-solid fa-magnifying-glass"></i></button>
+                <div class="input-group">
+                    <input id="search-input" class="form-control" name="keyword" type="search"
+                        placeholder="Tell us what you want" aria-label="Search">
+                    <button type="button" class="voice-btn no-spinner" id="voice-btn">
+                        <i class="fa-solid fa-microphone"></i>
+                    </button>
+                    <button type="submit" class="btn btn-search"><i class="fa-solid fa-magnifying-glass"></i></button>
+                </div>
             </form>
         </div>
     </div>
@@ -191,59 +207,97 @@
             <%- include("../views/includes/flash.ejs") %>
                 <%- body %>
         </div>
-        <% if(currUser && currUser.type && currUser.type==="Restaurant"){%>
+        <% if(currUser && currUser.type && currUser.type==="Restaurant" ){%>
             <%- include("../views/includes/footerRes.ejs") %>
-            <%}else{%>
-        <%- include("../views/includes/footer.ejs") %>
-        <%}%>
+                <%}else{%>
+                    <%- include("../views/includes/footer.ejs") %>
+                        <%}%>
 
-            <script>
-                const spinnerOverlay = document.getElementById('spinner-overlay');
-                let spinnerTimeout;
+                            <script>
+                                const spinnerOverlay = document.getElementById('spinner-overlay');
+                                let spinnerTimeout;
 
-                // Show Spinner
-                function showSpinner() {
-                    spinnerOverlay.classList.add('active');
+                                // Show Spinner
+                                function showSpinner() {
+                                    spinnerOverlay.classList.add('active');
 
-                    // Ensure spinner hides after 30 seconds max
-                    spinnerTimeout = setTimeout(hideSpinner, 10000);
-                }
+                                    // Ensure spinner hides after 30 seconds max
+                                    spinnerTimeout = setTimeout(hideSpinner, 10000);
+                                }
 
-                // Hide Spinner
-                function hideSpinner() {
-                    spinnerOverlay.classList.remove('active');
-                    clearTimeout(spinnerTimeout);
-                }
+                                // Hide Spinner
+                                function hideSpinner() {
+                                    spinnerOverlay.classList.remove('active');
+                                    clearTimeout(spinnerTimeout);
+                                }
 
-                // Example usage during an AJAX request or navigation
-                document.addEventListener('DOMContentLoaded', () => {
-                    document.querySelectorAll('a, form').forEach(element => {
-                        element.addEventListener('click', (event) => {
-                            const target = event.target;
+                                // Example usage during an AJAX request or navigation
+                                document.addEventListener('DOMContentLoaded', () => {
+                                    document.querySelectorAll('a, form').forEach(element => {
+                                        element.addEventListener('click', (event) => {
+                                            const target = event.target;
 
-                            const tagName = target.tagName.toLowerCase();
+                                            const tagName = target.tagName.toLowerCase();
 
-                            // Avoid spinner for specific tags or elements with the 'no-spinner' class
-                            if (
-                                !['input', 'select', 'textarea'].includes(tagName) &&
-                                !target.classList.contains('no-spinner') &&
-                                !target.closest('.no-spinner')
-                            ) {
-                                showSpinner();
-                            }
-                        });
-                    });
-                });
+                                            // Avoid spinner for specific tags or elements with the 'no-spinner' class
+                                            if (
+                                                !['input', 'select', 'textarea'].includes(tagName) &&
+                                                !target.classList.contains('no-spinner') &&
+                                                !target.closest('.no-spinner')
+                                            ) {
+                                                showSpinner();
+                                            }
+                                        });
+                                    });
+                                });
+                                // Check for SpeechRecognition API support
+                                const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
 
-            </script>
+                                if (SpeechRecognition) {
+                                    const recognition = new SpeechRecognition();
+                                    recognition.continuous = false; // Recognizes a single phrase
+                                    recognition.lang = 'en-US'; // Language for speech recognition
+                                    recognition.interimResults = false; // Do not show interim results
 
-            <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"
-                integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz"
-                crossorigin="anonymous"></script>
-            <script src="/js/script.js"></script>
-            <script src="/js/map.js"></script>
-            <script src="/js/main.js"></script>
-            
+                                    const voiceBtn = document.getElementById('voice-btn');
+                                    const searchInput = document.getElementById('search-input');
+
+                                    // Start speech recognition on button click
+                                    voiceBtn.addEventListener('click', () => {
+                                        recognition.start();
+                                        voiceBtn.classList.add('active'); // Optional: Add a class to indicate active state
+                                    });
+
+                                    // Capture speech recognition result
+                                    recognition.addEventListener('result', (event) => {
+                                        const transcript = event.results[0][0].transcript; // Get the recognized text
+                                        searchInput.value = transcript; // Set the recognized text to the search input
+                                    });
+
+                                    // Handle errors during speech recognition
+                                    recognition.addEventListener('error', (event) => {
+                                        console.error('Speech recognition error:', event.error);
+                                        alert('Error occurred while recognizing your speech. Please try again.');
+                                    });
+
+                                    // Reset button state after speech recognition ends
+                                    recognition.addEventListener('end', () => {
+                                        voiceBtn.classList.remove('active'); // Remove active state
+                                    });
+                                } else {
+                                    console.warn('Speech Recognition API not supported in this browser.');
+                                }
+
+
+                            </script>
+
+                            <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"
+                                integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz"
+                                crossorigin="anonymous"></script>
+                            <script src="/js/script.js"></script>
+                            <script src="/js/map.js"></script>
+                            <script src="/js/main.js"></script>
+
 </body>
 
 </html>
