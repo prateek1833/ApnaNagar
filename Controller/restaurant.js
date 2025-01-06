@@ -211,6 +211,8 @@ module.exports.statistics = async (req, res, next) => {
                 const total = order.items.reduce((sum, item) => sum + item.item.price * item.item.quantity, 0);
 
                 monthlyEarnings[monthKey] = (monthlyEarnings[monthKey] || 0) + total;
+                totalEarnings += total;
+                totalOrders++;
             }
         });
 
