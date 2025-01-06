@@ -15,9 +15,9 @@
       </div>
       <div class="col-md-4">
         <div class="card text-white bg-primary mb-3">
-          <div class="card-header">Total Profit</div>
+          <div class="card-header">Balance Due</div>
           <div class="card-body">
-            <h5 class="card-title">₹<%= totalProfit %></h5>
+            <h5 class="card-title">₹<%= balance_due %></h5>
           </div>
         </div>
       </div>
@@ -67,18 +67,19 @@
     // Monthly Earnings Chart
     const monthlyEarningsCtx = document.getElementById('monthlyEarningsChart').getContext('2d');
     new Chart(monthlyEarningsCtx, {
-      type: 'bar',
-      data: {
-        labels: ['January', 'February', 'March'], // Example labels
+    type: 'bar',
+    data: {
+        labels: <%- JSON.stringify(monthlyLabels) %>, // Dynamically inject labels
         datasets: [{
-          label: 'Earnings (₹)',
-          data: [1000, 2000, 3000], // Example data
-          backgroundColor: 'rgba(75, 192, 192, 0.5)',
-          borderColor: 'rgba(75, 192, 192, 1)',
-          borderWidth: 1
+            label: 'Earnings (₹)',
+            data: <%- JSON.stringify(monthlyData) %>, // Dynamically inject data
+            backgroundColor: 'rgba(75, 192, 192, 0.5)',
+            borderColor: 'rgba(75, 192, 192, 1)',
+            borderWidth: 1
         }]
-      }
-    });
+    }
+});
+
 
     // Daily Orders Chart
     const dailyOrdersCtx = document.getElementById('dailyOrdersChart').getContext('2d');

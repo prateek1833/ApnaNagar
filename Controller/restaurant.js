@@ -97,13 +97,13 @@ module.exports.login = async (req, res) => {
 module.exports.renderEdit = async (req, res) => {
     let { id } = req.params;
     const restaurant = await Restaurant.findById(id);
-    if(!restaurant){
-        res.flash("error","restaurant you requested does not exist!");
+    if (!restaurant) {
+        res.flash("error", "restaurant you requested does not exist!");
         res.redirect("/restaurant");
     }
-    let originalImageUrl=restaurant.image.url;
-    originalImageUrl=originalImageUrl.replace("/upload","/upload/w_250");
-    res.render("restaurant/edit.ejs", { restaurant,originalImageUrl });
+    let originalImageUrl = restaurant.image.url;
+    originalImageUrl = originalImageUrl.replace("/upload", "/upload/w_250");
+    res.render("restaurant/edit.ejs", { restaurant, originalImageUrl });
 }
 
 module.exports.toggleStatus = async (req, res) => {
@@ -188,7 +188,7 @@ module.exports.orders = async (req, res, next) => {
 // Backend Code
 module.exports.statistics = async (req, res, next) => {
     try {
-        
+
         const { id } = req.user; // Assuming req.user contains the authenticated restaurant owner's details
         const restaurant = await Restaurant.findById(id).populate('orders');
 
@@ -199,28 +199,21 @@ module.exports.statistics = async (req, res, next) => {
         const monthlyEarnings = {};
         const weekdayOrders = Array(7).fill(0);
         const orders = restaurant.orders;
-        const currentYear = new Date().getFullYear();
+        const balance_due = restaurant.balance_due;
 
-        let totalProfit = 0;
         let totalEarnings = 0;
         let totalOrders = 0;
 
         orders.forEach(order => {
             if (order.items && order.createdAt) {
                 const date = new Date(order.createdAt);
-                const month = date.toLocaleString('en-US', { month: 'long', year: 'numeric' });
-                const weekday = date.getDay();
+                const monthKey = `${date.getFullYear()}-${String(date.getMonth() + 1).padStart(2, '0')}`; // Format as YYYY-MM
                 const total = order.items.reduce((sum, item) => sum + item.item.price * item.item.quantity, 0);
-                const cost = order.items.reduce((sum, item) => sum + item.item.cost * item.item.quantity, 0);
 
-                monthlyEarnings[month] = (monthlyEarnings[month] || 0) + total;
-                weekdayOrders[weekday]++;
-
-                totalEarnings += total;
-                totalProfit += (total - cost);
-                totalOrders++;
+                monthlyEarnings[monthKey] = (monthlyEarnings[monthKey] || 0) + total;
             }
         });
+
 
         const orderDates = [];
         const orderCounts = {};
@@ -261,20 +254,28 @@ module.exports.statistics = async (req, res, next) => {
 
         const categoryLabels = Object.keys(categorySales);
         const categoryData = Object.values(categorySales);
+        const sortedMonthlyEarnings = Object.entries(monthlyEarnings)
+            .sort(([a], [b]) => a.localeCompare(b)); // Sort by month keys
+
+        const monthlyLabels = sortedMonthlyEarnings.map(([month]) => month); // ["2024-01", "2024-02"]
+        const monthlyData = sortedMonthlyEarnings.map(([, earnings]) => earnings); // [5000, 7000]
+
+
 
         res.render('restaurant/statistics.ejs', {
-            monthlyEarnings,
+            monthlyLabels,
+            monthlyData,
+            orderDates,
             orderDates: sortedOrderDates,
             orderCounts: sortedOrderCounts,
             topSellingItems,
             categoryLabels,
             categoryData,
             weekdayOrders,
-            totalProfit,
+            balance_due,
             totalEarnings,
             totalOrders
         });
-        console.log({ monthlyEarnings, orderDates, orderCounts, categoryLabels, categoryData });
     } catch (error) {
         next(error);
     }

@@ -44,6 +44,7 @@ const restaurantSchema = new Schema({
             message: props => `${props.value} is not a valid mobile number!`
         }
     },
+    balance_due: Number,
     createdAt: {
         type: Date,
         default: Date.now,
