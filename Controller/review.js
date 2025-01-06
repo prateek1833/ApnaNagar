@@ -1,5 +1,6 @@
 const Review = require("../models/review.js");
 const Item = require("../models/item.js");
+const Restaurant=require("../models/restaurant.js")
 module.exports.createReview=async(req,res)=>{
     let item=await Item.findById(req.params.id);
     let newReview=new Review(req.body.review);
@@ -10,6 +11,17 @@ module.exports.createReview=async(req,res)=>{
     await item.save();
     req.flash("success","New Review added");    
     res.redirect(`/items/${item._id}/show.ejs`);
+}
+module.exports.createRestaurantReview=async(req,res)=>{
+    let restaurant=await Restaurant.findById(req.params.id);
+    let newReview=new Review(req.body.review);
+    newReview.author=req.user._id;
+    restaurant.avgRating=parseFloat(((restaurant.avgRating*restaurant.reviews.length+newReview.rating)/(restaurant.reviews.length+1)).toFixed(1));
+    restaurant.reviews.push(newReview);
+    await newReview.save();
+    await restaurant.save();
+    req.flash("success","New Review added");    
+    res.redirect(`/restaurant/${restaurant._id}/show`);
 }
 
 module.exports.destroyReview = async (req, res) => {
@@ -56,5 +68,52 @@ module.exports.destroyReview = async (req, res) => {
         console.error(err);
         req.flash('error', 'Something went wrong');
         res.redirect('/items');
+    }
+};
+
+module.exports.destroyRestaurantReview = async (req, res) => {
+    try {
+        const { id, rid } = req.params;
+
+        // Find the restaurant and remove the review reference
+        const restaurant = await Restaurant.findByIdAndUpdate(
+            id,
+            { $pull: { reviews: rid } },
+            { new: true } // Return the updated document
+        ).populate('reviews'); // Ensure we get the reviews for recalculating avgRating
+
+        if (!restaurant) {
+            req.flash('error', 'Restaurant not found');
+            return res.redirect('/restaurants');
+        }
+
+        // Find the review to get its rating
+        const review = await Review.findById(rid);
+        if (!review) {
+            req.flash('error', 'Review not found');
+            return res.redirect(`/restaurant/${id}`);
+        }
+
+        // Recalculate average rating
+        const totalReviews = restaurant.reviews.length;
+        if (totalReviews === 0) {
+            restaurant.avgRating = 0; // No reviews left
+        } else {
+            const totalRating = restaurant.avgRating * (totalReviews + 1) - review.rating;
+            restaurant.avgRating = parseFloat((totalRating / totalReviews).toFixed(1));
+        }
+
+        // Save the updated restaurant
+        await restaurant.save();
+
+        // Delete the review
+        await Review.findByIdAndDelete(rid);
+
+        req.flash('success', 'Review deleted successfully');
+        res.redirect(`/restaurant/${restaurant._id}/show`);
+    } catch (err) {
+        console.error(err);
+        req.flash('error', 'Something went wrong');
+        res.redirect('/restaurants');
     }
 };

@@ -21,7 +21,7 @@
                     style="height: 200px; object-fit: cover; width: 100%; position: relative;">
                 <% if (!restaurant.isOpen) { %>
                     <div class="closed-overlay">
-                        <span class="closed-text">Closed, but Worth the Wait</span>
+                        <span class="closed-text">Closed</span>
                     </div>
                 <% } %>
                 <div class="card-body" style="background-color: #fff; padding: 15px;">
@@ -110,7 +110,7 @@
 
     .closed-text {
         color: #fff;
-        font-size: 1.5rem;
+        font-size: 2rem;
         font-weight: bold;
         text-shadow: 2px 2px 5px rgba(0, 0, 0, 0.7);
     }

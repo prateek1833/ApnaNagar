@@ -165,6 +165,76 @@
     .closed-restaurant .item-price {
         color: #888;
     }
+    .review-card {
+        border: none;
+        border-radius: 15px;
+        overflow: hidden;
+        background-color: #fefefe;
+        box-shadow: 0 8px 16px rgba(0, 0, 0, 0.1);
+        transition: transform 0.3s ease, box-shadow 0.3s ease;
+    }
+
+    .review-card:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 10px 20px rgba(0, 0, 0, 0.2);
+    }
+
+    .review-card .card-body {
+        padding: 20px;
+        text-align: left;
+    }
+
+    .review-card .card-body p {
+        margin: 5px 0;
+        font-size: 1rem;
+        color: #555;
+    }
+
+    .review-card .card-body .card-text {
+        font-size: 1rem;
+        color: #444;
+    }
+
+    .review-card .card-body .starability-result {
+        font-size: 1rem;
+        color: #e63946;
+        margin: 10px 0;
+    }
+
+    .review-card .card-body .btn {
+        font-size: 0.85rem;
+        padding: 5px 10px;
+        border-radius: 50px;
+        transition: all 0.3s ease;
+    }
+
+    .review-card .card-body .btn-dark {
+        background-color: #444;
+        color: white;
+    }
+
+    .review-card .card-body .btn-dark:hover {
+        background-color: #e63946;
+        box-shadow: 0 5px 10px rgba(0, 0, 0, 0.2);
+    }
+
+    .review-card .card-body .d-flex {
+        justify-content: space-between;
+        align-items: center;
+    }
+
+    .review-card .card-body .d-flex div {
+        text-align: left;
+    }
+
+    .review-card .card-body .d-flex p {
+        margin: 0;
+    }
+
+    .review-card .card-body .d-flex p:nth-child(2) {
+        font-size: 0.75rem;
+        color: grey;
+    }
 </style>
 
 <div class="container mt-5">
@@ -216,5 +286,75 @@
                 </div>
             </div>
         <% } %>
-    </div>    
+    </div>  
+    <hr>
+    <div class="col-md-6 offset-md-2">
+        <% if(currUser && (!currUser.type || currUser.type!="Restaurant")) { %>
+            <h4>Leave a Review</h4>
+            <form action="/restaurant/<%=restaurant._id%>/reviews/restaurant" method="POST" class="needs-validation" novalidate>
+                <div class="mb-3 mt-3 no-spinner">
+                    <label for="rating" class="form-label">Rating</label>
+                    <fieldset class="starability-growRotate">
+                        <input type="radio" id="no-rate" class="input-no-rate" name="review[rating]" value="3" checked aria-label="No rating." />
+                        <input type="radio" id="first-rate1" name="review[rating]" value="1" />
+                        <label for="first-rate1" title="Terrible"></label>
+                        <input type="radio" id="first-rate2" name="review[rating]" value="2" />
+                        <label for="first-rate2" title="Not good"></label>
+                        <input type="radio" id="first-rate3" name="review[rating]" value="3" />
+                        <label for="first-rate3" title="Average"></label>
+                        <input type="radio" id="first-rate4" name="review[rating]" value="4" />
+                        <label for="first-rate4" title="Very good"></label>
+                        <input type="radio" id="first-rate5" name="review[rating]" value="5" />
+                        <label for="first-rate5" title="Amazing"></label>
+                    </fieldset>
+                </div>
+
+                <div class="mt-3">
+                    <label for="comment" class="form-label">Comments</label>
+                    <textarea name="review[comment]" id="comment" cols="30" rows="5" class="form-control" required></textarea>
+                    <div class="invalid-feedback">Please write some comment</div>
+                </div>
+                <br>
+                <button class="btn btn-dark add-btn">Submit</button>
+                <br>
+                <br>
+            </form>
+            <hr>
+        <% } %>
+        <% if(restaurant.reviews.length > 0) { %>
+            <p><b>All Reviews</b></p>
+            <div class="row">
+                <% restaurant.reviews.forEach(review => { %>
+                    <div class="card col-10 ms-3 mb-3 review-card ">
+                        <div class="card-body">
+                            <div class="d-flex justify-content-between align-item-center">
+                                <div>
+                                    <p class="mb-0 d-flex justify-content-start"><b><%=review.author.username%></b></p>
+                                    <p class="mb-0" style="font-size: 0.75rem; color: grey;">
+                                        <%= (() => {
+                                          const date = new Date(review.createdAt);
+                                          const day = String(date.getDate()).padStart(2, '0');
+                                          const month = String(date.getMonth() + 1).padStart(2, '0');
+                                          const year = date.getFullYear();
+                                          return `${day}.${month}.${year}`;
+                                        })() %>
+                                      </p> 
+                                </div>
+                                <% if(currUser && review.author._id==currUser.id) { %>
+                                <form class="mb-3" method="POST" action="/restaurant/<%=restaurant._id%>/reviews/<%=review._id%>/restaurant?_method=DELETE">
+                                    <button class="btn btn-sm btn-dark"><i class="fa-solid fa-trash"></i></button>
+                                </form>
+                                <% } %>
+                            </div>
+                                                          
+                            <p class="starability-result card-text justify-content-center" data-rating="<%=review.rating%>"></p>
+                            <p class="mb-3"><%=review.comment%></p>
+                        </div>
+
+                    </div>
+                    <br>
+                <% }) %>
+            </div>
+        <% } %>
+    </div>  
 </div>

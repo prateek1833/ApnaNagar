@@ -9,22 +9,29 @@ module.exports.indexRestaurant = async (req, res) => {
 
 module.exports.showRestaurant = async (req, res) => {
     try {
-        const { id } = req.params; // Correct way to extract `id` from request parameters
+        const { id } = req.params; // Extract `id` from request parameters
         const restaurant = await Restaurant.findById(id)
-            .populate("items") // Updated field name to `items` based on schema
-            .populate("orders"); // Updated field name to `orders` based on schema
-            const allItem = await Item.find({ RestaurantId: id });
+            .populate({
+                path: "reviews",
+                populate: { path: "author", select: "username" } // Populates the `author` field of each review
+            })
+            .populate("orders"); // Populates the `orders` field
+
+        const allItem = await Item.find({ RestaurantId: id });
+
         if (!restaurant) {
             req.flash("error", "The restaurant you are trying to access does not exist.");
             return res.redirect("/restaurant");
         }
-        res.render("restaurant/show.ejs", { restaurant,allItem });
+
+        res.render("restaurant/show.ejs", { restaurant, allItem });
     } catch (err) {
         console.error("Error fetching restaurant:", err);
         req.flash("error", "Something went wrong. Please try again later.");
         res.redirect("/restaurant");
     }
 };
+
 
 module.exports.createRestaurant = async (req, res) => {
     const { username, address, latitude, longitude, category, password, mobile, open_time, close_time } = req.body;
@@ -172,7 +179,6 @@ module.exports.orders = async (req, res, next) => {
 
         // Fetch detailed orders using the stored order IDs
         const orders = await Orders.find({ _id: { $in: restaurant.orders } });
-        console.log(orders);
         res.render("restaurant/order.ejs", { orders });
     } catch (error) {
         next(error);

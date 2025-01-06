@@ -30,16 +30,6 @@ const restaurantSchema = new Schema({
         ref: "User",
         required: true,
     },
-    rating: {
-        avgRating: {
-            type: Number,
-            default: 0,
-        },
-        numberOfRatings: {
-            type: Number,
-            default: 0,
-        },
-    },
     image: {
         url: String,
         filename: String,
@@ -61,6 +51,11 @@ const restaurantSchema = new Schema({
     type: {
         type: String,
     },
+    reviews: [{
+        type: Schema.Types.ObjectId,
+        ref: "Review",
+    }],
+    avgRating:Number,
     isOpen: {
         type: Boolean,
         default: true,

@@ -11,8 +11,10 @@ const reviewController=require("../Controller/review.js")
 
 
 router.post("/",isLoggedIn, validateReview, wrapAsync(reviewController.createReview));
+router.post("/restaurant",isLoggedIn, validateReview, wrapAsync(reviewController.createRestaurantReview));
 
 router.delete("/:rid",isLoggedIn,reviewAuthor, wrapAsync(reviewController.destroyReview));
+router.delete("/:rid/restaurant",isLoggedIn,reviewAuthor, wrapAsync(reviewController.destroyRestaurantReview));
 
 
 module.exports=router;
