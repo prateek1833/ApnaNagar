@@ -126,8 +126,6 @@ module.exports.toggleStatus = async (req, res) => {
 module.exports.update = async (req, res) => {
     const { id } = req.params;
     const { address, coordinates, category, type, mobile, open_time, close_time } = req.body;
-    console.log('Update request received for restaurant:', id);
-
     try {
         // Parse coordinates from string to an array of numbers
         const parsedCoordinates = coordinates.split(',').map(coord => parseFloat(coord.trim()));

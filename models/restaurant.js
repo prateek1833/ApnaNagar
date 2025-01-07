@@ -60,7 +60,27 @@ const restaurantSchema = new Schema({
     isOpen: {
         type: Boolean,
         default: true,
-    }    
+    },
+    open_time: {
+        type: String, // "HH:mm" format
+        required: true,
+        validate: {
+            validator: function(v) {
+                return /^([01]\d|2[0-3]):([0-5]\d)$/.test(v); // Validates time in 24-hour "HH:mm" format
+            },
+            message: props => `${props.value} is not a valid time format (HH:mm)!`,
+        },
+    },
+    close_time: {
+        type: String, // "HH:mm" format
+        required: true,
+        validate: {
+            validator: function(v) {
+                return /^([01]\d|2[0-3]):([0-5]\d)$/.test(v); // Validates time in 24-hour "HH:mm" format
+            },
+            message: props => `${props.value} is not a valid time format (HH:mm)!`,
+        },
+    }
 });
 
 // Add a username field for authentication
