@@ -1,58 +1,128 @@
 <% layout('../layout/boilerplate') -%>
-    <table class="table table-default">
-        <thead class="thead-warning">
-            <tr>
-                <th>Item</th>
-                <th>Type</th>
-                <th>Price</th>
-                <th>Q </th>
-                <th>Rate</th>
-                <th></th>
-            </tr>
-        </thead>
-        <tbody>
 
-            <% if (order && order.length> 0) { %>
-                <% let sum=0; %>
-                    <% let weight=0; %>
-                        <% order.forEach(orderItem=> { %>
+    <div class="cart-container">
+        <!-- Closed Restaurants Table -->
+        <h3 style="opacity: 0.6;">Items from Closed Restaurants</h3>
+<table class="table table-default disabled-table" style="opacity: 0.6; pointer-events: none;">
+    <thead class="thead-warning">
+        <tr>
+            <th>Item</th>
+            <th>Price</th>
+            <th>Quantity</th>
+            <th>Rate</th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+        <% if (closedItems.length > 0) { %>
+            <% closedItems.forEach(orderItem => { %>
+                <tr>
+                    <td>
+                        <%= orderItem.title %>
+                    </td>
+                    <td>
+                        <%= orderItem.detail.price %> &#8377;/<%= orderItem.unit %>
+                    </td>
+                    <td>
+                        <%= orderItem.quantity %> <%= orderItem.unit %>
+                    </td>
+                    <td>
+                        <%= orderItem.quantity * orderItem.detail.price %> &#8377;
+                    </td>
+                    <td>
+                        <!-- Remove disabled attribute from the button -->
+                        <form method="POST" action="/order/cart/<%= id %>/delete?_method=DELETE" style="pointer-events: auto;">
+                            <input type="hidden" name="orderItem" value="<%= orderItem.id %>">
+                            <button class="btn btn-dark" style="width: 40px; ">
+                                <i class="fa-solid fa-trash"></i>
+                            </button>
+                        </form>
+                    </td>
+                </tr>
+            <% }) %>
+        <% } else { %>
+            <tr>
+                <td colspan="6">No items from closed restaurants</td>
+            </tr>
+        <% } %>
+    </tbody>
+</table>
+
+
+
+        <!-- Open Restaurants Table -->
+        <div style="border: solid rgb(250, 132, 132) 2px; border-radius: 15px;padding: 5px;"
+            class="justify-content-center">
+            <h3>Items from Open Restaurants</h3>
+            <table class="table table-default">
+                <thead class="thead-warning">
+                    <tr>
+                        <th>Item</th>
+                        <th>Price</th>
+                        <th>Quantity</th>
+                        <th>Rate</th>
+                        <th></th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <% if (openItems.length> 0) { %>
+                        <% openItems.forEach(orderItem=> { %>
                             <tr>
                                 <td>
                                     <%= orderItem.title %>
                                 </td>
                                 <td>
-                                    <%= orderItem.detail.typ %>
-                                </td>
-                                <td>
                                     <%= orderItem.detail.price %> &#8377;/<%= orderItem.unit %>
                                 </td>
                                 <td>
-                                    <%= orderItem.quantity %> <%= orderItem.unit %>
+                                    <%= orderItem.quantity %>
+                                        <%= orderItem.unit %>
                                 </td>
                                 <td>
                                     <%= orderItem.quantity * orderItem.detail.price %> &#8377;
                                 </td>
                                 <td>
-                                    <form method="POST" action="/order/cart/<%=id%>/delete?_method=DELETE">
+                                    <form method="POST" action="/order/cart/<%= id %>/delete?_method=DELETE">
                                         <input type="hidden" name="orderItem" value="<%= orderItem.id %>">
-                                        <button class="btn btn-dark" style="width: 40px;"><i class="fa-solid fa-trash"></i></button>
+                                        <button class="btn btn-dark" style="width: 40px;"><i
+                                                class="fa-solid fa-trash"></i></button>
                                     </form>
                                 </td>
                             </tr>
-                                    <% }) %>
-                                        
-                                        <% } else { %>
-                                            <tr>
-                                                <td colspan="6">No items in the cart</td>
-                                            </tr>
-                                            <% } %>
-        </tbody>
-    </table>
-    <% if (order && order.length> 0) { %>
-    <a href="/order/<%=id%>/location" style="width: 180px;" class="btn btn-success add-btn ">Add Delivery Location</a>
-    <% } %>
+                            <% }) %>
+                                <% } else { %>
+                                    <tr>
+                                        <td colspan="6">No items from open restaurants</td>
+                                    </tr>
+                                    <% } %>
+                </tbody>
+            </table>
 
+            <!-- Add Delivery Location Button -->
+            <% if (openItems.length> 0) { %>
+                <a href="/order/<%= id %>/location" style="width: 180px;" class="btn btn-success add-btn">Add Delivery
+                    Location</a>
+                <% } %>
+        </div>
     </div>
 
-   
+    <style>
+        .disabled-table {
+            opacity: 0.8;
+            /* Makes the table appear faded */
+            pointer-events: none;
+            /* Disables all interactions */
+            background-color: #f8f9fa;
+            /* Light gray background */
+            border: 1px solid #dee2e6;
+            /* Border for clarity */
+        }
 
+        .disabled-table th,
+        .disabled-table td {
+            color: #6c757d;
+            /* Gray text for a disabled effect */
+        }
+
+        .disabled-table .btn {}
+    </style>

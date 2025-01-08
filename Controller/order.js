@@ -216,18 +216,17 @@ module.exports.buy = async (req, res) => {
 module.exports.destroyFromCart = async (req, res) => {
     try {
         console.log(req.body.orderItem);
+
         // Get the current order array from the cookie, or initialize it as an empty array if it doesn't exist
         const order = req.cookies.order ? JSON.parse(req.cookies.order) : [];
 
         // Check if there are any orders in the array
-        if (order.length == 0) {
+        if (order.length === 0) {
             return res.status(404).send("No orders to delete");
         }
 
         // Extract the orderItem ID from the request body
         const orderItemId = req.body.orderItem;
-
-        let id=req.params;
 
         // Find the index of the orderItem in the orders array
         const index = order.findIndex(order => order.id == orderItemId);
@@ -240,11 +239,29 @@ module.exports.destroyFromCart = async (req, res) => {
         // Remove the orderItem from the orders array
         order.splice(index, 1);
 
-        // Set the cookie with the updated order array
+        // Update the cookie with the new order array
         res.cookie("order", JSON.stringify(order));
 
-        // Redirect back to the cart view or any other appropriate page
-        res.render('user/cart.ejs', { order: order,id });// You might need to change this URL based on your application's routes
+        // Categorize the remaining items into openItems and closedItems
+        const openItems = [];
+        const closedItems = [];
+
+        for (const item of order) {
+            try {
+                const restaurant = await Restaurant.findById(item.RestaurantId); // Query the restaurant
+                if (restaurant && restaurant.isOpen) {
+                    openItems.push(item); // Add to openItems if the restaurant is open
+                } else {
+                    closedItems.push(item); // Add to closedItems if the restaurant is closed
+                }
+            } catch (error) {
+                console.error(`Error fetching restaurant with ID ${item.RestaurantId}:`, error);
+                closedItems.push(item); // Treat as closed if there's an error
+            }
+        }
+
+        // Redirect back to the cart view with updated items
+        res.render('user/cart.ejs', { openItems, closedItems, id: req.params.id });
 
     } catch (error) {
         // Handle any errors that occur during the process
@@ -252,6 +269,7 @@ module.exports.destroyFromCart = async (req, res) => {
         res.status(500).send("Internal Server Error");
     }
 };
+
 
 
 
@@ -265,54 +283,45 @@ module.exports.createOrder = async (req, res) => {
             return res.redirect("/items");
         }
 
-        // Group items by RestaurantId and validate
-const itemsGroupedByRestaurant = orders.reduce((groupedItems, orderItem) => {
-    const restaurantId = orderItem.RestaurantId; // Check correct property path
+        const itemsGroupedByRestaurant = orders.reduce((groupedItems, orderItem) => {
+            const restaurantId = orderItem.RestaurantId;
 
-    // Validate RestaurantId
-    if (!restaurantId || typeof restaurantId !== "string") {
-        console.error(`Invalid or Missing RestaurantId: ${restaurantId}, for item: ${JSON.stringify(orderItem)}`);
-        throw new Error("Invalid order data: Missing or invalid RestaurantId.");
-    }
+            if (!groupedItems[restaurantId]) {
+                groupedItems[restaurantId] = [];
+            }
 
-    // Validate Item ID
-    if (!orderItem.id || typeof orderItem.id !== "string") {
-        console.error(`Invalid or Missing Item ID: ${orderItem.id}, for item: ${JSON.stringify(orderItem)}`);
-        throw new Error("Invalid order data: Missing or invalid Item ID.");
-    }
+            groupedItems[restaurantId].push(orderItem);
+            return groupedItems;
+        }, {});
 
-    // Group by RestaurantId
-    if (!groupedItems[restaurantId]) {
-        groupedItems[restaurantId] = [];
-    }
+        const remainingItems = [];
 
-    groupedItems[restaurantId].push({
-        item: {
-            _id: orderItem.id,
-            title: orderItem.title,
-            price: orderItem.detail.price,
-            quantity: orderItem.quantity,
-            unit: orderItem.unit,
-            typ: orderItem.detail.typ,
-            RestaurantId: restaurantId,
-        },
-    });
-    return groupedItems;
-}, {});
-
-        // Process each restaurant's orders
         for (const restaurantId in itemsGroupedByRestaurant) {
             const items = itemsGroupedByRestaurant[restaurantId];
 
-            // Validate restaurant existence
+            // Check if the restaurant is open
             const restaurant = await Restaurant.findById(restaurantId);
-            if (!restaurant) {
-                console.error(`Restaurant not found: ${restaurantId}`);
-                throw new Error("Invalid order data: Restaurant not found.");
+            if (!restaurant || !restaurant.isOpen) {
+                console.log(`Restaurant is closed: ${restaurantId}`);
+                remainingItems.push(...items);
+                continue;
             }
 
+            // Create a new order
+            const orderItems = items.map(orderItem => ({
+                item: {
+                    _id: orderItem.id,
+                    title: orderItem.title,
+                    price: orderItem.detail.price,
+                    quantity: orderItem.quantity,
+                    unit: orderItem.unit,
+                    typ: orderItem.detail.typ,
+                    RestaurantId: restaurantId,
+                },
+            }));
+
             const newOrder = new Order({
-                items,
+                items: orderItems,
                 status: "Order Processing",
                 author: {
                     _id: user._id,
@@ -344,8 +353,12 @@ const itemsGroupedByRestaurant = orders.reduce((groupedItems, orderItem) => {
 
         await user.save();
 
-        // Clear order cookie
-        res.clearCookie("order");
+        // Update the order cookie with items from closed restaurants
+        if (remainingItems.length > 0) {
+            res.cookie("order", JSON.stringify(remainingItems), { httpOnly: true });
+        } else {
+            res.clearCookie("order");
+        }
 
         req.flash("success", "Your orders have been placed. Keep shopping!");
         res.redirect("/items");

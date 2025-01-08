@@ -1,6 +1,7 @@
 const express=require("express");
 const router=express.Router({mergeParams:true});
 const wrapAsync = require("../utils/wrapAsync.js")
+const Restaurant = require('../models/restaurant'); // Import your Restaurant model
 const ExpressError = require("../utils/ExpressError.js")
 const { orderSchema } = require("../schema.js");
 const Order = require("../models/order.js");
@@ -19,8 +20,19 @@ router.get("/:id/location", isLoggedIn, async (req, res) => {
 })
 router.get("/checkout", isLoggedIn, async (req, res) => {
     const order = req.cookies.order ? JSON.parse(req.cookies.order) : [];
-    res.render('user/checkout.ejs', { order: order});
-})
+
+    // Filter orders based on restaurant `isOpen` status
+    const filteredOrder = [];
+    for (const item of order) {
+        const restaurant = await Restaurant.findById(item.RestaurantId);
+        if (restaurant && restaurant.isOpen) {
+            filteredOrder.push(item);
+        }
+    }
+
+    res.render('user/checkout.ejs', { order: filteredOrder });
+});
+
 
 router.post("/:id/update-address", isLoggedIn, wrapAsync(orderController.updateAddress));
 
