@@ -60,7 +60,7 @@ module.exports.logout = async (req, res, next) => {
         }
         res.clearCookie('order');
         req.flash("success", "you are logged out!");
-        res.redirect("/items");
+        res.redirect("/");
     })
 
 }
