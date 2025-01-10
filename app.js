@@ -125,8 +125,16 @@ app.get("/demouser", async (req, res) => {
 });
 
 app.get("/", (req, res) => {
-    res.redirect("/items/restaurant");
+    if (!req.isAuthenticated()) {
+        return res.redirect("/login"); // Render the login page if not authenticated
+    }
+    if (req.user instanceof User) {
+        return res.redirect("/items"); // Redirect User
+    } else if (req.user instanceof Restaurant) {
+        return res.redirect(`/restaurant/${req.user.id}/show`); // Redirect Restaurant
+    }
 });
+
 app.get("/restaurant/", (req, res) => {
     res.redirect(`/restaurant/${req.user.id}/show`);
 });
