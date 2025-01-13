@@ -72,7 +72,8 @@ module.exports.createRestaurant = async (req, res) => {
             type: "Restaurant",
             mobile,
             open_time,
-            close_time
+            close_time,
+            avgRating:0
         });
 
         // Register the restaurant with hashed password
