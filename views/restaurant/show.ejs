@@ -242,10 +242,17 @@
         <img src="<%=restaurant.image.url%>" class="card-img-top show-img" alt="restaurant_image">
         <div class="card-body restaurant-details pt-3">
             <h3><%=restaurant.username%></h3>
-            <ul class="info-list justify-content-start p-3">
-                <li><b>Address:</b> <%= restaurant.address %></li>
-                <li><b>Mobile:</b> <%= restaurant.mobile %></li>
-                <li><b>Open Hours:</b> <%= restaurant.open_time %> - <%= restaurant.close_time %></li>
+            <ul class="info-list justify-content-start p-3" style="font-size: large;">
+                <a href="https://www.google.com/maps?q=<%= restaurant.coordinates[0] %>,<%= restaurant.coordinates[1] %>" style="text-decoration: none; color: black;">
+                    <li>
+                        <b>
+                            <i style="color: rgb(179, 0, 0);" class="fa-solid fa-location-dot"></i>
+                        </b> 
+                        <%= restaurant.address %>
+                    </li>
+                </a>
+                <li><b><i  class="fa-solid fa-mobile"></i></b> <%= restaurant.mobile %></li>
+                <li><b><i  class="fa-solid fa-clock"></i></b> <%= restaurant.open_time %> - <%= restaurant.close_time %></li>
             </ul>
 
             <% if (currUser && (currUser.type === 'Restaurant' && currUser.id === restaurant.id || restaurant.owner._id.equals(currUser._id))) { %>

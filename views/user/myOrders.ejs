@@ -54,19 +54,20 @@
                                     <% sum += orderItem.item.quantity * orderItem.item.price; %> 
                                     <% weight += parseInt(orderItem.item.quantity); %>
                                 <% } %>
+                                <% let deliveryCost = user.distance > 3 ? Math.floor(user.distance * 4) : 0; %>
                                 <tr>
                                     <td><b>Delivery</b></td>
                                     <td></td>
                                     <td></td>
                                     <td></td>
-                                    <td><b><%= (user.distance * 2).toFixed(2).toLocaleString("en-IN") %> &#8377;</b></td>
+                                    <td><b>₹<%= deliveryCost.toLocaleString("en-IN") %></b></td>
                                 </tr>
                                 <tr>
                                     <td><b>Balance Due</b></td>
                                     <td></td>
                                     <td></td>
                                     <td></td>
-                                    <td><b><%= user.balance_due.toLocaleString("en-IN") %> &#8377;</b></td>
+                                    <td><b>₹<%= user.balance_due.toLocaleString("en-IN") %></b></td>
                                 </tr>
                                 <tr>
                                     <td><b>Total</b></td>
@@ -75,12 +76,12 @@
                                     <td></td>
                                     <td>
                                         <p style="text-decoration: line-through;">
-                                            ₹<%= (sum + user.balance_due + user.distance * 2).toFixed(2).toLocaleString("en-IN") %>
+                                            ₹<%= (sum + user.balance_due + deliveryCost).toFixed(2).toLocaleString("en-IN") %>
                                         </p>
-                                        <b>₹<%= Math.floor(sum + user.balance_due + user.distance * 2).toFixed(2).toLocaleString("en-IN") %></b>
+                                        <b>₹<%= Math.floor(sum + user.balance_due + deliveryCost).toFixed(2).toLocaleString("en-IN") %></b>
                                     </td>
                                 </tr>
-                            </tbody>
+                            </tbody>                            
                         </table>
 
                         <!-- Progress Bar Section -->
