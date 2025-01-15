@@ -210,7 +210,7 @@
             </div>
             <% if(currUser && currUser.type && currUser.type==="Restaurant"){%>
                 <%- include("../views/includes/footerRes.ejs") %>
-                <%}else if(!currUser || (currUser && currUser.type && currUser.type==="User" || currUser.type === "Owner") ){%>
+                <%}else if(!currUser || (currUser && currUser.type && (currUser.type==="User" || currUser.type === "Owner")) ){%>
                     <%- include("../views/includes/footer.ejs") %>
                         <%}%>
 
