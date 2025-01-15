@@ -306,9 +306,12 @@ module.exports.destroyRestaurant = async (req, res) => {
         // Find all items associated with the restaurant
         const items = await Item.find({ RestaurantId: id });
 
-        // Iterate through each item to delete associated reviews
-        for (let item of items) {
-            await Review.deleteMany({ _id: { $in: item.reviews } }); // Remove associated reviews
+        // Collect all reviews associated with the items
+        const reviewIds = items.flatMap(item => item.reviews);
+
+        // Delete all associated reviews
+        if (reviewIds.length > 0) {
+            await Review.deleteMany({ _id: { $in: reviewIds } });
         }
 
         // Delete all items associated with the restaurant
@@ -316,8 +319,9 @@ module.exports.destroyRestaurant = async (req, res) => {
 
         // Finally, delete the restaurant
         await Restaurant.findByIdAndDelete(id);
+
+        req.flash("success", "Restaurant and its associated items and reviews deleted successfully!");
         res.redirect("/");
-        req.flash("success","Restaurant and its associated items deleted successfully!");
     } catch (error) {
         console.error("Error while deleting restaurant:", error);
         res.status(500).json({ message: "An error occurred while deleting the restaurant." });
