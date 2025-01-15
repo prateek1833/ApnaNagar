@@ -80,8 +80,17 @@ module.exports.createRestaurant = async (req, res) => {
         // Register the restaurant with hashed password
         const registeredRestaurant = await Restaurant.register(newRestaurant, password);
 
-        req.flash("success", "New restaurant created successfully");
-        res.redirect(`/restaurant/${registeredRestaurant._id}/show`);
+        req.login(registeredRestaurant, (err) => {
+            if (err) {
+                console.error("Error logging in after signup:", err);
+                req.flash("error", "Error logging in after signup. Please try logging in manually.");
+                return res.redirect("/user/login");
+            }
+
+            req.flash("success", "New restaurant created and logged in successfully");
+            res.redirect(`/restaurant/${registeredRestaurant._id}/show`);
+        });
+        
     } catch (err) {
         console.error("Error creating restaurant:", err);
         req.flash("error", "Error creating new restaurant");
@@ -308,7 +317,7 @@ module.exports.destroyRestaurant = async (req, res) => {
         // Finally, delete the restaurant
         await Restaurant.findByIdAndDelete(id);
         res.redirect("/");
-        req.flash("Restaurant and its associated items deleted successfully!");
+        req.flash("success","Restaurant and its associated items deleted successfully!");
     } catch (error) {
         console.error("Error while deleting restaurant:", error);
         res.status(500).json({ message: "An error occurred while deleting the restaurant." });
