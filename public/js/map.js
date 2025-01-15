@@ -198,6 +198,14 @@ const places = [
         name: "Rajkot Mandir",
         coordinates: [82.67008643370184,26.72982561262856]
     },
+    {
+        name: "Police Station",
+        coordinates: [82.6747,26.7319]
+    },
+    {
+        name: "Jhirjhirwa Bridge",
+        coordinates: [82.6759736500415,26.71933177146012]
+    },
     // Add more places as needed
 ];
 function createCustomMarker(iconUrl) {
@@ -240,43 +248,72 @@ places.forEach(place => {
 });
 
 // Road coordinates
-const roadCoordinates = [
-    [82.67880215989317, 26.72634380989595],
-    [82.68057097254103, 26.725740595540458]
+// Array of roads with coordinates and names
+const roads = [
+    {
+        name: 'Balgodwa Road',
+        coordinates: [
+            [82.67880215989317, 26.72634380989595],
+            [82.68057097254103, 26.725740595540458]
+        ]
+    },
+    {
+        name: 'Kaptanganj Road',
+        coordinates: [
+            [82.6747,26.7319],
+            [82.68002138974867,26.73036332246153]
+        ]
+    },
+    {
+        name: 'Highway Road',
+        coordinates: [
+            [82.67680215989317, 26.72434380989595],
+            [82.67757097254103, 26.723740595540458]
+        ]
+    }
+    // Add more roads here
 ];
 
-// Add road markers
-roadCoordinates.forEach(coord => {
-    new mapboxgl.Marker({ color: '#00BFFF' }) // Use light blue markers for the road
-        .setLngLat(coord)
-        .addTo(map);
-});
+// Function to add a road to the map
+function addRoadToMap(road) {
+    // Calculate the midpoint of the road
+    const roadMidpoint = [
+        (road.coordinates[0][0] + road.coordinates[1][0]) / 2, // Average longitude
+        (road.coordinates[0][1] + road.coordinates[1][1]) / 2  // Average latitude
+    ];
 
-// Add a GeoJSON source and line for the road
-map.on('load', function () {
-    map.addSource('road', {
+    // Create a label for the road
+    const roadNameDiv = document.createElement('div');
+    roadNameDiv.style.position = 'absolute';
+    roadNameDiv.style.transform = 'translate(-50%, -50%)';
+    roadNameDiv.style.padding = '4px 8px';
+    roadNameDiv.style.borderRadius = '4px';
+    roadNameDiv.style.fontFamily = 'Arial, sans-serif';
+    roadNameDiv.style.fontSize = '12px';
+    roadNameDiv.style.color = '#333';
+    roadNameDiv.textContent = road.name;
+
+    // Add the label to the map at the midpoint
+    new mapboxgl.Marker({
+        element: roadNameDiv,
+        anchor: 'center'
+    }).setLngLat(roadMidpoint).addTo(map);
+
+    // Add a GeoJSON source and line for the road
+    map.addSource(`${road.name}-source`, {
         type: 'geojson',
         data: {
             type: 'Feature',
             geometry: {
                 type: 'LineString',
-                coordinates: roadCoordinates,
+                coordinates: road.coordinates,
             }
         }
     });
 
-    map.addLayer({
-        id: 'road-layer',
-        type: 'line',
-        source: 'road',
-        paint: {
-            'line-color': '#00BFFF', // Light blue line color
-            'line-width': 4, // Adjust line width
-            'line-opacity': 0.8 // Add transparency for a subtle effect
-        }
-    });
-});
+}
 
-// Add control buttons (Zoom and Navigation)
-map.addControl(new mapboxgl.NavigationControl());
-map.addControl(new mapboxgl.FullscreenControl());
+// Add all roads to the map on load
+map.on('load', () => {
+    roads.forEach(addRoadToMap);
+});
