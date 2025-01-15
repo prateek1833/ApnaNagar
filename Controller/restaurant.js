@@ -180,7 +180,7 @@ module.exports.update = async (req, res) => {
 
 module.exports.orders = async (req, res, next) => {
     try {
-        let { id } = req.user; // Restaurant ID from logged-in user
+        let { id } = req.params; // Restaurant ID from logged-in user
         const restaurant = await Restaurant.findById(id);
         if (!restaurant) {
             return res.status(404).send("Restaurant not found");
@@ -198,7 +198,7 @@ module.exports.orders = async (req, res, next) => {
 module.exports.statistics = async (req, res, next) => {
     try {
 
-        const { id } = req.user; // Assuming req.user contains the authenticated restaurant owner's details
+        const { id } = req.params;
         const restaurant = await Restaurant.findById(id).populate('orders');
 
         if (!restaurant) {

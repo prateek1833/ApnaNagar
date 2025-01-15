@@ -32,9 +32,9 @@ router
   .get(isLoggedIn, restaurantController.renderEdit)
   .put(isLoggedIn, upload.single("image"), restaurantController.update);
 
-router.get("/statistics", isLoggedIn, wrapAsync(restaurantController.statistics));
+router.get("/:id/statistics", isLoggedIn, wrapAsync(restaurantController.statistics));
 
-router.get("/order", isLoggedIn, wrapAsync(restaurantController.orders));
+router.get("/:id/order", isLoggedIn, wrapAsync(restaurantController.orders));
 
 // Route to toggle the restaurant's open/closed status
 router.post("/:id/toggle", isLoggedIn, wrapAsync(restaurantController.toggleStatus));

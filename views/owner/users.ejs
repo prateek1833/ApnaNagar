@@ -3,9 +3,8 @@
 <table class="table table-primary">
     <thead class="thead-primary">
         <tr>
-            <th>Customer Name</th>
-            <th>Address</th>
-            <th>Mobile No.</th>
+            <th>Name</th>
+            <th>Mo. No.</th>
             <th>Balance due</th>
             <th>Edit</th>
         </tr>
@@ -18,9 +17,6 @@
                         <%= user.username %>
                     </td> 
                     <td>
-                        <%= user.area %>, <%= user.district %>, <%= user.state %>, <%= user.pincode %> 
-                    </td>
-                    <td>
                         <%= user.mobile %>
                     </td>
                     <td>
@@ -28,7 +24,7 @@
                     </td>
                     <td>
                         <form method="GET"action="/owner/<%=user._id%>/edit">
-                            <button class="btn btn-dark">Edit</button>
+                            <button class="btn btn-dark"><i class="fa-solid fa-pen-to-square"></i></button>
                         </form>
                     </td>
                 </tr>
