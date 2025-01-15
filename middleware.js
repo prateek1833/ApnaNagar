@@ -63,7 +63,11 @@ module.exports.validateOrder = async(req, res, next) => {
 module.exports.reviewAuthor=async (req,res,next)=>{
     let {id,rid}=req.params;
     let review =await Review.findById(rid);
-    if(res.locals.currUser &&  !review.author.equals(res.locals.currUser._id)  && res.locals.currUser._id!='6637e25345e0bb950e6a0fbe'){
+    if (
+        res.locals.currUser &&
+        !review.author.equals(res.locals.currUser._id) && // Not the review author
+        !res.locals.currUser._id.equals(res.locals.currUser.owner) // Not the owner
+    ){
         req.flash("error","You didn't create this review");
         return res.redirect(`/items/${id}/show.ejs`);
     }
