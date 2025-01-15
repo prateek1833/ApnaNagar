@@ -175,7 +175,7 @@ module.exports.createItem = async (req, res) => {
 
     try {
         let newItem = new Item({
-            owner: "6637e25345e0bb950e6a0fbe",
+            owner: "6638779c9bfc94fc81a42508",
             title: title,
             description: description,
             category: category,
@@ -190,7 +190,7 @@ module.exports.createItem = async (req, res) => {
         await newItem.save();
         console.log("New item saved");
         req.flash("success", "New Item Created");
-        res.redirect("/restaurant");
+        res.redirect("/");
     } catch (err) {
         console.log(err);
         req.flash("error", "Error creating new item");
@@ -260,5 +260,5 @@ module.exports.destroyItem = async (req, res) => {
     let { id } = req.params;
     let deleted = await Item.findByIdAndDelete(id);
     req.flash("success", " Item deleted");
-    res.redirect("/restaurant");
+    res.redirect("/");
 }

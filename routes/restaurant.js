@@ -39,4 +39,6 @@ router.get("/order", isLoggedIn, wrapAsync(restaurantController.orders));
 // Route to toggle the restaurant's open/closed status
 router.post("/:id/toggle", isLoggedIn, wrapAsync(restaurantController.toggleStatus));
 
+router.delete("/:id/delete",isLoggedIn,isOwner, restaurantController.destroyRestaurant);
+
 module.exports = router;

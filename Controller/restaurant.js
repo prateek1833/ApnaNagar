@@ -1,6 +1,7 @@
 const Restaurant = require("../models/restaurant");
 const Item = require("../models/item");
 const Orders = require("../models/order");
+const Review = require("../models/review");
 
 module.exports.indexRestaurant = async (req, res) => {
     const allRestaurant = await Restaurant.find({});
@@ -279,5 +280,37 @@ module.exports.statistics = async (req, res, next) => {
         });
     } catch (error) {
         next(error);
+    }
+};
+
+module.exports.destroyRestaurant = async (req, res) => {
+    try {
+        const { id } = req.params;
+
+        // Find the restaurant to delete
+        const restaurant = await Restaurant.findById(id);
+
+        if (!restaurant) {
+            return res.status(404).json({ message: "Restaurant not found!" });
+        }
+
+        // Find all items associated with the restaurant
+        const items = await Item.find({ RestaurantId: id });
+
+        // Iterate through each item to delete associated reviews
+        for (let item of items) {
+            await Review.deleteMany({ _id: { $in: item.reviews } }); // Remove associated reviews
+        }
+
+        // Delete all items associated with the restaurant
+        await Item.deleteMany({ RestaurantId: id });
+
+        // Finally, delete the restaurant
+        await Restaurant.findByIdAndDelete(id);
+        res.redirect("/");
+        req.flash("Restaurant and its associated items deleted successfully!");
+    } catch (error) {
+        console.error("Error while deleting restaurant:", error);
+        res.status(500).json({ message: "An error occurred while deleting the restaurant." });
     }
 };
