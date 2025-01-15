@@ -179,3 +179,104 @@ addressForm.addEventListener('submit', (e) => {
     const coordinates = [ center.lng,  center.lat ];
     centerCoordinatesInput.value = JSON.stringify(coordinates); // Store coordinates as JSON string
 });
+
+// Array of famous places with their coordinates and names
+const places = [
+    {
+        name: "Raja Murti",
+        coordinates: [82.68026689307874,26.730294152003907] // Longitude, Latitude
+    },
+    {
+        name: "State Bank of India",
+        coordinates: [82.68055581167687,26.73183193619836]
+    },
+    {
+        name: "Indian Oil - Petrol Pump",
+        coordinates: [82.67770337469062,26.724285564188946]
+    },
+    {
+        name: "Rajkot Mandir",
+        coordinates: [82.67008643370184,26.72982561262856]
+    },
+    // Add more places as needed
+];
+function createCustomMarker(iconUrl) {
+    const markerDiv = document.createElement('div');
+    markerDiv.style.width = '40px';
+    markerDiv.style.height = '40px';
+    markerDiv.style.backgroundImage = `url('${iconUrl}')`; // Custom image URL
+    markerDiv.style.backgroundSize = 'contain';
+    markerDiv.style.backgroundRepeat = 'no-repeat';
+    markerDiv.style.cursor = 'pointer';
+    return markerDiv;
+}
+// Add markers for each place
+places.forEach(place => {
+    const customMarker = createCustomMarker('https://res.cloudinary.com/dzrxswqur/image/upload/v1736961356/location_spbdc5.png'); // Custom marker image
+
+    // Add marker to the map
+    new mapboxgl.Marker({ element: customMarker })
+        .setLngLat(place.coordinates)
+        .addTo(map);
+
+    // Add a label near the marker
+    const labelDiv = document.createElement('div');
+    labelDiv.style.position = 'absolute';
+    labelDiv.style.transform = 'translate(-50%, -50%)';
+    labelDiv.style.backgroundColor = 'rgba(255, 255, 255, 0.8)';
+    labelDiv.style.padding = '4px 8px';
+    labelDiv.style.borderRadius = '4px';
+    labelDiv.style.boxShadow = '0 2px 4px rgba(0, 0, 0, 0.2)';
+    labelDiv.style.fontFamily = 'Arial, sans-serif';
+    labelDiv.style.fontSize = '12px';
+    labelDiv.style.color = '#333';
+    labelDiv.textContent = place.name;
+
+    // Use a custom DOM overlay for the label
+    const overlay = new mapboxgl.Marker({
+        element: labelDiv,
+        anchor: 'bottom' // Anchor label to appear just above the marker
+    }).setLngLat(place.coordinates).addTo(map);
+});
+
+// Road coordinates
+const roadCoordinates = [
+    [82.67880215989317, 26.72634380989595],
+    [82.68057097254103, 26.725740595540458]
+];
+
+// Add road markers
+roadCoordinates.forEach(coord => {
+    new mapboxgl.Marker({ color: '#00BFFF' }) // Use light blue markers for the road
+        .setLngLat(coord)
+        .addTo(map);
+});
+
+// Add a GeoJSON source and line for the road
+map.on('load', function () {
+    map.addSource('road', {
+        type: 'geojson',
+        data: {
+            type: 'Feature',
+            geometry: {
+                type: 'LineString',
+                coordinates: roadCoordinates,
+            }
+        }
+    });
+
+    map.addLayer({
+        id: 'road-layer',
+        type: 'line',
+        source: 'road',
+        paint: {
+            'line-color': '#00BFFF', // Light blue line color
+            'line-width': 4, // Adjust line width
+            'line-opacity': 0.8 // Add transparency for a subtle effect
+        }
+    });
+});
+
+// Add control buttons (Zoom and Navigation)
+map.addControl(new mapboxgl.NavigationControl());
+map.addControl(new mapboxgl.FullscreenControl());
