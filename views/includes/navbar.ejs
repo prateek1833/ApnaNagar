@@ -118,13 +118,6 @@
           </div>
       <% } %>
 
-      <div class="navbar-nav">
-          <% if (currUser && currUser.owner._id.equals(currUser._id)) { %>
-              <a class="nav-link" href="/items/new">Add New Item</a>
-              <a class="nav-link" href="/items/orders">Orders</a>
-              <a class="nav-link" href="/owner">Customers</a>
-          <% } %>
-      </div>
 
       <div class="navbar-nav ms-auto mt-3">
           <% if (!currUser) { %>
