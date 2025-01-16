@@ -183,7 +183,7 @@ addressForm.addEventListener('submit', (e) => {
 // Array of famous places with their coordinates and names
 const places = [
     {
-        name: "Raja Murti",
+        name: "राजा मूर्ति",
         coordinates: [82.68026689307874,26.730294152003907] // Longitude, Latitude
     },
     {
@@ -191,27 +191,51 @@ const places = [
         coordinates: [82.68055581167687,26.73183193619836]
     },
     {
-        name: "Indian Oil - Petrol Pump",
+        name: "Indian Oil",
         coordinates: [82.67770337469062,26.724285564188946]
     },
     {
-        name: "Rajkot Mandir",
+        name: "Indian Oil ",
+        coordinates: [82.685484,26.742703]
+    },
+    {
+        name: "राजकोट मंदिर",
         coordinates: [82.67008643370184,26.72982561262856]
     },
     {
-        name: "Police Station",
+        name: "पुलिस स्टेशन",
         coordinates: [82.6747,26.7319]
     },
     {
-        name: "Jhirjhirwa Bridge",
+        name: "झिरझिरवा पुल",
         coordinates: [82.6759736500415,26.71933177146012]
+    },
+    {
+        name: "हनुमान गढ़ी मंदिर",
+        coordinates: [82.675169,26.729161]
+    },
+    {
+        name: "अशर्फी लाल हार्डवेयर स्टोर",
+        coordinates: [82.67856514661344,26.726075352508218]
+    },
+    {
+        name: "मुकेश हार्डवेयर स्टोर",
+        coordinates: [82.680144,26.725817]
+    },
+    {
+        name: "बृजेश वस्त्र विक्रेता",
+        coordinates: [82.677747,26.729017]
+    },
+    {
+        name: "Aksada Toll Plaza",
+        coordinates: [82.674598,26.702945]
     },
     // Add more places as needed
 ];
 function createCustomMarker(iconUrl) {
     const markerDiv = document.createElement('div');
-    markerDiv.style.width = '40px';
-    markerDiv.style.height = '40px';
+    markerDiv.style.width = '20px';
+    markerDiv.style.height = '20px';
     markerDiv.style.backgroundImage = `url('${iconUrl}')`; // Custom image URL
     markerDiv.style.backgroundSize = 'contain';
     markerDiv.style.backgroundRepeat = 'no-repeat';
@@ -236,7 +260,7 @@ places.forEach(place => {
     labelDiv.style.borderRadius = '4px';
     labelDiv.style.boxShadow = '0 2px 4px rgba(0, 0, 0, 0.2)';
     labelDiv.style.fontFamily = 'Arial, sans-serif';
-    labelDiv.style.fontSize = '12px';
+    labelDiv.style.fontSize = '10px';
     labelDiv.style.color = '#333';
     labelDiv.textContent = place.name;
 
@@ -251,24 +275,24 @@ places.forEach(place => {
 // Array of roads with coordinates and names
 const roads = [
     {
-        name: 'Balgodwa Road',
+        name: 'बालगोडवा रोड',
         coordinates: [
-            [82.67880215989317, 26.72634380989595],
-            [82.68057097254103, 26.725740595540458]
+            [82.68094238680027,26.725646144981866],
+            [82.68094238680027,26.725646144981866]
         ]
     },
     {
-        name: 'Kaptanganj Road',
+        name: 'कप्तानगंज रोड',
         coordinates: [
             [82.6747,26.7319],
             [82.68002138974867,26.73036332246153]
         ]
     },
     {
-        name: 'Highway Road',
+        name: 'पिपरा गौतम मार्ग',
         coordinates: [
-            [82.67680215989317, 26.72434380989595],
-            [82.67757097254103, 26.723740595540458]
+            [82.69285883104914,26.755396412606316],
+            [82.6975327070241,26.75299781628611]
         ]
     }
     // Add more roads here
