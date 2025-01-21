@@ -87,8 +87,8 @@
                         <!-- Progress Bar Section -->
                         <div class="progress" role="progressbar" aria-valuenow="25" aria-valuemin="0" aria-valuemax="100">
                             <% let progress = 0; %>
-                            <% if (order.status === "Order Processing") progress = 25; %>
-                            <% if (order.status === "Shipped") progress = 50; %>
+                            <% if (order.status === "Order Received") progress = 25; %>
+                            <% if (order.status === "Preparing") progress = 50; %>
                             <% if (order.status === "Out for Delivery") progress = 75; %>
                             <% if (order.status === "Delivered") progress = 100; %>
                             <div class="progress-bar bg-info" style="width: <%= progress %>%"></div>
@@ -96,8 +96,8 @@
 
                         <!-- Order Progress Steps -->
                         <div class="order-progress">
-                            <div class="step <%= order.status === 'Order Processing' || order.status === 'Shipped' || order.status === 'Out for Delivery' || order.status === 'Delivered' ? 'completed' : '' %>">Ordered</div>
-                            <div class="step <%= order.status === 'Shipped' || order.status === 'Out for Delivery' || order.status === 'Delivered' ? 'completed' : '' %>">Shipped</div>
+                            <div class="step <%= order.status === 'Order Received' || order.status === 'Preparing' || order.status === 'Out for Delivery' || order.status === 'Delivered' ? 'completed' : '' %>">Ordered</div>
+                            <div class="step <%= order.status === 'Preparing' || order.status === 'Out for Delivery' || order.status === 'Delivered' ? 'completed' : '' %>">Preparing</div>
                             <div class="step <%= order.status === 'Out for Delivery' || order.status === 'Delivered' ? 'completed' : '' %>">Out for Delivery</div>
                             <div class="step <%= order.status === 'Delivered' ? 'completed' : '' %>">Delivered</div>
                         </div>

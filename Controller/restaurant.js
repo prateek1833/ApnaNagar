@@ -177,6 +177,46 @@ module.exports.update = async (req, res) => {
     }
 };
 
+module.exports.status = async (req, res, next) => {
+    const { id } = req.params; // Order ID
+    const { orderStatus } = req.body;
+
+    try {
+        // Validate the `orderStatus` value
+        const validStatuses = ['1', '2', '3', '4'];
+        if (!validStatuses.includes(orderStatus)) {
+            req.flash("warning", "Invalid order status");
+            return res.redirect(`/restaurant/${req.user._id}/order`);
+        }
+
+        // Map the order status to a human-readable value
+        const statusMap = {
+            '1': 'Order Received',
+            '2': 'Preparing',
+            '3': 'Out for Delivery',
+            '4': 'Delivered'
+        };
+
+        // Update the order's status in the database
+        const updatedOrder = await Orders.findByIdAndUpdate(
+            id,
+            { status: statusMap[orderStatus] },
+            { new: true } // Return the updated document
+        );
+
+        if (!updatedOrder) {
+            req.flash("error", "Order not found");
+            return res.redirect(`/restaurant/${req.user._id}/order`);
+        }
+
+        req.flash("success", "Order status updated successfully");
+        return res.redirect(`/restaurant/${req.user._id}/order`);
+    } catch (error) {
+        console.error("Error updating order status:", error);
+        next(error); // Pass the error to the error-handling middleware
+    }
+};
+
 
 module.exports.orders = async (req, res, next) => {
     try {

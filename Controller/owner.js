@@ -70,8 +70,8 @@ module.exports.status = async (req, res) => {
 
         // Update the order with the new status
         const statusMap = {
-            '1': 'Order Processing',
-            '2': 'Shipped',
+            '1': 'Order Received',
+            '2': 'Preparing',
             '3': 'Out for Delivery',
             '4': 'Delivered'
         };

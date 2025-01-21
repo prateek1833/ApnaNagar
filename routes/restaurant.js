@@ -36,6 +36,9 @@ router.get("/:id/statistics", isLoggedIn, wrapAsync(restaurantController.statist
 
 router.get("/:id/order", isLoggedIn, wrapAsync(restaurantController.orders));
 
+router
+.post("/:id/status",isLoggedIn,restaurantController.status)
+
 // Route to toggle the restaurant's open/closed status
 router.post("/:id/toggle", isLoggedIn, wrapAsync(restaurantController.toggleStatus));
 
