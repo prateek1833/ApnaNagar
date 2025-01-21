@@ -66,6 +66,45 @@ module.exports.restaurantItem = async (req, res) => {
     }
 };
 
+module.exports.autocomplete = async (req, res) => {
+    try {
+        const keyword = req.query.keyword; // Extract keyword from query params
+        // Handle empty keyword
+        if (!keyword) {
+            console.warn("No keyword provided");
+            return res.json([]); // Return an empty array
+        }
+
+        // Perform an aggregation to prioritize title matches over key matches
+        const suggestions = await Item.aggregate([
+            {
+                $facet: {
+                    titleMatches: [
+                        { $match: { title: { $regex: new RegExp(`^${keyword}`, 'i') } } },
+                        { $project: { title: 1 } },
+                        { $limit: 5 }
+                    ],
+                    keyMatches: [
+                        { $match: { key: { $regex: new RegExp(keyword, 'i') } } },
+                        { $project: { title: 1 } },
+                        { $limit: 5 }
+                    ]
+                }
+            },
+            {
+                $project: {
+                    suggestions: { $concatArrays: ["$titleMatches", "$keyMatches"] } // Combine the two arrays
+                }
+            },
+            { $unwind: "$suggestions" }, // Flatten the combined array
+            { $replaceRoot: { newRoot: "$suggestions" } } // Replace the root with suggestion documents
+        ]);
+        res.json(suggestions);
+    } catch (err) {
+        console.error("Error in autocomplete route:", err); // Log any errors
+        res.status(500).send("Internal Server Error");
+    }
+};
 
 module.exports.search = async (req, res) => {
     try {
