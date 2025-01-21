@@ -6,17 +6,17 @@ const axios = require('axios'); // To fetch location details using an API
 const Restaurant = require("../models/restaurant.js");
 
 
-const calculateDistance = async (userCoordinates) => {
+const calculateWalkingDistance = async (userCoordinates) => {
     try {
-        const startCoordinates = [82.678557, 26.726058]; // Static starting coordinate
+        const startCoordinates = [82.6785652247138,26.72607612402932]; // Static starting coordinate
         const endCoordinates = userCoordinates;
 
         // Replace with your Mapbox access token
         const mapboxToken = process.env.MAP_TOKEN;
 
-        // Query the Mapbox Directions API
+        // Query the Mapbox Directions API for walking distance
         const response = await axios.get(
-            `https://api.mapbox.com/directions/v5/mapbox/driving/${startCoordinates[0]},${startCoordinates[1]};${endCoordinates[0]},${endCoordinates[1]}`,
+            `https://api.mapbox.com/directions/v5/mapbox/walking/${startCoordinates[0]},${startCoordinates[1]};${endCoordinates[0]},${endCoordinates[1]}`,
             {
                 params: {
                     access_token: mapboxToken,
@@ -91,7 +91,7 @@ module.exports.updateAddress = async (req, res) => {
 
         // Calculate the distance and update the user object
         try {
-            const distance = await calculateDistance(coordinates);
+            const distance = await calculateWalkingDistance(coordinates);
             user.distance = distance;
             console.log(`Calculated Distance: ${distance} km`);
         } catch (distanceError) {
