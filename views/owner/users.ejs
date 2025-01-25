@@ -5,7 +5,6 @@
         <tr>
             <th>Name</th>
             <th>Mo. No.</th>
-            <th>Balance due</th>
             <th>Edit</th>
         </tr>
     </thead>
@@ -18,9 +17,6 @@
                     </td> 
                     <td>
                         <%= user.mobile %>
-                    </td>
-                    <td>
-                        <%= user.balance_due%>
                     </td>
                     <td>
                         <form method="GET"action="/owner/<%=user._id%>/edit">

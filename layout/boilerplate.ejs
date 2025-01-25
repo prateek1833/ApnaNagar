@@ -252,7 +252,7 @@
                 <%- include("../views/includes/footerRes.ejs") %>
                 <%}else if(!currUser || (currUser && currUser.type && (currUser.type==="User")) ){%>
                     <%- include("../views/includes/footer.ejs") %>
-                        <%}else if(!currUser || (currUser && currUser.type && (currUser.type==="Owner" || currUser.type==="deliveryBoy")) ){%>
+                        <%}else if(!currUser || (currUser && currUser.type && (currUser.type==="Owner" || currUser.type==="Delivery Boy")) ){%>
                             <%- include("../views/includes/footerOwn.ejs") %>
                             <% } %>
 

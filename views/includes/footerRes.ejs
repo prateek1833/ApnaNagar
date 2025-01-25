@@ -42,7 +42,7 @@
 <footer>
     <div style="height: 100px;">
     </div>
-    <% if(currUser && !currUser.owner._id.equals(currUser._id)) { %>
+    <% if(currUser && !currUser.owner._id.equals(currUser._id) && currUser.type==="Restaurant") { %>
     <nav class="navbar navbar-expand-lg fixed-bottom navbar-custom">
         <div class="container-fluid d-flex justify-content-between align-items-center">
             <a class="filter nav-link" href="/restaurant/<%= currUser.id %>/show" aria-label="Home">
