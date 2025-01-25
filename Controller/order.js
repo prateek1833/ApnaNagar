@@ -322,7 +322,7 @@ module.exports.createOrder = async (req, res) => {
 
             const newOrder = new Order({
                 items: orderItems,
-                status: "Order Processing",
+                status: "Order Received",
                 author: {
                     _id: user._id,
                     name: user.username,
