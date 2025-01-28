@@ -17,7 +17,7 @@
             img: "https://res.cloudinary.com/dzrxswqur/image/upload/v1735230854/laddu_liklwj.png" }, ]; %>
 
             <% filters.forEach(filter=> { %>
-                <a class="filter nav-link" href="javascript:void(0)" data-search="<%= filter.search %>">
+                <a class="filter nav-link " href="javascript:void(0)" data-search="<%= filter.search %>">
                     <div><img src="<%= filter.img %>" class="filter-image" alt="<%= filter.name %>"></div>
                     <p>
                         <%= filter.name %>
@@ -27,14 +27,12 @@
     </div>
 
     <form class="d-flex justify-content-center" role="search" method="GET" action="/items/search" id="searchForm">
-        <input class="form-control me-2" name="keyword" type="search" placeholder="Tell us what you want"
+        <input class="form-control" name="keyword" type="search" placeholder="Tell us what you want"
             aria-label="Search" id="searchInput" style="display: none;">
         <button class="btn" type="submit"><i class="fa-solid fa-magnifying-glass" style="display: none;"></i></button>
     </form>
 
-
-    <hr>
-
+    <br>
     <% if (allItem.length===0) { %>
         <p style="text-align: center;">Can't find what you're looking for? Don't worry!</p>
         <h3 style="opacity: 0.8; text-align: center;">Let us know, and we'll add it for you.</h3>

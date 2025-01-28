@@ -25,8 +25,8 @@ body {
 
 @media screen and (max-width: 500px) {
     .filter {
-        margin: 0.05rem;
-        padding: 5px 10px;
+        /* margin: 0.05rem; */
+        /* padding: 5px 10px; */
         font-size: 0.6rem;
     }
 

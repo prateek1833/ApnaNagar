@@ -228,23 +228,31 @@
                 <h1 class="card-title">अपना नगर</h1>
             </div>
         </div>
-        <div class="navbar-nav ms-auto search-bar">
-            <form class="d-flex justify-content-center" role="search" method="GET" action="/items/search">
-                <div class="input-group">
+        <div class="navbar-nav ms-auto search-bar d-flex align-items-center flex-row">
+            <form class="d-flex justify-content-center flex-grow-1" role="search" method="GET" action="/items/search">
+                <div class="input-group cont">
                     <input id="search-input" class="form-control" name="keyword" type="search"
                         placeholder="Tell us what you want" aria-label="Search" autocomplete="off">
                     <ul id="suggestions" class="list-group position-absolute mt-2" style="z-index: 1000; display: none;"></ul>
                     <button type="button" class="voice-btn no-spinner" id="voice-btn">
                         <i class="fa-solid fa-microphone"></i>
                     </button>
-                    <button type="submit" class="btn btn-search"><i class="fa-solid fa-magnifying-glass"></i></button>
+                    <button type="submit" class="btn btn-search">
+                        <i class="fa-solid fa-magnifying-glass"></i>
+                    </button>
                 </div>
             </form>
-        </div>        
+            <button class="navbar-toggler d-block" type="button" data-bs-toggle="offcanvas"
+                data-bs-target="#offcanvasNavbar" aria-controls="offcanvasNavbar" aria-expanded="false"
+                aria-label="Toggle navigation" style="margin-left: auto; font-size: xx-large;">
+                <i class="fa-solid fa-circle-user"></i>
+            </button>
+        </div>
+                
     </div>
 
     <%- include("../views/includes/navbar.ejs") %>
-        <div class="container mt-5">
+        <div class="container mt-3 p-2">
             <%- include("../views/includes/flash.ejs") %>
                 <%- body %>
             </div>
