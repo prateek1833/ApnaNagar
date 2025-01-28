@@ -1,0 +1,81 @@
+<% layout('../layout/boilerplate') -%> 
+
+<div class="container">
+  <h1 class="text-center">User Statistics</h1>
+  <form method="GET"action="/owner/<%=id%>/edit">
+    <button class="btn btn-dark"><i class="fa-solid fa-pen-to-square"></i></button>
+    </form>
+  
+  <!-- Overview -->
+  <div class="row mt-4 offset-0">
+    <div class="col-md-4">
+      <div class="card text-white bg-success mb-3">
+        <div class="card-header">Total Spend</div>
+        <div class="card-body">
+          <h5 class="card-title">₹<%= totalSpend %></h5>
+        </div>
+      </div>
+    </div>
+    <div class="col-md-4">
+      <div class="card text-white bg-primary mb-3">
+        <div class="card-header">Balance Due</div>
+        <div class="card-body">
+          <h5 class="card-title">₹<%= balance_due %></h5>
+        </div>
+      </div>
+    </div>
+    <div class="col-md-4">
+      <div class="card text-white bg-info mb-3">
+        <div class="card-header">Total Orders</div>
+        <div class="card-body">
+          <h5 class="card-title"><%= totalOrders %></h5>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Monthly Spend -->
+  <div class="mt-5">
+    <h3>Monthly Spend</h3>
+    <canvas id="monthlySpendChart"></canvas>
+  </div>
+
+  <!-- Daily Orders -->
+  <div class="mt-5">
+    <h3>Daily Orders</h3>
+    <canvas id="dailyOrdersChart"></canvas>
+  </div>
+</div>
+
+<script>
+  // Monthly Spend Chart
+  const monthlySpendCtx = document.getElementById('monthlySpendChart').getContext('2d');
+  new Chart(monthlySpendCtx, {
+    type: 'bar',
+    data: {
+      labels: <%- JSON.stringify(monthlyLabels) %>, // Dynamically inject labels
+      datasets: [{
+        label: 'Spend (₹)',
+        data: <%- JSON.stringify(monthlyData) %>, // Dynamically inject data
+        backgroundColor: 'rgba(54, 162, 235, 0.5)',
+        borderColor: 'rgba(54, 162, 235, 1)',
+        borderWidth: 1
+      }]
+    }
+  });
+
+  // Daily Orders Chart
+  const dailyOrdersCtx = document.getElementById('dailyOrdersChart').getContext('2d');
+  new Chart(dailyOrdersCtx, {
+    type: 'line',
+    data: {
+      labels: <%- JSON.stringify(orderDates) %>, // Dynamically inject dates
+      datasets: [{
+        label: 'Orders',
+        data: <%- JSON.stringify(orderCounts) %>, // Dynamically inject counts
+        borderColor: 'rgba(75, 192, 192, 1)',
+        fill: false
+      }]
+    }
+  });
+</script>

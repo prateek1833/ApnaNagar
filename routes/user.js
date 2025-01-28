@@ -50,7 +50,7 @@ router.get("/:id/cart", isLoggedIn, async (req, res) => {
     res.render('user/cart.ejs', { openItems, closedItems, id });
 });
 
-
+router.get("/:id/statistics", isLoggedIn, wrapAsync(userController.statistics));
 
 
 module.exports = router;

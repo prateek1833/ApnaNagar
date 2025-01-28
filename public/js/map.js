@@ -230,6 +230,10 @@ const places = [
         name: "Aksada Toll Plaza",
         coordinates: [82.674598,26.702945]
     },
+    {
+        name: "पोखरनी चौराहा",
+        coordinates: [82.67566911005144,26.716730614497067]
+    },
     // Add more places as needed
 ];
 function createCustomMarker(iconUrl) {
@@ -275,7 +279,7 @@ places.forEach(place => {
 // Array of roads with coordinates and names
 const roads = [
     {
-        name: 'बालगोडवा रोड',
+        name: 'बलगोडवा रोड',
         coordinates: [
             [82.68094238680027,26.725646144981866],
             [82.68094238680027,26.725646144981866]

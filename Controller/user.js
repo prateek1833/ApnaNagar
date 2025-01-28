@@ -1,6 +1,7 @@
 const express = require("express");
 const router = express.Router();
 const User = require("../models/user");
+const Order = require("../models/order.js");
 const wrapAsync = require("../utils/wrapAsync");
 const passport = require("passport");
 const { saveRedirectUrl } = require("../middleware");
@@ -71,3 +72,71 @@ module.exports.login = async (req, res) => {
 
     res.redirect(redirectUrl);
 }
+
+module.exports.statistics = async (req, res, next) => {
+    try {
+        const { id } = req.params; // User ID
+        const user = await User.findById(id).populate('orders'); // Populate orders field with Order documents
+
+        if (!user) {
+            return res.status(404).send("User not found");
+        }
+
+        const monthlySpend = {};
+        const orders = user.orders || []; // Ensure orders is an array
+        const balance_due = user.balance_due || 0;
+        let totalSpend = 0;
+        let totalOrders = 0;
+
+        // Process each order
+        orders.forEach(order => {
+            if (order.items && order.createdAt) {
+                const date = new Date(order.createdAt);
+                const monthKey = `${date.getFullYear()}-${String(date.getMonth() + 1).padStart(2, '0')}`; // Format as YYYY-MM
+
+                // Safely calculate order total
+                const orderTotal = order.items.reduce((sum, item) => {
+                    const price = item.item?.price || 0; // Default to 0 if price is missing
+                    const quantity = item.item?.quantity || 0; // Default to 0 if quantity is missing
+                    return sum + price * quantity;
+                }, 0);
+
+                monthlySpend[monthKey] = (monthlySpend[monthKey] || 0) + orderTotal;
+                totalSpend += orderTotal;
+                totalOrders++;
+            }
+        });
+
+        const orderDates = [];
+        const orderCounts = {};
+        orders.forEach(order => {
+            if (order.createdAt) {
+                const date = new Date(order.createdAt).toISOString().split('T')[0];
+                orderDates.push(date);
+                orderCounts[date] = (orderCounts[date] || 0) + 1;
+            }
+        });
+
+        const sortedOrderDates = [...new Set(orderDates)].sort();
+        const sortedOrderCounts = sortedOrderDates.map(date => orderCounts[date]);
+
+        const sortedMonthlySpend = Object.entries(monthlySpend)
+            .sort(([a], [b]) => a.localeCompare(b)); // Sort by month keys
+
+        const monthlyLabels = sortedMonthlySpend.map(([month]) => month); // ["2024-01", "2024-02"]
+        const monthlyData = sortedMonthlySpend.map(([, spend]) => spend); // [5000, 7000]
+        // Render the statistics page with data
+        res.render('user/statistics', {
+            monthlyLabels,
+            monthlyData,
+            orderDates: sortedOrderDates,
+            orderCounts: sortedOrderCounts,
+            balance_due,
+            totalSpend,
+            totalOrders,
+            id
+        });
+    } catch (error) {
+        next(error);
+    }
+};

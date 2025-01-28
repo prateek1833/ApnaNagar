@@ -5,7 +5,7 @@
         <tr>
             <th>Name</th>
             <th>Mo. No.</th>
-            <th>Edit</th>
+            <th></th>
         </tr>
     </thead>
     <tbody>
@@ -19,8 +19,8 @@
                         <%= user.mobile %>
                     </td>
                     <td>
-                        <form method="GET"action="/owner/<%=user._id%>/edit">
-                            <button class="btn btn-dark"><i class="fa-solid fa-pen-to-square"></i></button>
+                        <form method="GET"action="/<%=user._id%>/statistics">
+                            <button class="btn btn-dark"><i class="fa-solid fa-chart-line"></i></button>
                         </form>
                     </td>
                 </tr>
