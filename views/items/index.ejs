@@ -32,6 +32,39 @@
         <button class="btn" type="submit"><i class="fa-solid fa-magnifying-glass" style="display: none;"></i></button>
     </form>
 
+    <div id="carouselExampleIndicators" class="carousel slide" data-bs-ride="carousel" data-bs-interval="2000">
+        <div class="carousel-indicators">
+            <button type="button" data-bs-target="#carouselExampleIndicators" data-bs-slide-to="0" class="active"
+                aria-current="true" aria-label="Slide 1"></button>
+            <button type="button" data-bs-target="#carouselExampleIndicators" data-bs-slide-to="1"
+                aria-label="Slide 2"></button>
+            <button type="button" data-bs-target="#carouselExampleIndicators" data-bs-slide-to="2"
+                aria-label="Slide 3"></button>
+        </div>
+        <div class="carousel-inner" style="border-radius: 10px;">
+            <div class="carousel-item active">
+                <img class="d-block w-100" style="height: 120px; object-fit: cover;" 
+                    src="https://res.cloudinary.com/dzrxswqur/image/upload/v1738074214/Red_Simple_3D_Food_Delivery_ysovur.png" alt="First slide">
+            </div>
+            <div class="carousel-item">
+                <img class="d-block w-100" style="height: 120px; object-fit: cover;" 
+                    src="https://res.cloudinary.com/dzrxswqur/image/upload/v1738073971/Discount_50_zbu3wb.png" alt="Second slide">
+            </div>
+            <div class="carousel-item">
+                <img class="d-block w-100" style="height: 120px; object-fit: cover;" 
+                    src="https://res.cloudinary.com/dzrxswqur/image/upload/v1738075309/PizzaDiscount_rtkicw.png" alt="Third slide">
+            </div>
+        </div>
+        <button class="carousel-control-prev no-spinner" type="button" data-bs-target="#carouselExampleIndicators" data-bs-slide="prev">
+            <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+            <span class="visually-hidden">Previous</span>
+        </button>
+        <button class="carousel-control-next no-spinner" type="button" data-bs-target="#carouselExampleIndicators" data-bs-slide="next">
+            <span class="carousel-control-next-icon" aria-hidden="true"></span>
+            <span class="visually-hidden">Next</span>
+        </button>
+    </div>    
+
     <br>
     <% if (allItem.length===0) { %>
         <p style="text-align: center;">Can't find what you're looking for? Don't worry!</p>
@@ -108,6 +141,8 @@
                     });
                 });
             </script>
+            <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
+
 
             <style>
                 .filter-image {
