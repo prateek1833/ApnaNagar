@@ -1,5 +1,7 @@
 const Orders = require("../models/order");
 const User = require("../models/user");
+const Restaurant = require("../models/restaurant");
+
 
 module.exports.index = async (req, res) => {
     const allUser = await User.find({});
@@ -65,7 +67,7 @@ module.exports.status = async (req, res) => {
         const validStatuses = ['1', '2', '3', '4'];
         if (!validStatuses.includes(orderStatus)) {
             req.flash("warning", "invalid order status");
-            res.render("items/orders.ejs", { allOrder,User });
+            res.render("items/orders.ejs", { allOrder, User });
         }
 
         // Update the order with the new status
@@ -86,7 +88,7 @@ module.exports.status = async (req, res) => {
             return res.status(404).send({ message: 'Order not found' });
         }
         req.flash("success", "status updated");
-        return res.render("items/orders.ejs", { allOrder,User });
+        return res.render("items/orders.ejs", { allOrder, User });
         // Send the updated order back in the response
     } catch (error) {
         console.error('Error updating order status:', error);
@@ -135,41 +137,55 @@ module.exports.statistics = async (req, res, next) => {
         const orders = await Orders.find({
             createdAt: { $gte: firstDayOfLastMonth, $lte: lastDayOfLastMonth }
         })
-        .populate({
-            path: "items.item",
-            model: "Item",
-            select: "title price RestaurantId"
-        })
-        .populate("author")
-        .lean(); 
+            .populate({
+                path: "items.item",
+                model: "Item",
+                select: "title price RestaurantId"
+            })
+            .populate("author")
+            .lean();
 
         let totalEarnings = 0;
         let totalOrders = 0;
         let itemSales = {};
         let restaurantSales = {}; // Store sales data per restaurant
         let customerPurchases = {};
+        let restaurantCache = {}; // Cache restaurant names to avoid multiple DB queries
 
-        orders.forEach(order => {
+        for (let order of orders) {
             order.items = order.items.filter(({ item }) => item && item.price !== undefined && item.title);
             if (order.items.length === 0) {
                 console.warn(`⚠️ Skipping order ${order._id} as it has no valid items.`);
-                return;
+                continue;
             }
 
             totalOrders++;
 
-            order.items.forEach(({ item, quantity }) => {
+            for (let { item, quantity } of order.items) {
                 totalEarnings += item.price * item.quantity;
                 itemSales[item.title] = (itemSales[item.title] || 0) + item.quantity;
 
-                // Track sales per restaurant
-                const restaurantId = item.RestaurantId;
-                if (!restaurantSales[restaurantId]) {
-                    restaurantSales[restaurantId] = { totalRevenue: 0, totalItemsSold: 0 };
+
+                // Fetch restaurant name by ID if not already cached
+                let restaurantName = "Unknown Restaurant";
+                if (item.RestaurantId) {
+                    if (restaurantCache[item.RestaurantId]) {
+                        restaurantName = restaurantCache[item.RestaurantId];
+                    } else {
+                        const restaurant = await Restaurant.findById(item.RestaurantId).select("username").lean();
+                        if (restaurant) {
+                            restaurantName = restaurant.username;
+                            restaurantCache[item.RestaurantId] = restaurant.username; // Cache it
+                        }
+                    }
                 }
-                restaurantSales[restaurantId].totalRevenue += item.price * item.quantity;
-                restaurantSales[restaurantId].totalItemsSold += item.quantity;
-            });
+
+                if (!restaurantSales[restaurantName]) {
+                    restaurantSales[restaurantName] = { totalRevenue: 0, totalItemsSold: 0 };
+                }
+                restaurantSales[restaurantName].totalRevenue += item.price * item.quantity;
+                restaurantSales[restaurantName].totalItemsSold += item.quantity;
+            }
 
             if (order.author) {
                 const customerName = order.author.username || "Unknown";
@@ -182,7 +198,7 @@ module.exports.statistics = async (req, res, next) => {
                 customerPurchases[customerName].orders += 1;
                 customerPurchases[customerName].totalItems += order.items.length;
             }
-        });
+        }
 
         // Get top selling items
         const topSellingItems = Object.entries(itemSales)
@@ -209,3 +225,4 @@ module.exports.statistics = async (req, res, next) => {
         next(error);
     }
 };
+

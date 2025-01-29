@@ -61,7 +61,7 @@
 <script>
     const restaurantSales = <%- JSON.stringify(restaurantSales) %>;
 
-    const restaurantLabels = Object.keys(restaurantSales); // Restaurant names as labels
+    const restaurantLabels = Object.keys(restaurantSales);
     const totalItemsSold = restaurantLabels.map(name => restaurantSales[name].totalItemsSold);
     const totalRevenue = restaurantLabels.map(name => restaurantSales[name].totalRevenue);
 
