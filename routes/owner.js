@@ -5,6 +5,7 @@ const passport = require("passport");
 const { saveRedirectUrl } = require("../middleware");
 const {isLoggedIn,validateItem,isOwner}=require("../middleware.js");
 const multer  = require('multer')
+const Order = require("../models/order");
 
 
 
@@ -25,5 +26,7 @@ router
 
 router
 .get("/addItem",isLoggedIn,ownerController.addItem)
+
+router.get("/statistics", isLoggedIn, isOwner, ownerController.statistics);
 
 module.exports=router;

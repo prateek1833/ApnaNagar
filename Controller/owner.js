@@ -124,3 +124,88 @@ module.exports.update = async (req, res) => {
     }
 }
 
+
+module.exports.statistics = async (req, res, next) => {
+    try {
+        const now = new Date();
+        const firstDayOfLastMonth = new Date(now.getFullYear(), now.getMonth() - 1, 1);
+        const lastDayOfLastMonth = new Date(now.getFullYear(), now.getMonth(), 0, 23, 59, 59);
+
+        // Fetch orders from the previous month with populated items and authors
+        const orders = await Orders.find({
+            createdAt: { $gte: firstDayOfLastMonth, $lte: lastDayOfLastMonth }
+        })
+        .populate({
+            path: "items.item",
+            model: "Item",
+            select: "title price RestaurantId"
+        })
+        .populate("author")
+        .lean(); 
+
+        let totalEarnings = 0;
+        let totalOrders = 0;
+        let itemSales = {};
+        let restaurantSales = {}; // Store sales data per restaurant
+        let customerPurchases = {};
+
+        orders.forEach(order => {
+            order.items = order.items.filter(({ item }) => item && item.price !== undefined && item.title);
+            if (order.items.length === 0) {
+                console.warn(`⚠️ Skipping order ${order._id} as it has no valid items.`);
+                return;
+            }
+
+            totalOrders++;
+
+            order.items.forEach(({ item, quantity }) => {
+                totalEarnings += item.price * item.quantity;
+                itemSales[item.title] = (itemSales[item.title] || 0) + item.quantity;
+
+                // Track sales per restaurant
+                const restaurantId = item.RestaurantId;
+                if (!restaurantSales[restaurantId]) {
+                    restaurantSales[restaurantId] = { totalRevenue: 0, totalItemsSold: 0 };
+                }
+                restaurantSales[restaurantId].totalRevenue += item.price * item.quantity;
+                restaurantSales[restaurantId].totalItemsSold += item.quantity;
+            });
+
+            if (order.author) {
+                const customerName = order.author.username || "Unknown";
+                if (!customerPurchases[customerName]) {
+                    customerPurchases[customerName] = { totalSpent: 0, orders: 0, totalItems: 0 };
+                }
+                customerPurchases[customerName].totalSpent += order.items.reduce((sum, { item, quantity }) => {
+                    return sum + (item ? item.price * item.quantity : 0);
+                }, 0);
+                customerPurchases[customerName].orders += 1;
+                customerPurchases[customerName].totalItems += order.items.length;
+            }
+        });
+
+        // Get top selling items
+        const topSellingItems = Object.entries(itemSales)
+            .map(([name, quantitySold]) => ({ name, quantitySold }))
+            .sort((a, b) => b.quantitySold - a.quantitySold)
+            .slice(0, 10);
+
+        // Get top customers
+        const topCustomers = Object.entries(customerPurchases)
+            .map(([name, data]) => ({ name, ...data }))
+            .sort((a, b) => b.totalSpent - a.totalSpent)
+            .slice(0, 10);
+
+        res.render("owner/statistics", {
+            totalEarnings,
+            totalOrders,
+            topSellingItems,
+            topCustomers,
+            restaurantSales
+        });
+
+    } catch (error) {
+        console.error("Error in statistics calculation:", error);
+        next(error);
+    }
+};

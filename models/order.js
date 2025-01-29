@@ -20,6 +20,8 @@ const orderSchema = new Schema({
                 RestaurantId:String,
                 owner: String,
                 __v: Number,
+                type: Schema.Types.ObjectId,
+                ref: "Item"
             },
         },
     ],
@@ -41,7 +43,9 @@ const orderSchema = new Schema({
         coordinates: {
             type: [Number],
             required: true
-        }
+        },
+        type: Schema.Types.ObjectId,
+        ref: "User" 
     }
 });
 
