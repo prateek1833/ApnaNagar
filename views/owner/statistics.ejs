@@ -5,9 +5,10 @@
 
     <!-- Overview -->
     <div class="row mt-4">
+        <h5 class="col-md-6 text-center" style="color: red;text-decoration: underline;"><%= previousMonthName %></h5>
         <div class="col-md-6">
             <div class="card text-white bg-success mb-3">
-                <div class="card-header">Total Earnings (Previous Month)</div>
+                <div class="card-header">Total Earnings </div>
                 <div class="card-body">
                     <h5 class="card-title">₹<%= totalEarnings %></h5>
                 </div>
@@ -56,45 +57,66 @@
     </div>
 </div>
 
-<!-- Chart.js for Restaurant Sales Graph -->
-<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<canvas id="restaurantRevenueChart"></canvas>
+<canvas id="restaurantItemsSoldChart" class="mt-4"></canvas>
 <script>
     const restaurantSales = <%- JSON.stringify(restaurantSales) %>;
 
-    const restaurantLabels = Object.keys(restaurantSales);
-    const totalItemsSold = restaurantLabels.map(name => restaurantSales[name].totalItemsSold);
-    const totalRevenue = restaurantLabels.map(name => restaurantSales[name].totalRevenue);
+const restaurantLabels = Object.keys(restaurantSales);
+const totalItemsSold = restaurantLabels.map(name => restaurantSales[name].totalItemsSold);
+const totalRevenue = restaurantLabels.map(name => restaurantSales[name].totalRevenue);
 
-    const ctx = document.getElementById('restaurantSalesChart').getContext('2d');
-    new Chart(ctx, {
-        type: 'bar',
-        data: {
-            labels: restaurantLabels, // Display restaurant names
-            datasets: [
-                {
-                    label: 'Total Items Sold',
-                    data: totalItemsSold,
-                    backgroundColor: 'rgba(54, 162, 235, 0.7)',
-                    borderColor: 'rgba(54, 162, 235, 1)',
-                    borderWidth: 1
-                },
-                {
-                    label: 'Total Revenue (₹)',
-                    data: totalRevenue,
-                    backgroundColor: 'rgba(255, 99, 132, 0.7)',
-                    borderColor: 'rgba(255, 99, 132, 1)',
-                    borderWidth: 1
-                }
-            ]
-        },
-        options: {
-            responsive: true,
-            scales: {
-                x: {
-                    ticks: { autoSkip: false, maxRotation: 30, minRotation: 30 } // Adjust for long names
-                },
-                y: { beginAtZero: true }
+// Total Revenue Chart
+const revenueCtx = document.getElementById('restaurantRevenueChart').getContext('2d');
+new Chart(revenueCtx, {
+    type: 'bar',
+    data: {
+        labels: restaurantLabels,
+        datasets: [
+            {
+                label: 'Total Revenue (₹)',
+                data: totalRevenue,
+                backgroundColor: 'rgba(255, 99, 132, 0.7)',
+                borderColor: 'rgba(255, 99, 132, 1)',
+                borderWidth: 1
             }
+        ]
+    },
+    options: {
+        responsive: true,
+        scales: {
+            x: {
+                ticks: { autoSkip: false, maxRotation: 30, minRotation: 30 }
+            },
+            y: { beginAtZero: true }
         }
-    });
+    }
+});
+
+// Total Items Sold Chart
+const itemsCtx = document.getElementById('restaurantItemsSoldChart').getContext('2d');
+new Chart(itemsCtx, {
+    type: 'bar',
+    data: {
+        labels: restaurantLabels,
+        datasets: [
+            {
+                label: 'Total Items Sold',
+                data: totalItemsSold,
+                backgroundColor: 'rgba(54, 162, 235, 0.7)',
+                borderColor: 'rgba(54, 162, 235, 1)',
+                borderWidth: 1
+            }
+        ]
+    },
+    options: {
+        responsive: true,
+        scales: {
+            x: {
+                ticks: { autoSkip: false, maxRotation: 30, minRotation: 30 }
+            },
+            y: { beginAtZero: true }
+        }
+    }
+});
 </script>

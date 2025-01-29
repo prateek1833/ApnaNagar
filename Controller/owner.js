@@ -132,6 +132,12 @@ module.exports.statistics = async (req, res, next) => {
         const now = new Date();
         const firstDayOfLastMonth = new Date(now.getFullYear(), now.getMonth() - 1, 1);
         const lastDayOfLastMonth = new Date(now.getFullYear(), now.getMonth(), 0, 23, 59, 59);
+        const monthNames = [
+            "January", "February", "March", "April", "May", "June",
+            "July", "August", "September", "October", "November", "December"
+        ];
+        
+        const previousMonthName = monthNames[firstDayOfLastMonth.getMonth()]; // Get previous month name        
 
         // Fetch orders from the previous month with populated items and authors
         const orders = await Orders.find({
@@ -217,7 +223,8 @@ module.exports.statistics = async (req, res, next) => {
             totalOrders,
             topSellingItems,
             topCustomers,
-            restaurantSales
+            restaurantSales,
+            previousMonthName
         });
 
     } catch (error) {
