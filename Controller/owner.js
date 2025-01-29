@@ -152,7 +152,10 @@ module.exports.statistics = async (req, res, next) => {
             .lean();
 
         let totalEarnings = 0;
+        const daysOfWeek = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
+        let ordersByDay = { Sunday: 0, Monday: 0, Tuesday: 0, Wednesday: 0, Thursday: 0, Friday: 0, Saturday: 0 };
         let totalOrders = 0;
+        let peakOrderTimes = {};
         let itemSales = {};
         let restaurantSales = {}; // Store sales data per restaurant
         let customerPurchases = {};
@@ -164,6 +167,12 @@ module.exports.statistics = async (req, res, next) => {
                 console.warn(`⚠️ Skipping order ${order._id} as it has no valid items.`);
                 continue;
             }
+            const orderDate = new Date(order.createdAt);
+            const dayName = daysOfWeek[orderDate.getDay()];
+            const hour = orderDate.getHours();
+            
+            ordersByDay[dayName]++;
+            peakOrderTimes[hour] = (peakOrderTimes[hour] || 0) + 1;
 
             totalOrders++;
 
@@ -224,7 +233,9 @@ module.exports.statistics = async (req, res, next) => {
             topSellingItems,
             topCustomers,
             restaurantSales,
-            previousMonthName
+            previousMonthName,
+            peakOrderTimes,
+            ordersByDay,
         });
 
     } catch (error) {
