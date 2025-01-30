@@ -195,16 +195,23 @@ module.exports.statistics = async (req, res, next) => {
             if (order.author) {
                 const customer = await User.findById(order.author._id).select("username").lean();
                 const customerName = customer ? customer.username : "Unknown";
+                const userID = order.author._id.toString(); 
 
-                if (!customerPurchases[customerName]) {
-                    customerPurchases[customerName] = { totalSpent: 0, orders: 0, totalItems: 0 };
+                if (!customerPurchases[userID]) {
+                    customerPurchases[userID] = { 
+                        userID, 
+                        name: customerName, 
+                        totalSpent: 0, 
+                        orders: 0, 
+                        totalItems: 0 
+                    };
                 }
 
-                customerPurchases[customerName].totalSpent += order.items.reduce((sum, { item }) => {
+                customerPurchases[userID].totalSpent += order.items.reduce((sum, { item }) => {
                     return sum + (item ? item.price * item.quantity : 0);
                 }, 0);
-                customerPurchases[customerName].orders += 1;
-                customerPurchases[customerName].totalItems += order.items.length;
+                customerPurchases[userID].orders += 1;
+                customerPurchases[userID].totalItems += order.items.length;
             }
         }
 
@@ -215,8 +222,7 @@ module.exports.statistics = async (req, res, next) => {
             .slice(0, 10);
 
         // Get top customers
-        const topCustomers = Object.entries(customerPurchases)
-            .map(([name, data]) => ({ name, ...data }))
+        const topCustomers = Object.values(customerPurchases)
             .sort((a, b) => b.totalSpent - a.totalSpent)
             .slice(0, 10);
 
@@ -236,4 +242,5 @@ module.exports.statistics = async (req, res, next) => {
         next(error);
     }
 };
+
 
