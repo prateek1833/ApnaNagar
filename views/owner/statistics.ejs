@@ -66,9 +66,6 @@
         <canvas id="peakOrderTimeChart"></canvas>
     </div>
 </div>
-<canvas id="restaurantRevenueChart"></canvas>
-<canvas id="restaurantItemsSoldChart" class="mt-4"></canvas>
-<canvas id="restaurantSalesChart"></canvas>
 
 <script>
     const restaurantSales = <%- JSON.stringify(restaurantSales) %>;
@@ -116,7 +113,6 @@ new Chart(restaurantSalesCtx, {
         }
     }
 });
-
     
     new Chart(document.getElementById('ordersByDayChart').getContext('2d'), {
         type: 'bar',

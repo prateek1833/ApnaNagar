@@ -1,11 +1,10 @@
 <% layout('../layout/boilerplate') -%>
 
-<table class="table table-primary" style="max-width: fit-content;">
+<table class="table table-primary col-10">
     <thead class="thead-primary">
-        <tr>
+        <tr >
             <th>Name</th>
             <th>Mo. No.</th>
-            <th></th>
         </tr>
     </thead>
     <tbody>
@@ -13,15 +12,10 @@
             <% for(let user of allUser){ %>
                 <tr>
                     <td>
-                        <%= user.username %>
+                        <a href="/<%=user._id%>/statistics"><%= user.username %></a>
                     </td> 
                     <td>
                         <%= user.mobile %>
-                    </td>
-                    <td>
-                        <form method="GET"action="/<%=user._id%>/statistics">
-                            <button class="btn btn-dark"><i class="fa-solid fa-chart-line"></i></button>
-                        </form>
                     </td>
                 </tr>
             <% } %>

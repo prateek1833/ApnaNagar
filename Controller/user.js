@@ -125,6 +125,7 @@ module.exports.statistics = async (req, res, next) => {
 
         const monthlyLabels = sortedMonthlySpend.map(([month]) => month); // ["2024-01", "2024-02"]
         const monthlyData = sortedMonthlySpend.map(([, spend]) => spend); // [5000, 7000]
+
         // Render the statistics page with data
         res.render('user/statistics', {
             monthlyLabels,
@@ -134,7 +135,8 @@ module.exports.statistics = async (req, res, next) => {
             balance_due,
             totalSpend,
             totalOrders,
-            id
+            id,
+            user
         });
     } catch (error) {
         next(error);
