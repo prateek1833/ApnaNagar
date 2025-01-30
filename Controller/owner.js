@@ -137,19 +137,12 @@ module.exports.statistics = async (req, res, next) => {
             "July", "August", "September", "October", "November", "December"
         ];
         
-        const previousMonthName = monthNames[firstDayOfLastMonth.getMonth()]; // Get previous month name        
+        const previousMonthName = monthNames[firstDayOfLastMonth.getMonth()]; 
 
-        // Fetch orders from the previous month with populated items and authors
+        // Fetch orders from the previous month
         const orders = await Orders.find({
             createdAt: { $gte: firstDayOfLastMonth, $lte: lastDayOfLastMonth }
-        })
-            .populate({
-                path: "items.item",
-                model: "Item",
-                select: "title price RestaurantId"
-            })
-            .populate("author")
-            .lean();
+        }).lean();
 
         let totalEarnings = 0;
         const daysOfWeek = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
@@ -157,31 +150,28 @@ module.exports.statistics = async (req, res, next) => {
         let totalOrders = 0;
         let peakOrderTimes = {};
         let itemSales = {};
-        let restaurantSales = {}; // Store sales data per restaurant
+        let restaurantSales = {}; 
         let customerPurchases = {};
-        let restaurantCache = {}; // Cache restaurant names to avoid multiple DB queries
+        let restaurantCache = {}; 
 
-        for (let order of orders) {
-            order.items = order.items.filter(({ item }) => item && item.price !== undefined && item.title);
-            if (order.items.length === 0) {
-                console.warn(`⚠️ Skipping order ${order._id} as it has no valid items.`);
-                continue;
-            }
+        for (let orderData of orders) {
+            const order = await Orders.findById(orderData._id).lean();
+            if (!order) continue;
+
             const orderDate = new Date(order.createdAt);
             const dayName = daysOfWeek[orderDate.getDay()];
             const hour = orderDate.getHours();
-            
+
             ordersByDay[dayName]++;
             peakOrderTimes[hour] = (peakOrderTimes[hour] || 0) + 1;
-
             totalOrders++;
 
-            for (let { item, quantity } of order.items) {
+            for (let { item } of order.items) {
+                if (!item || item.price === undefined || !item.title) continue;
+
                 totalEarnings += item.price * item.quantity;
                 itemSales[item.title] = (itemSales[item.title] || 0) + item.quantity;
 
-
-                // Fetch restaurant name by ID if not already cached
                 let restaurantName = "Unknown Restaurant";
                 if (item.RestaurantId) {
                     if (restaurantCache[item.RestaurantId]) {
@@ -190,7 +180,7 @@ module.exports.statistics = async (req, res, next) => {
                         const restaurant = await Restaurant.findById(item.RestaurantId).select("username").lean();
                         if (restaurant) {
                             restaurantName = restaurant.username;
-                            restaurantCache[item.RestaurantId] = restaurant.username; // Cache it
+                            restaurantCache[item.RestaurantId] = restaurant.username; 
                         }
                     }
                 }
@@ -203,11 +193,14 @@ module.exports.statistics = async (req, res, next) => {
             }
 
             if (order.author) {
-                const customerName = order.author.username || "Unknown";
+                const customer = await User.findById(order.author._id).select("username").lean();
+                const customerName = customer ? customer.username : "Unknown";
+
                 if (!customerPurchases[customerName]) {
                     customerPurchases[customerName] = { totalSpent: 0, orders: 0, totalItems: 0 };
                 }
-                customerPurchases[customerName].totalSpent += order.items.reduce((sum, { item, quantity }) => {
+
+                customerPurchases[customerName].totalSpent += order.items.reduce((sum, { item }) => {
                     return sum + (item ? item.price * item.quantity : 0);
                 }, 0);
                 customerPurchases[customerName].orders += 1;

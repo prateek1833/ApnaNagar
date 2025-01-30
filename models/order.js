@@ -20,8 +20,8 @@ const orderSchema = new Schema({
                 RestaurantId:String,
                 owner: String,
                 __v: Number,
-                type: Schema.Types.ObjectId,
-                ref: "Item"
+                // type: Schema.Types.ObjectId,
+                // ref: "Item"
             },
         },
     ],
