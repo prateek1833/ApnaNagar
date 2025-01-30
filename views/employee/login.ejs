@@ -1,0 +1,23 @@
+<% layout('../layout/boilerplate') -%>
+
+<div class="row mt-3">
+    <h3 class="col-12 text-center">Log In As Delivery Boy</h3>
+    <div class="col-12 col-md-6 offset-md-3 mt-4">
+        <!-- Employee Login -->
+        <div class="tab-pane fade show active" id="employee" role="tabpanel" aria-labelledby="employee-tab">
+            <form action="/employee/login" method="POST" class="needs-validation" novalidate>
+                <div class="mb-3">
+                    <label for="employee-username" class="form-label">Name</label>
+                    <input type="text" name="username" id="employee-username" placeholder="Enter your username"
+                        class="form-control" required>
+                </div>
+                <div class="mb-3">
+                    <label for="employee-password" class="form-label">Password</label>
+                    <input type="password" name="password" id="employee-password" placeholder="Enter your password"
+                        class="form-control" required>
+                </div>
+                <button type="submit" class="btn btn-warning w-100">Log In as Employee</button>
+            </form>
+        </div>
+    </div>
+</div>

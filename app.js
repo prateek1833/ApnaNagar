@@ -16,6 +16,7 @@ const passport = require("passport");
 const LocalStrategy = require("passport-local");
 const User = require("./models/user");
 const Restaurant = require("./models/restaurant");
+const Employee = require("./models/employee");
 
 const itemRouter = require("./routes/item");
 const reviewsRouter = require("./routes/review");
@@ -23,6 +24,7 @@ const orderRouter = require("./routes/order");
 const userRouter = require("./routes/user");
 const ownerRouter = require("./routes/owner");
 const restaurantRouter = require("./routes/restaurant");
+const employeeRouter = require("./routes/employee");
 
 const app = express();
 
@@ -81,14 +83,19 @@ passport.use(new LocalStrategy(User.authenticate())); // Default "local" strateg
 // Restaurant Strategy
 passport.use("restaurant-local", new LocalStrategy(Restaurant.authenticate()));
 
-// Serialization and Deserialization
+passport.use("employee-local", new LocalStrategy(Employee.authenticate()));
+
+
 passport.serializeUser((entity, done) => {
     if (entity instanceof User) {
         done(null, { id: entity.id, type: "User" });
     } else if (entity instanceof Restaurant) {
         done(null, { id: entity.id, type: "Restaurant" });
+    } else if (entity instanceof Employee) {
+        done(null, { id: entity.id, type: "Employee" });
     }
 });
+
 
 passport.deserializeUser(async (obj, done) => {
     try {
@@ -98,6 +105,9 @@ passport.deserializeUser(async (obj, done) => {
         } else if (obj.type === "Restaurant") {
             const restaurant = await Restaurant.findById(obj.id);
             done(null, restaurant);
+        } else if (obj.type === "Employee") {
+            const employee = await Employee.findById(obj.id);
+            done(null, employee);
         } else {
             done(new Error("Unknown type"), null);
         }
@@ -112,16 +122,6 @@ app.use((req, res, next) => {
     res.locals.error = req.flash("error");
     res.locals.currUser = req.user;
     next();
-});
-
-// Routes
-app.get("/demouser", async (req, res) => {
-    let fakeUser = new User({
-        email: "student@gmail.com",
-        username: "delta-student",
-    });
-    let registeredUser = await User.register(fakeUser, "helloworld");
-    res.send(registeredUser);
 });
 
 app.get("/", (req, res) => {
@@ -146,6 +146,7 @@ app.use("/restaurant/:id/reviews", reviewsRouter);
 app.use("/", userRouter);
 app.use("/order", orderRouter);
 app.use("/restaurant", restaurantRouter);
+app.use("/employee", employeeRouter);
 
 app.post("/login-user", passport.authenticate("user-local", {
     failureRedirect: "/login",
@@ -159,6 +160,13 @@ app.post("/login-restaurant", passport.authenticate("restaurant-local", {
     failureFlash: true,
 }), (req, res) => {
     res.redirect("/");
+});
+
+app.post("/login", passport.authenticate("employee-local", {
+    failureRedirect: "/employee/login",
+    failureFlash: true,
+}), (req, res) => {
+    res.redirect("/employee/dashboard");
 });
 
 app.all("*", (req, res, next) => {
