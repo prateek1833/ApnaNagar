@@ -43,11 +43,27 @@
                 <img src="<%= restaurant.image.url %>" alt="<%= restaurant.image.filename %>" class="img-thumbnail">
             </div>
             <div class="mb-3">
-                <label for="image" class="form-label">Upload New Image</label>
-                <input type="file" name="image" class="form-control">
+                <label for="image" class="form-label">Upload New Image (Max 500 KB)</label>
+                <input type="file" name="image" id="image" class="form-control">
+                <span id="image-error" style="color: red; font-size: 12px;"></span> <!-- Error message will be displayed here -->
             </div>
             <button class="btn btn-dark add-btn">Submit</button>
         </form>
         <br>
     </div>
 </div>
+
+<script>
+    document.getElementById('image').addEventListener('change', function (event) {
+        const file = event.target.files[0]; // Get the selected file
+        if (file) {
+            const maxSize = 500 * 1024; // 500 KB in bytes
+            if (file.size > maxSize) {
+                document.getElementById('image-error').textContent = "Image size must not exceed 500 KB.";
+                event.target.value = ""; // Reset the file input
+            } else {
+                document.getElementById('image-error').textContent = "";
+            }
+        }
+    });
+</script>

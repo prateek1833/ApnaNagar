@@ -1,8 +1,23 @@
 const ExpressError = require("./utils/ExpressError.js");
+const multer = require("multer");
 const { itemSchema,reviewSchema, orderSchema } = require("./schema.js");
 const Review = require("./models/review.js");
 const Item = require("./models/item.js");
 const Restaurant = require("./models/restaurant.js");
+const storage = multer.memoryStorage();
+
+
+const imageSizeLimit = 512 * 1024; 
+
+module.exports.validateImage = (req, res, next) => {
+    if (!req.file) return next(); // No file uploaded, proceed further
+
+    if (req.file.size > imageSizeLimit) {
+        req.flash("error", "Image size must be less than 512 kB");
+        return res.redirect("back");
+    }
+    next();
+};
 
 
 module.exports.isLoggedIn=(req,res,next)=>{

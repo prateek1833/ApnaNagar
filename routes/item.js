@@ -1,7 +1,7 @@
 const express = require("express");
 const router = express.Router();
 const wrapAsync = require("../utils/wrapAsync.js");
-const { isLoggedIn, validateItem, isOwner } = require("../middleware.js");
+const { isLoggedIn, validateImage, isOwner } = require("../middleware.js");
 const multer = require('multer');
 const { storage } = require("../cloudConfig.js");
 const upload = multer({ storage });
@@ -28,9 +28,9 @@ router.get("/new", isLoggedIn, async (req, res) => {
     res.render("items/new.ejs");
 });
 
-router.post("/new", isLoggedIn, upload.single('image'), wrapAsync(itemController.createItem));
+router.post("/new", isLoggedIn,validateImage, upload.single('image'), wrapAsync(itemController.createItem));
 
-router.route("/:id/edit")
+router.route("/:id/edit", validateImage)
     .get(isLoggedIn, itemController.renderEdit)
     .put(isLoggedIn, upload.single('image'), itemController.update);
 

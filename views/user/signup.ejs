@@ -137,5 +137,29 @@
             });
         });
     });
+    document.addEventListener('DOMContentLoaded', function () {
+    const tabs = document.querySelectorAll('[data-bs-toggle="tab"]');
+    tabs.forEach(tab => {
+        tab.addEventListener('shown.bs.tab', (event) => {
+            console.log(`Switched to ${event.target.id}`);
+        });
+    });
+
+    // Image size validation
+    document.getElementById('restaurant-image').addEventListener('change', function (event) {
+        const file = event.target.files[0]; // Get the selected file
+        if (file) {
+            const maxSize = 500 * 1024; // 500 KB in bytes
+            const errorElement = document.getElementById('image-error');
+            if (file.size > maxSize) {
+                errorElement.textContent = "Image size must not exceed 500 KB.";
+                event.target.value = ""; // Reset the file input
+            } else {
+                errorElement.textContent = "";
+            }
+        }
+    });
+});
+
 
 </script>

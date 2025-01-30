@@ -3,7 +3,7 @@
 <div class="row">
     <div class="col-10">     
         <br>
-        <form method="POST" action="/items/<%= item._id %>/edit?_method=PUT" novalidate class="needs-validation" enctype="multipart/form-data">
+        <form method="POST" action="/items/<%= item._id %>/edit?_method=PUT" novalidate class="needs-validation" enctype="multipart/form-data" id="edit-form">
             <div class="mb-3">
                 <label for="title" class="form-label">Title</label>
                 <input type="text" name="title" value="<%= item.title %>" class="form-control" required>
@@ -24,22 +24,9 @@
                 <img src="<%= item.image.url %>" alt="<%= item.image.filename %>" class="img-thumbnail">
             </div>
             <div class="mb-3">
-                <label for="image" class="form-label">Upload New Image</label>
-                <input type="file" name="image" class="form-control">
-            </div>
-            <div class="mb-3">
-                <label for="mobile" class="form-label">Mobile Number</label>
-                <input type="text" name="mobile" value="<%= item.mobile %>" class="form-control" required>
-            </div>
-            <div class="mb-3 row">
-                <div class="col">
-                    <label for="open_time" class="form-label">Opening Time</label>
-                    <input type="time" name="open_time" value="<%= item.open_time %>" class="form-control" required>
-                </div>
-                <div class="col">
-                    <label for="close_time" class="form-label">Closing Time</label>
-                    <input type="time" name="close_time" value="<%= item.close_time %>" class="form-control" required>
-                </div>
+                <label for="image" class="form-label">Upload New Image (Max: 500 KB)</label>
+                <input type="file" name="image" class="form-control" id="image-upload">
+                <small class="text-danger d-none" id="image-error">Image size should not exceed 500 KB.</small>
             </div>
             <div class="mb-3 no-spinner" style="border: solid rgb(180, 179, 179); border-width: 1px; border-radius: 10%; padding: 5%;">
                 <label for="detail" class="form-label">Details</label>
@@ -67,7 +54,7 @@
                 <input type="text" name="key" value="<%= item.key.join(', ') %>" class="form-control">
                 <small class="form-text text-muted">Separate keywords with commas</small>
             </div>
-            <button class="btn btn-dark add-btn">Submit</button>
+            <button class="btn btn-dark add-btn" id="submit-btn">Submit</button>
         </form>
         <br>
     </div>
@@ -103,4 +90,36 @@
     }
 
     document.querySelectorAll('.delete-detail').forEach(addDeleteEventListener);
+
+    // Image file size validation (max 500 KB)
+    document.getElementById('image-upload').addEventListener('change', function(event) {
+        const file = event.target.files[0]; // Get the selected file
+        const maxSize = 500 * 1024; // 500 KB in bytes
+        const errorElement = document.getElementById('image-error');
+
+        if (file) {
+            if (file.size > maxSize) {
+                errorElement.textContent = "Image size must not exceed 500 KB.";
+                errorElement.classList.remove('d-none');
+                event.target.value = ""; // Reset the file input
+            } else {
+                errorElement.textContent = "";
+                errorElement.classList.add('d-none');
+            }
+        }
+    });
+
+    // Prevent form submission if image size exceeds 500 KB
+    document.getElementById('edit-form').addEventListener('submit', function(event) {
+        const fileInput = document.getElementById('image-upload');
+        const file = fileInput.files[0];
+        const maxSize = 500 * 1024; // 500 KB in bytes
+        const errorElement = document.getElementById('image-error');
+
+        if (file && file.size > maxSize) {
+            errorElement.textContent = "Image size must not exceed 500 KB.";
+            errorElement.classList.remove('d-none');
+            event.preventDefault(); // Prevent form submission
+        }
+    });
 </script>
