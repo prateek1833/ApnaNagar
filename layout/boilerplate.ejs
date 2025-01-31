@@ -31,6 +31,7 @@
             color: white;
             text-align: center;
             padding: 10px 0;
+            border-radius: 0 0 15px 15px;
         }
 
         .header .card-title {
@@ -174,7 +175,8 @@
             background-color: white;
             color: #f99223;
         }
-         #suggestions {
+
+        #suggestions {
             max-height: 200px;
             overflow-y: auto;
             width: 100%;
@@ -203,16 +205,38 @@
         #suggestions .list-group-item:not(:last-child) {
             border-bottom: 1px solid #eee;
         }
+
         .input-group {
             position: relative;
         }
 
         #suggestions {
             position: absolute;
-            top: 100%; /* Positions below the input */
+            top: 100%;
+            /* Positions below the input */
             left: 0;
         }
 
+        .placeholder-container {
+            position: relative;
+            height: 1.5em;
+            /* Adjust based on font size */
+            overflow: hidden;
+            display: flex;
+            align-items: center;
+        }
+
+        .placeholder-text {
+            position: absolute;
+            opacity: 1;
+            transform: translateY(0);
+            transition: transform 0.5s ease, opacity 0.5s ease;
+        }
+
+        .placeholder-text.hidden {
+            opacity: 0;
+            transform: translateY(-100%);
+        }
     </style>
 </head>
 
@@ -231,9 +255,10 @@
         <div class="navbar-nav ms-auto search-bar d-flex align-items-center flex-row">
             <form class="d-flex justify-content-center flex-grow-1" role="search" method="GET" action="/items/search">
                 <div class="input-group cont">
-                    <input id="search-input" class="form-control" name="keyword" type="search"
-                        placeholder="Tell us what you want" aria-label="Search" autocomplete="off">
-                    <ul id="suggestions" class="list-group position-absolute mt-2" style="z-index: 1000; display: none;"></ul>
+                    <input id="search-input" class="form-control" name="keyword" type="search" placeholder="Pizza"
+                        aria-label="Search" autocomplete="off">
+                    <ul id="suggestions" class="list-group position-absolute mt-2"
+                        style="z-index: 1000; display: none;"></ul>
                     <button type="button" class="voice-btn no-spinner" id="voice-btn">
                         <i class="fa-solid fa-microphone"></i>
                     </button>
@@ -248,180 +273,218 @@
                 <i class="fa-solid fa-circle-user"></i>
             </button>
         </div>
-                
+
     </div>
 
     <%- include("../views/includes/navbar.ejs") %>
         <div class="container mt-3 p-2">
             <%- include("../views/includes/flash.ejs") %>
                 <%- body %>
-            </div>
-            <% if(currUser && currUser.type && currUser.type==="Restaurant"){%>
-                <%- include("../views/includes/footerRes.ejs") %>
-                <%}else if(!currUser || (currUser && currUser.type && (currUser.type==="User")) ){%>
+        </div>
+        <% if(currUser && currUser.type && currUser.type==="Restaurant" ){%>
+            <%- include("../views/includes/footerRes.ejs") %>
+                <%}else if(!currUser || (currUser && currUser.type && (currUser.type==="User" )) ){%>
                     <%- include("../views/includes/footer.ejs") %>
-                        <%}else if(!currUser || (currUser && currUser.type && (currUser.type==="Owner")) ){%>
+                        <%}else if(!currUser || (currUser && currUser.type && (currUser.type==="Owner" )) ){%>
                             <%- include("../views/includes/footerOwn.ejs") %>
-                            <% } %>
+                                <% } %>
 
-                            <script>
-                                const spinnerOverlay = document.getElementById('spinner-overlay');
-                                let spinnerTimeout;
+                                    <script>
+                                        const spinnerOverlay = document.getElementById('spinner-overlay');
+                                        let spinnerTimeout;
 
-                                // Show Spinner
-                                function showSpinner() {
-                                    spinnerOverlay.classList.add('active');
+                                        // Show Spinner
+                                        function showSpinner() {
+                                            spinnerOverlay.classList.add('active');
 
-                                    // Ensure spinner hides after 30 seconds max
-                                    spinnerTimeout = setTimeout(hideSpinner, 30000);
-                                }
+                                            // Ensure spinner hides after 30 seconds max
+                                            spinnerTimeout = setTimeout(hideSpinner, 30000);
+                                        }
 
-                                // Hide Spinner
-                                function hideSpinner() {
-                                    spinnerOverlay.classList.remove('active');
-                                    clearTimeout(spinnerTimeout);
-                                }
+                                        // Hide Spinner
+                                        function hideSpinner() {
+                                            spinnerOverlay.classList.remove('active');
+                                            clearTimeout(spinnerTimeout);
+                                        }
 
-                                // Example usage during an AJAX request or navigation
-                                document.addEventListener('DOMContentLoaded', () => {
-                                    document.querySelectorAll('a, form').forEach(element => {
-                                        element.addEventListener('click', (event) => {
-                                            const target = event.target;
+                                        // Example usage during an AJAX request or navigation
+                                        document.addEventListener('DOMContentLoaded', () => {
+                                            document.querySelectorAll('a, form').forEach(element => {
+                                                element.addEventListener('click', (event) => {
+                                                    const target = event.target;
 
-                                            const tagName = target.tagName.toLowerCase();
+                                                    const tagName = target.tagName.toLowerCase();
 
-                                            // Avoid spinner for specific tags or elements with the 'no-spinner' class
-                                            if (
-                                                !['input', 'select', 'textarea', 'p','h1','h2','h3','label'].includes(tagName) &&
-                                                !target.classList.contains('no-spinner') &&
-                                                !target.closest('.no-spinner')
-                                            ) {
-                                                showSpinner();
+                                                    // Avoid spinner for specific tags or elements with the 'no-spinner' class
+                                                    if (
+                                                        !['input', 'select', 'textarea', 'p', 'h1', 'h2', 'h3', 'label'].includes(tagName) &&
+                                                        !target.classList.contains('no-spinner') &&
+                                                        !target.closest('.no-spinner')
+                                                    ) {
+                                                        showSpinner();
+                                                    }
+                                                });
+                                            });
+                                        });
+                                        // Check for SpeechRecognition API support
+                                        const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+
+                                        if (SpeechRecognition) {
+                                            const recognition = new SpeechRecognition();
+                                            recognition.continuous = false; // Recognizes a single phrase
+                                            recognition.lang = 'en-US'; // Language for speech recognition
+                                            recognition.interimResults = false; // Do not show interim results
+
+                                            const voiceBtn = document.getElementById('voice-btn');
+                                            const searchInput = document.getElementById('search-input');
+                                            const searchButton = document.querySelector('button[type="submit"]'); // Select the search button
+
+                                            // Start speech recognition on button click
+                                            voiceBtn.addEventListener('click', () => {
+                                                recognition.start();
+                                                voiceBtn.classList.add('active'); // Optional: Add a class to indicate active state
+                                            });
+
+                                            // Capture speech recognition result
+                                            recognition.addEventListener('result', (event) => {
+                                                const transcript = event.results[0][0].transcript; // Get the recognized text
+                                                searchInput.value = transcript; // Set the recognized text to the search input
+                                            });
+
+                                            // Handle errors during speech recognition
+                                            recognition.addEventListener('error', (event) => {
+                                                console.error('Speech recognition error:', event.error);
+                                                alert('Error occurred while recognizing your speech. Please try again.');
+                                            });
+
+                                            // Trigger the search button click after speech recognition ends
+                                            recognition.addEventListener('end', () => {
+                                                voiceBtn.classList.remove('active'); // Remove active state
+                                                if (searchInput.value.trim() !== '') {
+                                                    searchButton.click(); // Simulate click on the search button
+                                                }
+                                            });
+                                        } else {
+                                            console.warn('Speech Recognition API not supported in this browser.');
+                                        }
+
+                                        document.getElementById("search-input").addEventListener("input", async function () {
+                                            const query = this.value.trim();
+                                            const suggestionsList = document.getElementById("suggestions");
+
+                                            // Clear suggestions if the input is erased
+                                            if (query.length === 0) {
+                                                suggestionsList.innerHTML = ""; // Clear the suggestions list
+                                                suggestionsList.style.display = "none"; // Hide the suggestions dropdown
+                                                return; // Stop further processing
+                                            }
+
+                                            try {
+                                                // Fetch matching items from the server
+                                                const response = await fetch(`/items/autocomplete?keyword=${encodeURIComponent(query)}`);
+                                                const suggestions = await response.json();
+
+                                                // Populate suggestions dropdown
+                                                suggestionsList.innerHTML = ""; // Clear existing suggestions
+                                                suggestions.forEach(item => {
+                                                    const li = document.createElement("li");
+                                                    li.className = "list-group-item";
+                                                    li.textContent = item.title;
+
+                                                    // On click, set the input value and submit the form
+                                                    li.onclick = () => {
+                                                        const searchInput = document.getElementById("search-input");
+                                                        searchInput.value = item.title;
+                                                        suggestionsList.style.display = "none";
+
+                                                        // Find the form element and submit it
+                                                        const searchForm = searchInput.closest("form");
+                                                        if (searchForm) {
+                                                            searchForm.submit();
+                                                        }
+                                                    };
+
+                                                    suggestionsList.appendChild(li);
+                                                });
+
+                                                suggestionsList.style.display = "block";
+                                            } catch (error) {
+                                                console.error("Error fetching autocomplete suggestions:", error);
                                             }
                                         });
-                                    });
-                                });
-                                // Check for SpeechRecognition API support
-                                const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
 
-                                if (SpeechRecognition) {
-                                    const recognition = new SpeechRecognition();
-                                    recognition.continuous = false; // Recognizes a single phrase
-                                    recognition.lang = 'en-US'; // Language for speech recognition
-                                    recognition.interimResults = false; // Do not show interim results
-
-                                    const voiceBtn = document.getElementById('voice-btn');
-                                    const searchInput = document.getElementById('search-input');
-                                    const searchButton = document.querySelector('button[type="submit"]'); // Select the search button
-
-                                    // Start speech recognition on button click
-                                    voiceBtn.addEventListener('click', () => {
-                                        recognition.start();
-                                        voiceBtn.classList.add('active'); // Optional: Add a class to indicate active state
-                                    });
-
-                                    // Capture speech recognition result
-                                    recognition.addEventListener('result', (event) => {
-                                        const transcript = event.results[0][0].transcript; // Get the recognized text
-                                        searchInput.value = transcript; // Set the recognized text to the search input
-                                    });
-
-                                    // Handle errors during speech recognition
-                                    recognition.addEventListener('error', (event) => {
-                                        console.error('Speech recognition error:', event.error);
-                                        alert('Error occurred while recognizing your speech. Please try again.');
-                                    });
-
-                                    // Trigger the search button click after speech recognition ends
-                                    recognition.addEventListener('end', () => {
-                                        voiceBtn.classList.remove('active'); // Remove active state
-                                        if (searchInput.value.trim() !== '') {
-                                            searchButton.click(); // Simulate click on the search button
-                                        }
-                                    });
-                                } else {
-                                    console.warn('Speech Recognition API not supported in this browser.');
-                                }
-
-                                document.getElementById("search-input").addEventListener("input", async function () {
-                                const query = this.value.trim();
-                                const suggestionsList = document.getElementById("suggestions");
-                                                            
-                                // Clear suggestions if the input is erased
-                                if (query.length === 0) {
-                                    suggestionsList.innerHTML = ""; // Clear the suggestions list
-                                    suggestionsList.style.display = "none"; // Hide the suggestions dropdown
-                                    return; // Stop further processing
-                                }
-                            
-                                try {
-                                    // Fetch matching items from the server
-                                    const response = await fetch(`/items/autocomplete?keyword=${encodeURIComponent(query)}`);
-                                    const suggestions = await response.json();
-                                
-                                    // Populate suggestions dropdown
-                                    suggestionsList.innerHTML = ""; // Clear existing suggestions
-                                    suggestions.forEach(item => {
-                                        const li = document.createElement("li");
-                                        li.className = "list-group-item";
-                                        li.textContent = item.title;
-                                    
-                                        // On click, set the input value and submit the form
-                                        li.onclick = () => {
-                                            const searchInput = document.getElementById("search-input");
-                                            searchInput.value = item.title;
-                                            suggestionsList.style.display = "none";
-                                        
-                                            // Find the form element and submit it
-                                            const searchForm = searchInput.closest("form");
-                                            if (searchForm) {
-                                                searchForm.submit();
+                                        // Hide suggestions on click outside
+                                        document.addEventListener("click", (e) => {
+                                            if (!e.target.closest(".input-group")) {
+                                                document.getElementById("suggestions").style.display = "none";
                                             }
-                                        };
-                                    
-                                        suggestionsList.appendChild(li);
-                                    });
-                                
-                                    suggestionsList.style.display = "block";
-                                } catch (error) {
-                                    console.error("Error fetching autocomplete suggestions:", error);
-                                }
-                            });
+                                        });
+                                        document.addEventListener("DOMContentLoaded", function () {
+                                            const placeholderTexts = ["Pizza", "Burger", "Chowmein", "Momos", "Cakes", "Sweets"];
+                                            let index = 0;
+                                            let charIndex = 0;
+                                            let isErasing = false;
+                                            const searchInput = document.getElementById("search-input");
 
-                            // Hide suggestions on click outside
-                            document.addEventListener("click", (e) => {
-                                if (!e.target.closest(".input-group")) {
-                                    document.getElementById("suggestions").style.display = "none";
-                                }
-                            });
+                                            function typeEffect() {
+                                                const currentText = placeholderTexts[index];
+
+                                                if (!isErasing) {
+                                                    searchInput.setAttribute("placeholder", currentText.substring(0, charIndex + 1));
+                                                    charIndex++;
+
+                                                    if (charIndex === currentText.length) {
+                                                        isErasing = true;
+                                                        setTimeout(typeEffect, 3000); // Short pause before erasing
+                                                    } else {
+                                                        setTimeout(typeEffect, 100); // Typing speed
+                                                    }
+                                                } else {
+                                                    searchInput.setAttribute("placeholder", currentText.substring(0, charIndex - 1));
+                                                    charIndex--;
+
+                                                    if (charIndex === 0) {
+                                                        isErasing = false;
+                                                        index = (index + 1) % placeholderTexts.length;
+                                                        setTimeout(typeEffect, 500); // Move to next word quickly
+                                                    } else {
+                                                        setTimeout(typeEffect, 50); // Faster erasing speed
+                                                    }
+                                                }
+                                            }
+
+                                            typeEffect(); // Start animation
+                                        });
 
 
-                            </script>
 
-                            <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"
-                                integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz"
-                                crossorigin="anonymous"></script>
-                            <script src="/js/script.js"></script>
-                            <script src="/js/map.js"></script>
-                            <script src="/js/main.js"></script>
-                            <script>
-                                let tapCount = 0;
-                                let timeout;
-                            
-                                document.getElementById("tripleTapHeading").addEventListener("click", function () {
-                                    tapCount++;
-                            
-                                    if (tapCount === 5) {
-                                        window.location.href = "/employee/login"; // Replace with your desired URL
-                                        tapCount = 0;
-                                    }
-                            
-                                    clearTimeout(timeout);
-                                    timeout = setTimeout(() => {
-                                        tapCount = 0;
-                                    }, 500); // Reset tap count if more than 500ms passes between taps
-                                });
-                            </script>
+                                    </script>
+
+                                    <script
+                                        src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"
+                                        integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz"
+                                        crossorigin="anonymous"></script>
+                                    <script src="/js/script.js"></script>
+                                    <script src="/js/map.js"></script>
+                                    <script src="/js/main.js"></script>
+                                    <script>
+                                        let tapCount = 0;
+                                        let timeout;
+
+                                        document.getElementById("tripleTapHeading").addEventListener("click", function () {
+                                            tapCount++;
+
+                                            if (tapCount === 5) {
+                                                window.location.href = "/employee/login"; // Replace with your desired URL
+                                                tapCount = 0;
+                                            }
+
+                                            clearTimeout(timeout);
+                                            timeout = setTimeout(() => {
+                                                tapCount = 0;
+                                            }, 500); // Reset tap count if more than 500ms passes between taps
+                                        });
+                                    </script>
 </body>
 
 </html>
