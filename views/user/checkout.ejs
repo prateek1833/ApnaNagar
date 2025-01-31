@@ -14,6 +14,7 @@
         <% }); %>
     <% } %>
     <% let totalPrice = sum + deliveryCost; %>
+    <% let minOrderAmount = user.distance * 30; %>
     <div class="accordion" id="accordionExample" >
         <div class="accordion-item" style="padding: 10px;">
             <h2 class="accordion-header">
@@ -28,7 +29,12 @@
                     <% if (order && order.length > 0) { %>
                         <div class="d-flex flex-row align-items-center justify-content-between w-100">
                             <form method="POST" action="/order/checkout" class="mb-0">
-                                <button class="btn btn-success ms-3 shadow-sm show-spinner" style="border-radius: 5px;">Place Order</button>
+                                <button class="btn btn-success ms-3 shadow-sm show-spinner" 
+                                    style="border-radius: 5px;" 
+                                    id="placeOrderButton"
+                                    <% if (user.distance < 3 && totalPrice < minOrderAmount) { %>disabled<% } %>>
+                                    Place Order
+                                </button>
                             </form>
                             <span class="me-auto fs-3 text-muted ms-3" style="color:#d9534f!important;">
                                 Total: <strong >₹<%= totalPrice.toLocaleString("en-IN") %></strong>
@@ -51,7 +57,7 @@
                                     <th>Type</th>
                                     <th>Price</th>
                                     <th>Quant.</th>
-                                    <th>Rate (&#8377;)</th>
+                                    <th>Rate (₹)</th>
                                 </tr>
                             </thead>
                             <tbody>
@@ -59,7 +65,7 @@
                                     <tr>
                                         <td><%= orderItem.title %></td>
                                         <td><%= orderItem.detail.typ %></td>
-                                        <td><%= orderItem.detail.price.toLocaleString("en-IN") %> &#8377;/<%= orderItem.unit %></td>
+                                        <td><%= orderItem.detail.price.toLocaleString("en-IN") %> ₹/<%= orderItem.unit %></td>
                                         <td><%= orderItem.quantity.toLocaleString("en-IN") %> <%= orderItem.unit %></td>
                                         <td><%= (orderItem.quantity * orderItem.detail.price).toLocaleString("en-IN") %></td>
                                     </tr>
@@ -80,35 +86,15 @@
                                 </tr>
                             </tbody>
                         </table>
-                        
-                    <% } else { %>
-                        <p>No items in the cart</p>
-                    <% } %>
+                        <% } else { %>
+                            <p>No items in the cart</p>
+                            <% } %>
+                        </div>
+                    </div>
                 </div>
-            </div>
-        </div>
+                <% if (user.distance < 3 && totalPrice < minOrderAmount) { %>
+                    <p class="text-danger text-center">Minimum order amount should be ₹<%= Math.ceil(minOrderAmount.toLocaleString("en-IN")) %></p>
+                <% } %>
     </div>
     </div>
 <% } %>
-
-<script>
-   document.addEventListener('DOMContentLoaded', () => {
-    document.querySelectorAll('form').forEach(form => {
-        form.addEventListener('submit', (event) => {
-            event.preventDefault(); // Prevent default form submission
-            showSpinner(); // Show the spinner
-            setTimeout(() => {
-                form.submit(); // Submit the form after showing the spinner
-            }, 100); // Delay to allow spinner to appear
-        });
-    });
-});
-
-// Spinner function (define this)
-function showSpinner() {
-    const spinnerOverlay = document.querySelector('.spinner-overlay'); // Ensure spinner-overlay exists
-    if (spinnerOverlay) {
-        spinnerOverlay.classList.add('active');
-    }
-}
-</script>

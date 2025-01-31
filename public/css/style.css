@@ -19,7 +19,7 @@ body {
 
 /* footer  */
 .fa-unity {
-    color: #fe424d;
+    color: #6A0DAD;
     font-size: 3rem;
 }
 
@@ -109,7 +109,7 @@ body {
 }
 
 .add-btn {
-    background-color: #fe424d !important;
+    background-color: #6A0DAD !important;
     border: none !important;
 }
 
@@ -122,9 +122,9 @@ body {
 }
 .mhs{
     padding:1% 35% 0 35%;
-    color: #fe424d;
+    color: #6A0DAD;
 }
 h3, h4 {
-    color: #ff4e50 !important;
+    color: #6A0DAD !important;
     font-weight: bold !important;
 }
