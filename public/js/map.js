@@ -248,7 +248,7 @@ function createCustomMarker(iconUrl) {
 }
 // Add markers for each place
 places.forEach(place => {
-    const customMarker = createCustomMarker('https://res.cloudinary.com/dzrxswqur/image/upload/v1736961356/location_spbdc5.png'); // Custom marker image
+    const customMarker = createCustomMarker('https://res.cloudinary.com/dzrxswqur/image/upload/v1738348686/location_hgwkqm.png'); // Custom marker image
 
     // Add marker to the map
     new mapboxgl.Marker({ element: customMarker })

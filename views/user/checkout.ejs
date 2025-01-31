@@ -93,7 +93,7 @@
                     </div>
                 </div>
                 <% if (user.distance < 3 && totalPrice < minOrderAmount) { %>
-                    <p class="text-danger text-center">Minimum order amount should be ₹<%= Math.ceil(minOrderAmount.toLocaleString("en-IN")) %></p>
+                    <p class="text-danger text-center">Min order amount should be <strong>₹<%= Math.ceil(minOrderAmount.toLocaleString("en-IN")) %></strong> for free delivery</p>
                 <% } %>
     </div>
     </div>
