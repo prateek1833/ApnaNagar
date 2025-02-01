@@ -14,7 +14,7 @@
     </style>
 
 
-    <div id="filters" style="margin: 0 -15px 0 -15px;">
+    <div id="filters" style="margin: 0 -24px 0 -24px;">
         <% const filters=[ { name: "Burger" , search: "burger" ,
             img: "https://res.cloudinary.com/dzrxswqur/image/upload/v1735018802/burger_ajrdgn.png" }, { name: "Pizza" ,
             search: "pizza" ,
@@ -47,7 +47,7 @@
         <button class="btn" type="submit"><i class="fa-solid fa-magnifying-glass" style="display: none;"></i></button>
     </form>
 
-    <div id="carouselExampleIndicators" class="carousel slide" data-bs-ride="carousel" data-bs-interval="2000">
+    <div id="carouselExampleIndicators" class="carousel slide" data-bs-ride="carousel" data-bs-interval="2000" style="margin: 0 -20px 0 -20px;">
         <div class="carousel-indicators">
             <button type="button" data-bs-target="#carouselExampleIndicators" data-bs-slide-to="0" class="active"
                 aria-current="true" aria-label="Slide 1"></button>
@@ -167,7 +167,7 @@
                                             const year = new Date().getFullYear();
                                             const month = new Date().getMonth() + 1;
                                             const day = new Date().getDate();
-                                            const url = `https://calendarific.com/api/v2/holidays?api_key=${apiKey}&country=${country}&year=${year}&month=${01}&day=${01}`;
+                                            const url = `https://calendarific.com/api/v2/holidays?api_key=${apiKey}&country=${country}&year=${year}&month=${month}&day=${day}`;
 
                                             try {
                                                 const response = await fetch(url);
