@@ -40,15 +40,7 @@
     border-color: #6A0DAD;
     }
 
-    .add-btn {
-        background-color: #6A0DAD;
-        border-color: #6A0DAD;
-    }
 
-    .add-btn:hover {
-        background-color: #6A0DAD;
-        border-color: #6A0DAD;
-    }
 
     .starability-growRotate .input-no-rate:checked~label,
     .starability-growRotate .input-no-rate:checked~label~label,
@@ -103,10 +95,7 @@
         color: #6A0DAD;
         font-weight: bold;
     }
-    .buy-btn{
-        background-color: #FF6F61 !important;
-        color: white;
-    }
+    
     .custom-radio-group {
                         flex-wrap: nowrap; /* Prevent wrapping to keep items in one row */
                     }
@@ -205,7 +194,7 @@
                         <input type="text" name="selectedType" id="selectedTypeBuyNow" value="<%= item.detail[0].typ %>" hidden>
                         <input type="number" name="quantity" id="quantityBuyNow" value="1" hidden>
                         <div class="d-grid gap-2 col-6 mx-auto mt-2">
-                            <button type="submit" class="btn btn-warning buy-btn"><b>Buy Now</b></button>
+                            <button type="submit" class="btn btn-warning light-btn"><b>Buy Now</b></button>
                         </div>
                     </form>
                 <% } %>

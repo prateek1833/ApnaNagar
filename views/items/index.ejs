@@ -47,7 +47,8 @@
         <button class="btn" type="submit"><i class="fa-solid fa-magnifying-glass" style="display: none;"></i></button>
     </form>
 
-    <div id="carouselExampleIndicators" class="carousel slide" data-bs-ride="carousel" data-bs-interval="2000" style="margin: 0 -20px 0 -20px;">
+    <div id="carouselExampleIndicators" class="carousel slide" data-bs-ride="carousel" data-bs-interval="2000"
+        style="margin: 0 -20px 0 -20px;">
         <div class="carousel-indicators">
             <button type="button" data-bs-target="#carouselExampleIndicators" data-bs-slide-to="0" class="active"
                 aria-current="true" aria-label="Slide 1"></button>
@@ -161,31 +162,70 @@
                         }
                     });
                 });
+                const apiKeys = ["0SH7c1V3IFq8m0LHs14iJRCN3ztNJ3wA", "IWwlA4RiVGiAehfVj5G9Zmd8C1PvVg8a"]; // Replace with actual API keys
+                const country = "IN";
+                const today = new Date();
+                const year = today.getFullYear();
+                const month = today.getMonth() + 1;
+                const day = today.getDate();
+                const urlBase = `https://calendarific.com/api/v2/holidays?country=${country}&year=${year}&month=${month}&day=${day}`;
+
+                // Retrieve API usage data
+                let apiUsage = JSON.parse(localStorage.getItem("apiUsage")) || { 0: 0, 1: 0 };
+                let lastMonth = localStorage.getItem("lastMonth");
+
+                // Reset API usage at the start of a new month
+                if (lastMonth !== month.toString()) {
+                    apiUsage = { 0: 0, 1: 0 };
+                    localStorage.setItem("lastMonth", month.toString());
+                }
+
+                // Select API key based on usage
+                let apiIndex = apiUsage[0] < 500 ? 0 : apiUsage[1] < 500 ? 1 : null;
+
                 async function fetchHoliday() {
-                                            const apiKey = "0SH7c1V3IFq8m0LHs14iJRCN3ztNJ3wA"; // Replace with your actual API key
-                                            const country = "IN"; // Change if needed
-                                            const year = new Date().getFullYear();
-                                            const month = new Date().getMonth() + 1;
-                                            const day = new Date().getDate();
-                                            const url = `https://calendarific.com/api/v2/holidays?api_key=${apiKey}&country=${country}&year=${year}&month=${month}&day=${day}`;
+                    if (apiIndex === null) {
+                        console.log("API limit reached for both keys this month.");
+                        return;
+                    }
 
-                                            try {
-                                                const response = await fetch(url);
-                                                const data = await response.json();
+                    const url = `${urlBase}&api_key=${apiKeys[apiIndex]}`;
 
-                                                // Check if response exists and contains holidays
-                                                if (data.response && data.response.holidays && data.response.holidays.length > 0) {
-                                                    document.getElementById("holidayapi").innerHTML = `
-                                            <h5 class="mt-2">🎉 It is ${data.response.holidays[0].name}!</h5>
-                                            <p style="margin:0;">Celebrate and party with your loved ones</p>`;
-                                                }
+                    const storedData = localStorage.getItem("holidayData");
+                    const storedDate = localStorage.getItem("holidayDate");
 
-                                            } catch (error) {
-                                                console.log("Error fetching holiday data:", error);
-                                            }
-                                        }
+                    if (storedData && storedDate === `${year}-${month}-${day}`) {
+                        displayHoliday(JSON.parse(storedData));
+                        return;
+                    }
 
-                                        fetchHoliday();
+                    try {
+                        const response = await fetch(url);
+                        const data = await response.json();
+
+                        if (data.response && data.response.holidays && data.response.holidays.length > 0) {
+                            localStorage.setItem("holidayData", JSON.stringify(data.response.holidays[0]));
+                            localStorage.setItem("holidayDate", `${year}-${month}-${day}`);
+
+                            // Increment API usage counter
+                            apiUsage[apiIndex]++;
+                            localStorage.setItem("apiUsage", JSON.stringify(apiUsage));
+
+                            displayHoliday(data.response.holidays[0]);
+                        }
+                    } catch (error) {
+                        console.log("Error fetching holiday data:", error);
+                    }
+                }
+
+                function displayHoliday(holiday) {
+                    document.getElementById("holidayapi").innerHTML = `
+        <h5 class="mt-2">🎉 It is ${holiday.name}!</h5>
+        <p style="margin:0;">Celebrate and party with your loved ones</p>`;
+                }
+
+                fetchHoliday();
+
             </script>
 
             <style>

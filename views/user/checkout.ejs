@@ -29,7 +29,7 @@
                     <% if (order && order.length > 0) { %>
                         <div class="d-flex flex-row align-items-center justify-content-between w-100">
                             <form method="POST" action="/order/checkout" class="mb-0">
-                                <button class="btn btn-success ms-3 shadow-sm show-spinner" 
+                                <button class="btn add-btn show-spinner" 
                                     style="border-radius: 5px;" 
                                     id="placeOrderButton"
                                     <% if (user.distance < 3 && totalPrice < minOrderAmount) { %>disabled<% } %>>

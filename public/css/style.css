@@ -111,6 +111,11 @@ body {
 .add-btn {
     background-color: #6A0DAD !important;
     border: none !important;
+    color: white !important;
+}
+.light-btn{
+    background-color: #FF6F61 !important;
+    color: white !important;
 }
 
 .show-img {
