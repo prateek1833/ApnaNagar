@@ -3,7 +3,7 @@
 
     <style>
         .holiday-wish {
-            color: 6A0DAD;
+            color: #6A0DAD;
             font-size: 18px;
             /* font-weight: bold; */
             text-align: center;
@@ -14,7 +14,7 @@
     </style>
 
 
-    <div id="filters">
+    <div id="filters" style="margin: 0 -15px 0 -15px;">
         <% const filters=[ { name: "Burger" , search: "burger" ,
             img: "https://res.cloudinary.com/dzrxswqur/image/upload/v1735018802/burger_ajrdgn.png" }, { name: "Pizza" ,
             search: "pizza" ,
@@ -167,7 +167,7 @@
                                             const year = new Date().getFullYear();
                                             const month = new Date().getMonth() + 1;
                                             const day = new Date().getDate();
-                                            const url = `https://calendarific.com/api/v2/holidays?api_key=${apiKey}&country=${country}&year=${year}&month=${month}&day=${day}`;
+                                            const url = `https://calendarific.com/api/v2/holidays?api_key=${apiKey}&country=${country}&year=${year}&month=${01}&day=${01}`;
 
                                             try {
                                                 const response = await fetch(url);
@@ -176,7 +176,7 @@
                                                 // Check if response exists and contains holidays
                                                 if (data.response && data.response.holidays && data.response.holidays.length > 0) {
                                                     document.getElementById("holidayapi").innerHTML = `
-                                            <h5>🎉 It is ${data.response.holidays[0].name}!</h5>
+                                            <h5 class="mt-2">🎉 It is ${data.response.holidays[0].name}!</h5>
                                             <p style="margin:0;">Celebrate and party with your loved ones</p>`;
                                                 }
 
