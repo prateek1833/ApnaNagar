@@ -160,6 +160,7 @@
                 box-shadow: 0.2em -0.2em 0 0 currentcolor;
             }
         }
+        
 
         .voice-btn {
             background-color: white;
@@ -237,6 +238,16 @@
             opacity: 0;
             transform: translateY(-100%);
         }
+        .close-btn {
+        position: absolute;
+        top: 10px;
+        right: 10px;
+        color: #6A0DAD;
+        border: none;
+        padding: 5px 10px;
+        cursor: pointer;
+        font-size: 16px;
+    }
     </style>
 </head>
 
@@ -244,6 +255,7 @@
     <!-- Fullscreen Spinner -->
     <div id="spinner-overlay" class="spinner-overlay">
         <div class="loader"></div>
+        <button id="close-spinner" class="close-btn">✖</button>
     </div>
 
     <div class="header">
@@ -294,6 +306,7 @@
 
                                                 <script>
                                                     const spinnerOverlay = document.getElementById('spinner-overlay');
+                                                    const closeSpinnerBtn = document.getElementById('close-spinner');
                                                     let spinnerTimeout;
 
                                                     // Show Spinner
@@ -309,6 +322,7 @@
                                                         spinnerOverlay.classList.remove('active');
                                                         clearTimeout(spinnerTimeout);
                                                     }
+                                                    closeSpinnerBtn.addEventListener('click', hideSpinner);
 
                                                     // Example usage during an AJAX request or navigation
                                                     document.addEventListener('DOMContentLoaded', () => {

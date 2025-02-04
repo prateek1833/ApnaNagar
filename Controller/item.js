@@ -145,7 +145,7 @@ module.exports.search = async (req, res) => {
         });
 
         // Render the page with updated items
-        res.render("items/index.ejs", { allItem: updatedItems });
+        res.render("items/index.ejs", { allItem: updatedItems, allRestaurant: {} });
     } catch (err) {
         console.error("Error during search:", err);
         res.status(500).send("Internal Server Error");
