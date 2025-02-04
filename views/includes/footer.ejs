@@ -1,6 +1,5 @@
-<footer>
-    <div style="height: 100px;">
-    </div>
+<footer id="footer">
+    <div style="height: 100px;"></div>
     <% if(currUser && currUser.type && (currUser.type==="User")) { %>
     <nav class="navbar navbar-expand-lg fixed-bottom navbar-custom">
         <div class="container-fluid d-flex justify-content-between align-items-center">
@@ -24,3 +23,33 @@
     </nav>
     <% } %>
 </footer>
+
+<style>
+    #footer {
+        position: fixed;
+        bottom: 0;
+        width: 100%;
+        transition: transform 0.4s ease-in-out, opacity 0.4s ease-in-out;
+    }
+    .hide-footer {
+        transform: translateY(100%);
+        opacity: 0;
+    }
+</style>
+
+<script>
+    let lastScrollTop = 0;
+    const footer = document.getElementById('footer');
+
+    window.addEventListener("scroll", function() {
+        let scrollTop = window.pageYOffset || document.documentElement.scrollTop;
+        if (scrollTop > lastScrollTop) {
+            // User is scrolling down, hide footer smoothly
+            footer.classList.add("hide-footer");
+        } else {
+            // User is scrolling up, show footer smoothly
+            footer.classList.remove("hide-footer");
+        }
+        lastScrollTop = scrollTop;
+    });
+</script>

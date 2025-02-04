@@ -30,4 +30,32 @@
         font-weight: bolder;
         color: #6A0DAD;
     }
+    .hide-element {
+        transform: translateY(100%);
+        opacity: 0;
+        transition: transform 0.4s ease-in-out, opacity 0.4s ease-in-out;
+    }
 </style>
+<script>
+    let lastScrollTop = 0;
+    const cartContainer = document.getElementById('cart-container');
+
+    window.addEventListener("scroll", function() {
+        let scrollTop = window.pageYOffset || document.documentElement.scrollTop;
+
+        if (scrollTop > lastScrollTop) {
+            // Scrolling down - Hide footer and cart
+            footer.classList.add("hide-element");
+            if (cartContainer) {
+                cartContainer.classList.add("hide-element");
+            }
+        } else {
+            // Scrolling up - Show footer and cart
+            footer.classList.remove("hide-element");
+            if (cartContainer) {
+                cartContainer.classList.remove("hide-element");
+            }
+        }
+        lastScrollTop = scrollTop;
+    });
+</script>
