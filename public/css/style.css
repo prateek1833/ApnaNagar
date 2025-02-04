@@ -119,6 +119,7 @@ body {
 .light-btn {
     background-color: #FF6F61 !important;
     color: white !important;
+    border: none !important;
 }
 
 .show-img {

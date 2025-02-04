@@ -27,7 +27,7 @@
         }
 
         .header {
-            background: linear-gradient(to right, #FF6F61,#6A0DAD);
+            background: linear-gradient(to right, #FF6F61, #6A0DAD);
             color: white;
             text-align: center;
             padding: 10px 0;
@@ -179,7 +179,7 @@
         #suggestions {
             max-height: 200px;
             overflow-y: auto;
-            width: 100%;
+            width: 115%;
             border: 1px solid #ddd;
             border-radius: 5px;
             background-color: #fff;
@@ -280,213 +280,236 @@
             <%- include("../views/includes/flash.ejs") %>
                 <%- body %>
         </div>
-        <% if(currUser && currUser.type && currUser.type==="Restaurant" ){%>
-            <%- include("../views/includes/footerRes.ejs") %>
-                <%}else if(!currUser || (currUser && currUser.type && (currUser.type==="User" )) ){%>
-                    <%- include("../views/includes/footer.ejs") %>
-                        <%}else if(!currUser || (currUser && currUser.type && (currUser.type==="Owner" )) ){%>
-                            <%- include("../views/includes/footerOwn.ejs") %>
-                                <% }else if(!currUser || (currUser && currUser.type && (currUser.type==="Delivery Boy" )) ){ %>
-                                    <%- include("../views/includes/footerEmp.ejs") %>
-                                    <% } %>
+        <%- include("../views/includes/cart.ejs") %>
+            <% if(currUser && currUser.type && currUser.type==="Restaurant" ){%>
+                <%- include("../views/includes/footerRes.ejs") %>
+                    <%}else if(!currUser || (currUser && currUser.type && (currUser.type==="User" )) ){%>
+                        <%- include("../views/includes/footer.ejs") %>
+                            <%}else if(!currUser || (currUser && currUser.type && (currUser.type==="Owner" )) ){%>
+                                <%- include("../views/includes/footerOwn.ejs") %>
+                                    <% }else if(!currUser || (currUser && currUser.type &&
+                                        (currUser.type==="Delivery Boy" )) ){ %>
+                                        <%- include("../views/includes/footerEmp.ejs") %>
+                                            <% } %>
 
-                                    <script>
-                                        const spinnerOverlay = document.getElementById('spinner-overlay');
-                                        let spinnerTimeout;
+                                                <script>
+                                                    const spinnerOverlay = document.getElementById('spinner-overlay');
+                                                    let spinnerTimeout;
 
-                                        // Show Spinner
-                                        function showSpinner() {
-                                            spinnerOverlay.classList.add('active');
+                                                    // Show Spinner
+                                                    function showSpinner() {
+                                                        spinnerOverlay.classList.add('active');
 
-                                            // Ensure spinner hides after 30 seconds max
-                                            spinnerTimeout = setTimeout(hideSpinner, 30000);
-                                        }
-
-                                        // Hide Spinner
-                                        function hideSpinner() {
-                                            spinnerOverlay.classList.remove('active');
-                                            clearTimeout(spinnerTimeout);
-                                        }
-
-                                        // Example usage during an AJAX request or navigation
-                                        document.addEventListener('DOMContentLoaded', () => {
-                                            document.querySelectorAll('a, form').forEach(element => {
-                                                element.addEventListener('click', (event) => {
-                                                    const target = event.target;
-
-                                                    const tagName = target.tagName.toLowerCase();
-
-                                                    // Avoid spinner for specific tags or elements with the 'no-spinner' class
-                                                    if (
-                                                        !['input', 'select', 'textarea', 'p', 'h1', 'h2', 'h3', 'label'].includes(tagName) &&
-                                                        !target.classList.contains('no-spinner') &&
-                                                        !target.closest('.no-spinner')
-                                                    ) {
-                                                        showSpinner();
+                                                        // Ensure spinner hides after 30 seconds max
+                                                        spinnerTimeout = setTimeout(hideSpinner, 30000);
                                                     }
-                                                });
-                                            });
-                                        });
-                                        // Check for SpeechRecognition API support
-                                        const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
 
-                                        if (SpeechRecognition) {
-                                            const recognition = new SpeechRecognition();
-                                            recognition.continuous = false; // Recognizes a single phrase
-                                            recognition.lang = 'en-US'; // Language for speech recognition
-                                            recognition.interimResults = false; // Do not show interim results
+                                                    // Hide Spinner
+                                                    function hideSpinner() {
+                                                        spinnerOverlay.classList.remove('active');
+                                                        clearTimeout(spinnerTimeout);
+                                                    }
 
-                                            const voiceBtn = document.getElementById('voice-btn');
-                                            const searchInput = document.getElementById('search-input');
-                                            const searchButton = document.querySelector('button[type="submit"]'); // Select the search button
+                                                    // Example usage during an AJAX request or navigation
+                                                    document.addEventListener('DOMContentLoaded', () => {
+                                                        document.querySelectorAll('a, form').forEach(element => {
+                                                            element.addEventListener('click', (event) => {
+                                                                const target = event.target;
 
-                                            // Start speech recognition on button click
-                                            voiceBtn.addEventListener('click', () => {
-                                                recognition.start();
-                                                voiceBtn.classList.add('active'); // Optional: Add a class to indicate active state
-                                            });
+                                                                const tagName = target.tagName.toLowerCase();
 
-                                            // Capture speech recognition result
-                                            recognition.addEventListener('result', (event) => {
-                                                const transcript = event.results[0][0].transcript; // Get the recognized text
-                                                searchInput.value = transcript; // Set the recognized text to the search input
-                                            });
+                                                                // Avoid spinner for specific tags or elements with the 'no-spinner' class
+                                                                if (
+                                                                    !['input', 'select', 'textarea', 'p', 'h1', 'h2', 'h3', 'label'].includes(tagName) &&
+                                                                    !target.classList.contains('no-spinner') &&
+                                                                    !target.closest('.no-spinner')
+                                                                ) {
+                                                                    showSpinner();
+                                                                }
+                                                            });
+                                                        });
+                                                    });
+                                                    // Check for SpeechRecognition API support
+                                                    const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
 
-                                            // Handle errors during speech recognition
-                                            recognition.addEventListener('error', (event) => {
-                                                console.error('Speech recognition error:', event.error);
-                                                alert('Error occurred while recognizing your speech. Please try again.');
-                                            });
+                                                    if (SpeechRecognition) {
+                                                        const recognition = new SpeechRecognition();
+                                                        recognition.continuous = false; // Recognizes a single phrase
+                                                        recognition.lang = 'en-US'; // Language for speech recognition
+                                                        recognition.interimResults = false; // Do not show interim results
 
-                                            // Trigger the search button click after speech recognition ends
-                                            recognition.addEventListener('end', () => {
-                                                voiceBtn.classList.remove('active'); // Remove active state
-                                                if (searchInput.value.trim() !== '') {
-                                                    searchButton.click(); // Simulate click on the search button
-                                                }
-                                            });
-                                        } else {
-                                            console.warn('Speech Recognition API not supported in this browser.');
-                                        }
+                                                        const voiceBtn = document.getElementById('voice-btn');
+                                                        const searchInput = document.getElementById('search-input');
+                                                        const searchButton = document.querySelector('button[type="submit"]'); // Select the search button
 
-                                        document.getElementById("search-input").addEventListener("input", async function () {
-                                            const query = this.value.trim();
-                                            const suggestionsList = document.getElementById("suggestions");
+                                                        // Start speech recognition on button click
+                                                        voiceBtn.addEventListener('click', () => {
+                                                            recognition.start();
+                                                            voiceBtn.classList.add('active'); // Optional: Add a class to indicate active state
+                                                        });
 
-                                            // Clear suggestions if the input is erased
-                                            if (query.length === 0) {
-                                                suggestionsList.innerHTML = ""; // Clear the suggestions list
-                                                suggestionsList.style.display = "none"; // Hide the suggestions dropdown
-                                                return; // Stop further processing
-                                            }
+                                                        // Capture speech recognition result
+                                                        recognition.addEventListener('result', (event) => {
+                                                            const transcript = event.results[0][0].transcript; // Get the recognized text
+                                                            searchInput.value = transcript; // Set the recognized text to the search input
+                                                        });
 
-                                            try {
-                                                // Fetch matching items from the server
-                                                const response = await fetch(`/items/autocomplete?keyword=${encodeURIComponent(query)}`);
-                                                const suggestions = await response.json();
+                                                        // Handle errors during speech recognition
+                                                        recognition.addEventListener('error', (event) => {
+                                                            console.error('Speech recognition error:', event.error);
+                                                            alert('Error occurred while recognizing your speech. Please try again.');
+                                                        });
 
-                                                // Populate suggestions dropdown
-                                                suggestionsList.innerHTML = ""; // Clear existing suggestions
-                                                suggestions.forEach(item => {
-                                                    const li = document.createElement("li");
-                                                    li.className = "list-group-item";
-                                                    li.textContent = item.title;
+                                                        // Trigger the search button click after speech recognition ends
+                                                        recognition.addEventListener('end', () => {
+                                                            voiceBtn.classList.remove('active'); // Remove active state
+                                                            if (searchInput.value.trim() !== '') {
+                                                                searchButton.click(); // Simulate click on the search button
+                                                            }
+                                                        });
+                                                    } else {
+                                                        console.warn('Speech Recognition API not supported in this browser.');
+                                                    }
 
-                                                    // On click, set the input value and submit the form
-                                                    li.onclick = () => {
-                                                        const searchInput = document.getElementById("search-input");
-                                                        searchInput.value = item.title;
-                                                        suggestionsList.style.display = "none";
+                                                    document.getElementById("search-input").addEventListener("input", async function () {
+                                                        const query = this.value.trim();
+                                                        const suggestionsList = document.getElementById("suggestions");
 
-                                                        // Find the form element and submit it
-                                                        const searchForm = searchInput.closest("form");
-                                                        if (searchForm) {
-                                                            searchForm.submit();
+                                                        // Clear suggestions if the input is erased
+                                                        if (query.length === 0) {
+                                                            suggestionsList.innerHTML = ""; // Clear the suggestions list
+                                                            suggestionsList.style.display = "none"; // Hide the suggestions dropdown
+                                                            return; // Stop further processing
                                                         }
-                                                    };
 
-                                                    suggestionsList.appendChild(li);
-                                                });
+                                                        try {
+                                                            // Fetch matching items from the server
+                                                            const response = await fetch(`/items/autocomplete?keyword=${encodeURIComponent(query)}`);
+                                                            const suggestions = await response.json();
 
-                                                suggestionsList.style.display = "block";
-                                            } catch (error) {
-                                                console.error("Error fetching autocomplete suggestions:", error);
-                                            }
-                                        });
+                                                            // Populate suggestions dropdown
+                                                            suggestionsList.innerHTML = ""; // Clear existing suggestions
+                                                            suggestions.forEach(item => {
+                                                                const li = document.createElement("li");
+                                                                li.className = "list-group-item";
+                                                                li.textContent = item.title;
 
-                                        // Hide suggestions on click outside
-                                        document.addEventListener("click", (e) => {
-                                            if (!e.target.closest(".input-group")) {
-                                                document.getElementById("suggestions").style.display = "none";
-                                            }
-                                        });
-                                        document.addEventListener("DOMContentLoaded", function () {
-                                            const placeholderTexts = ["Pizza", "Burger", "Chowmein", "Momos", "Cakes", "Sweets"];
-                                            let index = 0;
-                                            let charIndex = 0;
-                                            let isErasing = false;
-                                            const searchInput = document.getElementById("search-input");
+                                                                // On click, set the input value and submit the form
+                                                                li.onclick = () => {
+                                                                    const searchInput = document.getElementById("search-input");
+                                                                    searchInput.value = item.title;
+                                                                    suggestionsList.style.display = "none";
 
-                                            function typeEffect() {
-                                                const currentText = placeholderTexts[index];
+                                                                    // Find the form element and submit it
+                                                                    const searchForm = searchInput.closest("form");
+                                                                    if (searchForm) {
+                                                                        searchForm.submit();
+                                                                    }
+                                                                };
 
-                                                if (!isErasing) {
-                                                    searchInput.setAttribute("placeholder", currentText.substring(0, charIndex + 1));
-                                                    charIndex++;
+                                                                suggestionsList.appendChild(li);
+                                                            });
 
-                                                    if (charIndex === currentText.length) {
-                                                        isErasing = true;
-                                                        setTimeout(typeEffect, 3000); // Short pause before erasing
-                                                    } else {
-                                                        setTimeout(typeEffect, 100); // Typing speed
+                                                            suggestionsList.style.display = "block";
+                                                        } catch (error) {
+                                                            console.error("Error fetching autocomplete suggestions:", error);
+                                                        }
+                                                    });
+
+                                                    // Hide suggestions on click outside
+                                                    document.addEventListener("click", (e) => {
+                                                        if (!e.target.closest(".input-group")) {
+                                                            document.getElementById("suggestions").style.display = "none";
+                                                        }
+                                                    });
+                                                    document.addEventListener("DOMContentLoaded", function () {
+                                                        const placeholderTexts = ["Pizza", "Burger", "Chowmein", "Momos", "Cakes", "Sweets"];
+                                                        let index = 0;
+                                                        let charIndex = 0;
+                                                        let isErasing = false;
+                                                        const searchInput = document.getElementById("search-input");
+
+                                                        function typeEffect() {
+                                                            const currentText = placeholderTexts[index];
+
+                                                            if (!isErasing) {
+                                                                searchInput.setAttribute("placeholder", currentText.substring(0, charIndex + 1));
+                                                                charIndex++;
+
+                                                                if (charIndex === currentText.length) {
+                                                                    isErasing = true;
+                                                                    setTimeout(typeEffect, 3000); // Short pause before erasing
+                                                                } else {
+                                                                    setTimeout(typeEffect, 100); // Typing speed
+                                                                }
+                                                            } else {
+                                                                searchInput.setAttribute("placeholder", currentText.substring(0, charIndex - 1));
+                                                                charIndex--;
+
+                                                                if (charIndex === 0) {
+                                                                    isErasing = false;
+                                                                    index = (index + 1) % placeholderTexts.length;
+                                                                    setTimeout(typeEffect, 500); // Move to next word quickly
+                                                                } else {
+                                                                    setTimeout(typeEffect, 50); // Faster erasing speed
+                                                                }
+                                                            }
+                                                        }
+
+                                                        typeEffect(); // Start animation
+                                                    });
+
+                                                    async function updateCart() {
+                                                        const response = await fetch('/cart-data');
+                                                        const cartItems = await response.json();
+
+                                                        let cartList = document.getElementById("cart-items");
+                                                        if (!cartList) return;
+
+                                                        let totalItems = cartItems.length;
+                                                        let totalAmount = cartItems.reduce((sum, item) => sum + item.detail.price, 0);
+
+                                                        cartList.innerHTML = `<p>${totalItems} items</p><p>₹${totalAmount}</p>`;
                                                     }
-                                                } else {
-                                                    searchInput.setAttribute("placeholder", currentText.substring(0, charIndex - 1));
-                                                    charIndex--;
 
-                                                    if (charIndex === 0) {
-                                                        isErasing = false;
-                                                        index = (index + 1) % placeholderTexts.length;
-                                                        setTimeout(typeEffect, 500); // Move to next word quickly
-                                                    } else {
-                                                        setTimeout(typeEffect, 50); // Faster erasing speed
+                                                    // Use requestAnimationFrame for smooth updates
+                                                    function updateCartSmoothly() {
+                                                        updateCart();
+                                                        requestAnimationFrame(() => setTimeout(updateCartSmoothly, 5000));
                                                     }
-                                                }
-                                            }
 
-                                            typeEffect(); // Start animation
-                                        });
+                                                    // Start the smooth cart update loop
+                                                    updateCartSmoothly();
 
 
+                                                </script>
 
-                                    </script>
+                                                <script
+                                                    src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"
+                                                    integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz"
+                                                    crossorigin="anonymous"></script>
+                                                <script src="/js/script.js"></script>
+                                                <script src="/js/map.js"></script>
+                                                <script src="/js/main.js"></script>
+                                                <script>
+                                                    let tapCount = 0;
+                                                    let timeout;
 
-                                    <script
-                                        src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"
-                                        integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz"
-                                        crossorigin="anonymous"></script>
-                                    <script src="/js/script.js"></script>
-                                    <script src="/js/map.js"></script>
-                                    <script src="/js/main.js"></script>
-                                    <script>
-                                        let tapCount = 0;
-                                        let timeout;
+                                                    document.getElementById("tripleTapHeading").addEventListener("click", function () {
+                                                        tapCount++;
 
-                                        document.getElementById("tripleTapHeading").addEventListener("click", function () {
-                                            tapCount++;
+                                                        if (tapCount === 5) {
+                                                            window.location.href = "/employee/login"; // Replace with your desired URL
+                                                            tapCount = 0;
+                                                        }
 
-                                            if (tapCount === 5) {
-                                                window.location.href = "/employee/login"; // Replace with your desired URL
-                                                tapCount = 0;
-                                            }
+                                                        clearTimeout(timeout);
+                                                        timeout = setTimeout(() => {
+                                                            tapCount = 0;
+                                                        }, 500); // Reset tap count if more than 500ms passes between taps
+                                                    });
 
-                                            clearTimeout(timeout);
-                                            timeout = setTimeout(() => {
-                                                tapCount = 0;
-                                            }, 500); // Reset tap count if more than 500ms passes between taps
-                                        });
-                                        
-                                    </script>
+                                                </script>
 
 </body>
 

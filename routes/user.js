@@ -52,5 +52,11 @@ router.get("/:id/cart", isLoggedIn, async (req, res) => {
 
 router.get("/:id/statistics", isLoggedIn, wrapAsync(userController.statistics));
 
+router.get("/cart-data", (req, res) => {
+    const cartItems = req.cookies.order ? JSON.parse(req.cookies.order) : [];
+    
+    res.json(cartItems);
+});
+
 
 module.exports = router;
