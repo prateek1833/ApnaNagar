@@ -157,9 +157,8 @@ h4 {
 .filter {
     text-align: center;
     margin-right: 0.3rem;
-    padding: 0px 10px;
+    padding: 0px 8px;
     /* border: 2px solid #ff4e50; */
-    border-radius: 25px;
     background-color: white;
     color: #ff4e50;
     font-size: 0.8rem;
@@ -177,4 +176,7 @@ h4 {
 .navbar-custom p {
     margin: 0;
     font-size: 0.8rem;
+}
+.nav-link{
+    padding: 0 8px !important;
 }
