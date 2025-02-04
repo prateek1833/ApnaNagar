@@ -8,6 +8,7 @@ const Restaurant = require("../models/restaurant");
 module.exports.index = async (req, res) => {
     try {
         const allItem = await Item.find({});
+        const allRestaurant = await Restaurant.find({});
         
         // Fetch all unique restaurant IDs
         const restaurantIds = [...new Set(allItem.map(item => item.RestaurantId))];
@@ -34,7 +35,7 @@ module.exports.index = async (req, res) => {
         });
 
         // Render the items view
-        res.render("items/index.ejs", { allItem: updatedItems });
+        res.render("items/index.ejs", { allItem: updatedItems, allRestaurant });
     } catch (err) {
         console.error("Error fetching items or restaurants:", err);
         res.status(500).send("Internal Server Error");
