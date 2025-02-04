@@ -13,6 +13,7 @@ body {
     height: 5rem;
     background-color: white;
 }
+
 .collapse {
     background-color: white !important;
 }
@@ -33,7 +34,8 @@ body {
     .filter i {
         font-size: medium;
     }
-    .row{
+
+    .row {
         justify-content: center;
     }
 
@@ -113,7 +115,8 @@ body {
     border: none !important;
     color: white !important;
 }
-.light-btn{
+
+.light-btn {
     background-color: #FF6F61 !important;
     color: white !important;
 }
@@ -123,13 +126,55 @@ body {
 }
 
 #map {
-    height:60vh;
+    height: 60vh;
 }
-.mhs{
-    padding:1% 35% 0 35%;
+
+.mhs {
+    padding: 1% 35% 0 35%;
     color: #6A0DAD;
 }
-h3, h4 {
+
+h3,
+h4 {
     color: #6A0DAD !important;
     font-weight: bold !important;
+}
+
+.navbar-custom {
+    height: 70px;
+    background-color: white;
+    border-top: 1px solid #ddd;
+}
+
+#filters {
+    display: flex;
+    justify-content: flex-start;
+    align-items: center;
+    overflow-x: auto;
+    /* padding-left: 10px; */
+}
+
+.filter {
+    text-align: center;
+    margin-right: 0.3rem;
+    padding: 0px 10px;
+    /* border: 2px solid #ff4e50; */
+    border-radius: 25px;
+    background-color: white;
+    color: #ff4e50;
+    font-size: 0.8rem;
+    transition: all 0.3s ease;
+    text-decoration: none;
+    flex: 0 0 auto;
+    white-space: nowrap;
+}
+
+.filter i {
+    font-size: 1.6rem;
+    display: block;
+}
+
+.navbar-custom p {
+    margin: 0;
+    font-size: 0.8rem;
 }

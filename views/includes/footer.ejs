@@ -1,44 +1,3 @@
-<style>
-    .navbar-custom {
-        height: 70px;
-        background-color: white;
-        border-top: 1px solid #ddd;
-    }
-
-    #filters {
-        display: flex;
-        justify-content: flex-start;
-        align-items: center;
-        overflow-x: auto;
-        /* padding-left: 10px; */
-    }
-
-    .filter {
-        text-align: center;
-        margin-right: 0.3rem;
-        padding: 0px 10px;
-        /* border: 2px solid #ff4e50; */
-        border-radius: 25px;
-        background-color: white;
-        color: #ff4e50;
-        font-size: 0.8rem;
-        transition: all 0.3s ease;
-        text-decoration: none;
-        flex: 0 0 auto;
-        white-space: nowrap;
-    }
-
-    .filter i {
-        font-size: 1.6rem;
-        display: block;
-    }
-
-    .navbar-custom p {
-        margin: 0;
-        font-size: 0.8rem;
-    }
-</style>
-
 <footer>
     <div style="height: 100px;">
     </div>
@@ -47,19 +6,19 @@
         <div class="container-fluid d-flex justify-content-between align-items-center">
             <a class="filter nav-link" href="/items" aria-label="Home">
                 <i class="fa-solid fa-house"></i>
-                <p>Home</p>
+                <p style="font-size: smaller;">Home</p>
             </a>
             <a class="filter nav-link" href="/items/<%= currUser._id %>/myOrders" aria-label="My Orders">
                 <i class="fa-solid fa-bag-shopping"></i>
-                <p>My Orders</p>
+                <p style="font-size: smaller;">My Orders</p>
             </a>
             <a class="filter nav-link" href="/<%= currUser._id %>/cart" aria-label="My Cart">
                 <i class="fa-solid fa-cart-shopping"></i>
-                <p>My Cart</p>
+                <p style="font-size: smaller;">My Cart</p>
             </a>
             <a class="filter nav-link" href="/restaurant/index" aria-label="Restaurant">
                 <i class="fa-solid fa-utensils"></i>
-                <p>Restaurants</p>
+                <p style="font-size: smaller;">Restaurants</p>
             </a>
         </div>
     </nav>

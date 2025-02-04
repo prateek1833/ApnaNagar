@@ -39,7 +39,6 @@ module.exports.signup = async (req, res) => {
             if (err) {
                 return next(err);
             }
-            req.flash("success", "Welcome to Apna Nagar");
             res.redirect("/items");
         });
     } catch (e) {
@@ -67,7 +66,6 @@ module.exports.logout = async (req, res, next) => {
 }
 
 module.exports.login = async (req, res) => {
-    req.flash("success", "Welcome back to Apna Nagar");
     let redirectUrl = res.locals.redirectUrl || "/items";
 
     res.redirect(redirectUrl);

@@ -1,1 +1,9 @@
 <% layout('../layout/boilerplate') -%>
+
+    <span class="d-flex align-items-center justify-content-around">
+        <form action="/employee/<%= currUser.id %>/toggle" method="POST" class="d-inline">
+            <button type="submit" class="btn btn-danger">
+                <%- employee.isAvailable ? '<i class="fa-solid fa-lock"></i>' : '<i class="fa-solid fa-bicycle"></i>' %>
+            </button>
+        </form>
+    </span>

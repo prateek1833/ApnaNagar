@@ -1,3 +1,4 @@
+const { boolean } = require("joi");
 const mongoose = require("mongoose");
 const Schema = mongoose.Schema;
 const passportLocalMongoose = require("passport-local-mongoose");
@@ -64,7 +65,17 @@ const employeeSchema = new Schema({
     created_at: {
         type: Date,
         default: Date.now
-    }
+    },
+    isAvailable: {
+        type: Boolean,
+        default: false,
+    },
+    owner: {
+        type: Schema.Types.ObjectId,
+        ref: "User",
+        required: true,
+    },
+
 });
 
 employeeSchema.plugin(passportLocalMongoose);

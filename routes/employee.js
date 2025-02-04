@@ -20,8 +20,9 @@ router
 .post( wrapAsync(employeeController.signup))
 
 router
-.route("/dashboard")
+.route("/:id/dashboard")
 .get( employeeController.renderDashboard)
 
+router.post("/:id/toggle", isLoggedIn, wrapAsync(employeeController.toggleStatus));
 
 module.exports = router;

@@ -17,9 +17,15 @@ module.exports.login = async (req, res) => {
 module.exports.renderSignUp = (req, res) => {
     res.render("employee/signup.ejs");
 }
-module.exports.renderDashboard = (req, res) => {
-    res.render("employee/dashboard.ejs");
-}
+module.exports.renderDashboard = async (req, res) => {
+    try {
+        let employee = await Employee.findById(res.locals.currUser._id);
+        res.render("employee/dashboard.ejs", { employee }); // Pass as an object
+    } catch (error) {
+        console.error(error);
+        res.status(500).send("Internal Server Error");
+    }
+};
 
 module.exports.signup = async (req, res, next) => {
     try {
@@ -45,7 +51,9 @@ module.exports.signup = async (req, res, next) => {
             rating: 5,
             balance_due: 0,
             active_order: null,
-            completed_orders: []
+            completed_orders: [],
+            type:"Delivery Boy",
+            isAvailable:false,
         });
 
         // Register the employee using passport-local-mongoose
@@ -60,11 +68,28 @@ module.exports.signup = async (req, res, next) => {
                 return next(err);
             }
             req.flash("success", "Welcome to the Delivery Team!");
-            res.redirect("/employee/dashboard");  // Redirect to a dashboard or main page after login
+            res.redirect(`/employee/${registeredEmployee._id}/dashboard`);
         });
     } catch (e) {
         req.flash("error", e.message);
         res.redirect("/employee/signup");  // Redirect back to the sign-up page if there's an error
     }
+};
+
+module.exports.toggleStatus = async (req, res) => {
+    const { id } = req.params;
+    const employee = await Employee.findById(id);
+
+    if (!employee) {
+        req.flash("error", "Employee not found.");
+        return res.redirect("/employee");
+    }
+
+    // Toggle the isOpen status
+    employee.isAvailable = !employee.isAvailable;
+    await employee.save();
+
+    req.flash("success", `You is now marked as ${employee.isAvailable ? "Available" : "Not Availbale"}.`);
+    res.redirect(`/employee/${id}/dashboard`);
 };
 
