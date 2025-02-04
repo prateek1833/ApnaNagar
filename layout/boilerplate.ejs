@@ -467,7 +467,7 @@
                                                         if (!cartList) return;
 
                                                         let totalItems = cartItems.length;
-                                                        let totalAmount = cartItems.reduce((sum, item) => sum + item.detail.price, 0);
+                                                        let totalAmount = cartItems.reduce((sum, item) => sum + item.detail.price*item.quantity, 0);
 
                                                         cartList.innerHTML = `<p>${totalItems} items</p><p>₹${totalAmount}</p>`;
                                                     }
