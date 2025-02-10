@@ -160,7 +160,7 @@
                 box-shadow: 0.2em -0.2em 0 0 currentcolor;
             }
         }
-        
+
 
         .voice-btn {
             background-color: white;
@@ -238,16 +238,17 @@
             opacity: 0;
             transform: translateY(-100%);
         }
+
         .close-btn {
-        position: absolute;
-        top: 10px;
-        right: 10px;
-        color: #6A0DAD;
-        border: none;
-        padding: 5px 10px;
-        cursor: pointer;
-        font-size: 16px;
-    }
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            color: #6A0DAD;
+            border: none;
+            padding: 5px 10px;
+            cursor: pointer;
+            font-size: 16px;
+        }
     </style>
 </head>
 
@@ -348,42 +349,60 @@
 
                                                     if (SpeechRecognition) {
                                                         const recognition = new SpeechRecognition();
-                                                        recognition.continuous = false; // Recognizes a single phrase
-                                                        recognition.lang = 'en-US'; // Language for speech recognition
-                                                        recognition.interimResults = false; // Do not show interim results
+                                                        recognition.continuous = false;
+                                                        recognition.lang = 'en-US';
+                                                        recognition.interimResults = false;
 
                                                         const voiceBtn = document.getElementById('voice-btn');
                                                         const searchInput = document.getElementById('search-input');
-                                                        const searchButton = document.querySelector('button[type="submit"]'); // Select the search button
+                                                        const searchButton = document.querySelector('button[type="submit"]');
 
-                                                        // Start speech recognition on button click
+                                                        // Create an overlay for voice listening indicator
+                                                        const voiceOverlay = document.createElement('div');
+                                                        voiceOverlay.innerText = "Listening...";
+                                                        voiceOverlay.style.position = 'fixed';
+                                                        voiceOverlay.style.top = '80%';
+                                                        voiceOverlay.style.left = '50%';
+                                                        voiceOverlay.style.transform = 'translate(-50%, -80%)';
+                                                        voiceOverlay.style.background = 'linear-gradient(to right, #FF6F61, #6A0DAD)';
+                                                        voiceOverlay.style.color = 'white';
+                                                        voiceOverlay.style.padding = '15px 30px';
+                                                        voiceOverlay.style.borderRadius = '8px';
+                                                        voiceOverlay.style.fontSize = '20px';
+                                                        voiceOverlay.style.display = 'none'; // Initially hidden
+                                                        document.body.appendChild(voiceOverlay);
+
+                                                        // Start speech recognition
                                                         voiceBtn.addEventListener('click', () => {
                                                             recognition.start();
-                                                            voiceBtn.classList.add('active'); // Optional: Add a class to indicate active state
+                                                            voiceBtn.classList.add('active');
+                                                            voiceOverlay.style.display = 'block'; // Show overlay when listening
                                                         });
 
                                                         // Capture speech recognition result
                                                         recognition.addEventListener('result', (event) => {
-                                                            const transcript = event.results[0][0].transcript; // Get the recognized text
-                                                            searchInput.value = transcript; // Set the recognized text to the search input
+                                                            const transcript = event.results[0][0].transcript;
+                                                            searchInput.value = transcript;
                                                         });
 
-                                                        // Handle errors during speech recognition
+                                                        // Handle errors
                                                         recognition.addEventListener('error', (event) => {
                                                             console.error('Speech recognition error:', event.error);
                                                             alert('Error occurred while recognizing your speech. Please try again.');
                                                         });
 
-                                                        // Trigger the search button click after speech recognition ends
+                                                        // Stop speech recognition
                                                         recognition.addEventListener('end', () => {
-                                                            voiceBtn.classList.remove('active'); // Remove active state
+                                                            voiceBtn.classList.remove('active');
+                                                            voiceOverlay.style.display = 'none'; // Hide overlay when speech recognition ends
                                                             if (searchInput.value.trim() !== '') {
-                                                                searchButton.click(); // Simulate click on the search button
+                                                                searchButton.click();
                                                             }
                                                         });
                                                     } else {
                                                         console.warn('Speech Recognition API not supported in this browser.');
                                                     }
+
 
                                                     document.getElementById("search-input").addEventListener("input", async function () {
                                                         const query = this.value.trim();
@@ -481,7 +500,7 @@
                                                         if (!cartList) return;
 
                                                         let totalItems = cartItems.length;
-                                                        let totalAmount = cartItems.reduce((sum, item) => sum + item.detail.price*item.quantity, 0);
+                                                        let totalAmount = cartItems.reduce((sum, item) => sum + item.detail.price * item.quantity, 0);
 
                                                         cartList.innerHTML = `<p>${totalItems} items</p><p>₹${totalAmount}</p>`;
                                                     }
