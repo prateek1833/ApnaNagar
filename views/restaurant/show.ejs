@@ -1,386 +1,427 @@
 <% layout('../layout/boilerplate') -%>
 
-<style>
-    body {
-        background-color: #ffffff;
-        font-family: 'Arial', sans-serif;
-    }
+    <style>
+        body {
+            background-color: #ffffff;
+            font-family: 'Arial', sans-serif;
+        }
 
-    .show-img {
-        border-radius: 15px;
-        height: auto;
-        object-fit: cover;
-        /* box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2); */
-    }
+        .show-img {
+            border-radius: 15px;
+            height: auto;
+            object-fit: cover;
+            /* box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2); */
+        }
 
-    .card {
-        margin: 2rem auto;
-        border: none;
-        border-radius: 15px;
-        overflow: hidden;
-        background-color: #fefefe;
-        transition: transform 0.3s ease, box-shadow 0.3s ease;
-    }
+        .card {
+            margin: 0rem -1.5rem;
+            border: none;
+            border-radius: 15px;
+            overflow: hidden;
+            background-color: #fefefe;
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
 
-    .card:hover {
-        transform: translateY(-5px);
-        /* box-shadow: 0 10px 20px rgba(0, 0, 0, 0.2); */
-    }
+        .card:hover {
+            transform: translateY(-5px);
+            /* box-shadow: 0 10px 20px rgba(0, 0, 0, 0.2); */
+        }
 
-    .card-body {
-        padding: 20px;
-        text-align: center;
-    }
+        .card-body {
+            /* padding: 20px; */
+            text-align: center;
+        }
 
-    .card-text {
-        font-size: 1rem;
-        color: #444;
-        margin: 10px 0;
-    }
+        .card-text {
+            font-size: 1rem;
+            color: #444;
+            margin: 10px 0;
+        }
 
-    .card-text b {
-        font-size: 1.6rem;
-        color: #e63946;
-    }
+        .card-text b {
+            font-size: 1.6rem;
+            color: #e63946;
+        }
 
-    .btn {
-        font-size: 1rem;
-        padding: 12px 24px;
-        border-radius: 50px;
-        transition: all 0.3s ease;
-        text-transform: uppercase;
-        font-weight: bold;
-    }
+        .btn {
+            font-size: 1rem;
+            padding: 12px 24px;
+            border-radius: 50px;
+            transition: all 0.3s ease;
+            text-transform: uppercase;
+            font-weight: bold;
+        }
 
-    .btn-warning {
-        background: linear-gradient(to right, #ff6f61, #ffa69e);
-        border: none;
-        color: white;
-    }
+        .btn-warning {
+            background: linear-gradient(to right, #ff6f61, #ffa69e);
+            border: none;
+            color: white;
+        }
 
-    .btn-warning:hover {
-        background: linear-gradient(to right, #ff3b3f, #ff6f61);
-        box-shadow: 0 8px 12px rgba(0, 0, 0, 0.3);
-        transform: translateY(-2px);
-    }
+        .btn-warning:hover {
+            background: linear-gradient(to right, #ff3b3f, #ff6f61);
+            box-shadow: 0 8px 12px rgba(0, 0, 0, 0.3);
+            transform: translateY(-2px);
+        }
 
-    h3, h4 {
-        color: #e63946;
-        font-weight: bold;
-        text-align: center;
-    }
+        h3,
+        h4 {
+            color: #e63946;
+            font-weight: bold;
+            text-align: center;
+        }
 
-    hr {
-        border: 0;
-        height: 2px;
-        background-image: linear-gradient(to right, #ff6f61, #f9d423);
-        margin: 20px auto;
-        width: 80%;
-    }
+        hr {
+            border: 0;
+            height: 2px;
+            background-image: linear-gradient(to right, #ff6f61, #f9d423);
+            margin: 20px auto;
+            width: 80%;
+        }
 
-    .owner-info {
-        font-size: 0.9rem;
-        color: #555;
-    }
+        .owner-info {
+            font-size: 0.9rem;
+            color: #555;
+        }
 
-    .action-buttons {
-        margin-top: 20px;
-    }
+        .action-buttons {
+            margin-top: 20px;
+        }
 
-    .restaurant-details {
-        text-align: center;
-        padding: 20px;
-    }
+        .restaurant-details {
+            text-align: center;
+            padding: 20px;
+        }
 
-    .restaurant-details h3 {
-        font-size: 2rem;
-    }
+        .restaurant-details h3 {
+            font-size: 2rem;
+        }
 
-    .restaurant-details p {
-        font-size: 1.2rem;
-        color: #666;
-    }
+        .restaurant-details p {
+            font-size: 1.2rem;
+            color: #666;
+        }
 
-    .item-card {
-        border: none;
-        border-radius: 15px;
-        overflow: hidden;
-        /* transition: transform 0.3s ease, box-shadow 0.3s ease; */
-        background-color: #f8f9fa;
-    }
+        .item-card {
+            border: none;
+            border-radius: 15px;
+            overflow: hidden;
+            background-color: #f8f9fa;
+            transition: transform 0.3s ease-in-out, box-shadow 0.3s ease-in-out;
+        }
 
-    .item-card:hover {
-        transform: translateY(-5px);
-        /* box-shadow: 0 10px 20px rgba(0, 0, 0, 0.2); */
-    }
+        .item-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.15);
+        }
 
-    .item-card img {
-        border-radius: 15px 15px 0 0;
-        object-fit: cover;
-        height: 200px;
-        transition: filter 0.3s ease;
-    }
+        .item-card .row {
+            align-items: center;
+        }
 
-    .item-card .card-body {
-        padding: 15px;
-    }
+        .item-card img {
+            width: 100%;
+            height: 120px;
+            /* Adjusted for better visibility */
+            object-fit: cover;
+            border-radius: 15px 0 0 15px;
+            /* Applied only to the left side */
+            transition: filter 0.3s ease;
+        }
 
-    .item-title {
-        font-size: 1.2rem;
-        font-weight: bold;
-        color: #333;
-    }
+        .item-card:hover img {
+            filter: brightness(90%);
+        }
 
-    .item-price {
-        font-size: 1.2rem;
-        color: #e63946;
-        font-weight: bold;
-    }
+        .item-card .card-body {
+            padding: 15px;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+        }
 
-    .info-list {
-        list-style-type: none;
-        padding: 0;
-        font-size: 1rem;
-        color: #555;
-        text-align: left;
-    }
+        .item-title {
+            font-size: 1.1rem;
+            font-weight: bold;
+            color: #333;
+        }
 
-    .info-list li {
-        margin: 10px 0;
-    }
+        .item-price {
+            font-size: 1.1rem;
+            color: #e63946;
+            font-weight: bold;
+        }
 
-    .info-list li b {
-        color: #333;
-    }
 
-    /* Grayscale filter when restaurant is closed */
-    .closed-restaurant .item-card img {
-        filter: grayscale(100%);
-    }
-    .closed-restaurant img {
-        filter: grayscale(100%);
-    }
+        .info-list {
+            list-style-type: none;
+            padding: 0;
+            font-size: 1rem;
+            color: #555;
+            text-align: left;
+        }
 
-    .closed-restaurant .item-title, 
-    .closed-restaurant .item-price {
-        color: #888;
-    }
-    .review-card {
-        border: none;
-        border-radius: 15px;
-        overflow: hidden;
-        background-color: #fefefe;
-        box-shadow: 0 8px 16px rgba(0, 0, 0, 0.1);
-        transition: transform 0.3s ease, box-shadow 0.3s ease;
-    }
+        .info-list li {
+            margin: 10px 0;
+        }
 
-    .review-card:hover {
-        transform: translateY(-5px);
-        box-shadow: 0 10px 20px rgba(0, 0, 0, 0.2);
-    }
+        .info-list li b {
+            color: #333;
+        }
 
-    .review-card .card-body {
-        padding: 20px;
-        text-align: left;
-    }
+        /* Grayscale filter when restaurant is closed */
+        .closed-restaurant .item-card img {
+            filter: grayscale(100%);
+        }
 
-    .review-card .card-body p {
-        margin: 5px 0;
-        font-size: 1rem;
-        color: #555;
-    }
+        .closed-restaurant img {
+            filter: grayscale(100%);
+        }
 
-    .review-card .card-body .card-text {
-        font-size: 1rem;
-        color: #444;
-    }
+        .closed-restaurant .item-title,
+        .closed-restaurant .item-price {
+            color: #888;
+        }
 
-    .review-card .card-body .starability-result {
-        font-size: 1rem;
-        color: #e63946;
-        margin: 10px 0;
-    }
+        .review-card {
+            border: none;
+            border-radius: 15px;
+            overflow: hidden;
+            background-color: #fefefe;
+            box-shadow: 0 8px 16px rgba(0, 0, 0, 0.1);
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
 
-    .review-card .card-body .btn {
-        font-size: 0.85rem;
-        padding: 5px 10px;
-        border-radius: 50px;
-        transition: all 0.3s ease;
-    }
+        .review-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.2);
+        }
 
-    .review-card .card-body .btn-dark {
-        background-color: #444;
-        color: white;
-    }
+        .review-card .card-body {
+            padding: 20px;
+            text-align: left;
+        }
 
-    .review-card .card-body .btn-dark:hover {
-        background-color: #e63946;
-        box-shadow: 0 5px 10px rgba(0, 0, 0, 0.2);
-    }
+        .review-card .card-body p {
+            margin: 5px 0;
+            font-size: 1rem;
+            color: #555;
+        }
 
-    .review-card .card-body .d-flex {
-        justify-content: space-between;
-        align-items: center;
-    }
+        .review-card .card-body .card-text {
+            font-size: 1rem;
+            color: #444;
+        }
 
-    .review-card .card-body .d-flex div {
-        text-align: left;
-    }
+        .review-card .card-body .starability-result {
+            font-size: 1rem;
+            color: #e63946;
+            margin: 10px 0;
+        }
 
-    .review-card .card-body .d-flex p {
-        margin: 0;
-    }
+        .review-card .card-body .btn {
+            font-size: 0.85rem;
+            padding: 5px 10px;
+            border-radius: 50px;
+            transition: all 0.3s ease;
+        }
 
-    .review-card .card-body .d-flex p:nth-child(2) {
-        font-size: 0.75rem;
-        color: grey;
-    }
-</style>
+        .review-card .card-body .btn-dark {
+            background-color: #444;
+            color: white;
+        }
 
-<div class="container">
-    <% if(currUser && restaurant.owner._id.equals(currUser.id)){ %>
-        <span class="d-flex align-items-center gap-2 justify-content-between">
-            <a class="btn btn-success" href="/restaurant/<%=restaurant._id%>/statistics" aria-label="My Cart">
-                <i class="fa-solid fa-chart-line"></i>
-            </a>
-            <a class="btn btn-primary" href="/restaurant/<%=restaurant._id%>/order" aria-label="Orders">
-                <i class="fa-solid fa-bag-shopping"></i>
-            </a>
-            <form method="POST" action="/restaurant/<%=restaurant._id%>/delete?_method=DELETE">
-                <button type="submit" class="btn btn-danger" onclick="return confirm('Are you sure you want to delete this restaurant? This action cannot be undone.')">
-                    <i class="fa-solid fa-trash"></i>
-                </button>
-            </form>
-        </span>
-    <% } %>
-    <div class="card col-md-8 <%= restaurant.isOpen ? '' : 'closed-restaurant' %>">
-        <img src="<%=restaurant.image.url%>" class="card-img-top show-img" alt="restaurant_image">
-        <div class="card-body restaurant-details pt-3">
-            <h3><%=restaurant.username%></h3>
-            <ul class="info-list justify-content-start p-3" style="font-size: large;">
-                <a href="https://www.google.com/maps?q=<%= restaurant.coordinates[0] %>,<%= restaurant.coordinates[1] %>" style="text-decoration: none; color: black;">
-                    <li>
-                        <b>
-                            <i style="color: rgb(179, 0, 0);" class="fa-solid fa-location-dot"></i>
-                        </b> 
-                        <%= restaurant.address %>
-                    </li>
+        .review-card .card-body .btn-dark:hover {
+            background-color: #e63946;
+            box-shadow: 0 5px 10px rgba(0, 0, 0, 0.2);
+        }
+
+        .review-card .card-body .d-flex {
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .review-card .card-body .d-flex div {
+            text-align: left;
+        }
+
+        .review-card .card-body .d-flex p {
+            margin: 0;
+        }
+
+        .review-card .card-body .d-flex p:nth-child(2) {
+            font-size: 0.75rem;
+            color: grey;
+        }
+    </style>
+
+    <div class="container">
+        <% if(currUser && restaurant.owner._id.equals(currUser.id)){ %>
+            <span class="d-flex align-items-center gap-2 justify-content-between">
+                <a class="btn btn-success" href="/restaurant/<%=restaurant._id%>/statistics" aria-label="My Cart">
+                    <i class="fa-solid fa-chart-line"></i>
                 </a>
-                <li><b><i  class="fa-solid fa-mobile"></i></b> <%= restaurant.mobile %></li>
-                <li><b><i  class="fa-solid fa-clock"></i></b> <%= restaurant.open_time %> - <%= restaurant.close_time %></li>
-            </ul>
+                <a class="btn btn-primary" href="/restaurant/<%=restaurant._id%>/order" aria-label="Orders">
+                    <i class="fa-solid fa-bag-shopping"></i>
+                </a>
+                <form method="POST" action="/restaurant/<%=restaurant._id%>/delete?_method=DELETE">
+                    <button type="submit" class="btn btn-danger"
+                        onclick="return confirm('Are you sure you want to delete this restaurant? This action cannot be undone.')">
+                        <i class="fa-solid fa-trash"></i>
+                    </button>
+                </form>
+            </span>
+            <% } %>
+                <div class="card col-md-8 <%= restaurant.isOpen ? '' : 'closed-restaurant' %>">
+                    <img src="<%=restaurant.image.url%>" class="card-img-top show-img mt-2" alt="restaurant_image">
+                    <div class="card-body restaurant-details pt-3">
+                        <h3>
+                            <%=restaurant.username%>
+                        </h3>
+                        <ul class="info-list justify-content-start p-3" style="font-size: large;">
+                            <a href="https://www.google.com/maps?q=<%= restaurant.coordinates[0] %>,<%= restaurant.coordinates[1] %>"
+                                style="text-decoration: none; color: black;">
+                                <li>
+                                    <b>
+                                        <i style="color: rgb(179, 0, 0);" class="fa-solid fa-location-dot"></i>
+                                    </b>
+                                    <%= restaurant.address %>
+                                </li>
+                            </a>
+                            <li><b><i class="fa-solid fa-mobile"></i></b>
+                                <%= restaurant.mobile %>
+                            </li>
+                            <li><b><i class="fa-solid fa-clock"></i></b>
+                                <%= restaurant.open_time %> - <%= restaurant.close_time %>
+                            </li>
+                        </ul>
 
-            <% if (currUser && (currUser.type === 'Restaurant' && currUser.id === restaurant.id || restaurant.owner._id.equals(currUser.id))) { %>
-                <span class="d-flex align-items-center justify-content-around">
-                    <form action="/restaurant/<%= restaurant._id %>/toggle" method="POST" class="d-inline">
-                        <button type="submit" class="btn btn-danger">
-                            <%- restaurant.isOpen ? '<i class="fa-solid fa-lock"></i>' : '<i class="fa-solid fa-lock-open"></i>' %>
-                        </button>
-                    </form>
-                    <a href="/restaurant/<%= restaurant._id %>/edit" class="btn btn-primary">
-                        <i class="fa-solid fa-pen-to-square"></i>
-                    </a>
-                    <a href="/items/new" class="btn btn-success">
-                        <i class="fa-solid fa-plus"></i>
-                    </a>
-                </span>
-            <% } %>            
-        </div>
-    </div>
-
-    <!-- Add a class to the container based on whether the restaurant is open -->
-    <div class="row row-cols-lg-2 row-cols-md-2 row-cols-sm-2 row-cols-2 g-4 <%= restaurant.isOpen ? '' : 'closed-restaurant' %>">
-        <% for (let item of allItem) { %>
-            <div class="col">
-                <div class="item-card shadow-sm h-100">
-                    <a href="/items/<%= item._id %>/show.ejs" class="item-link text-decoration-none text-dark">
-                        <img 
-                            src="<%= item.image.url %>" 
-                            class="card-img-top" 
-                            alt="<%= item.title %>">
-                        <div class="card-body">
-                            <div class="d-flex justify-content-between align-items-center">
-                                <span class="item-title"><%= item.title %></span>
-                            </div>
-                            <div>
-                                <span class="item-price">
-                                    &#8377;<%= item.detail[0].price.toLocaleString("en-IN") %>/<%= item.unit %>
-                                </span>
-                            </div>
-                        </div>
-                    </a>
-                </div>
-            </div>
-        <% } %>
-    </div>  
-    <hr>
-    <div class="col-md-6 offset-md-2">
-        <% if(currUser && (!currUser.type || currUser.type!="Restaurant")) { %>
-            <h4>Leave a Review</h4>
-            <form action="/restaurant/<%=restaurant._id%>/reviews/restaurant" method="POST" class="needs-validation" novalidate>
-                <div class="mb-3 mt-3 no-spinner">
-                    <label for="rating" class="form-label">Rating</label>
-                    <fieldset class="starability-growRotate">
-                        <input type="radio" id="no-rate" class="input-no-rate" name="review[rating]" value="3" checked aria-label="No rating." />
-                        <input type="radio" id="first-rate1" name="review[rating]" value="1" />
-                        <label for="first-rate1" title="Terrible"></label>
-                        <input type="radio" id="first-rate2" name="review[rating]" value="2" />
-                        <label for="first-rate2" title="Not good"></label>
-                        <input type="radio" id="first-rate3" name="review[rating]" value="3" />
-                        <label for="first-rate3" title="Average"></label>
-                        <input type="radio" id="first-rate4" name="review[rating]" value="4" />
-                        <label for="first-rate4" title="Very good"></label>
-                        <input type="radio" id="first-rate5" name="review[rating]" value="5" />
-                        <label for="first-rate5" title="Amazing"></label>
-                    </fieldset>
-                </div>
-
-                <div class="mt-3">
-                    <label for="comment" class="form-label">Comments</label>
-                    <textarea name="review[comment]" id="comment" cols="30" rows="5" class="form-control" required></textarea>
-                    <div class="invalid-feedback">Please write some comment</div>
-                </div>
-                <br>
-                <button class="btn btn-dark add-btn">Submit</button>
-                <br>
-                <br>
-            </form>
-            <hr>
-        <% } %>
-        <% if(restaurant.reviews.length > 0) { %>
-            <p><b>All Reviews</b></p>
-            <div class="row">
-                <% restaurant.reviews.forEach(review => { %>
-                    <div class="card col-12 ms-3 mb-3 review-card ">
-                        <div class="card-body">
-                            <div class="d-flex justify-content-between align-item-center">
-                                <div>
-                                    <p class="mb-0 d-flex justify-content-start"><b><%=review.author.username%></b></p>
-                                    <p class="mb-0" style="font-size: 0.75rem; color: grey;">
-                                        <%= (() => {
-                                          const date = new Date(review.createdAt);
-                                          const day = String(date.getDate()).padStart(2, '0');
-                                          const month = String(date.getMonth() + 1).padStart(2, '0');
-                                          const year = date.getFullYear();
-                                          return `${day}.${month}.${year}`;
-                                        })() %>
-                                      </p> 
-                                </div>
-                                <% if(currUser && (review.author._id==currUser.id || (currUser.type && currUser.type==='Owner')) ) { %>
-                                <form class="mb-3" method="POST" action="/restaurant/<%=restaurant._id%>/reviews/<%=review._id%>/restaurant?_method=DELETE">
-                                    <button class="btn btn-sm btn-dark"><i class="fa-solid fa-trash"></i></button>
+                        <% if (currUser && (currUser.type==='Restaurant' && currUser.id===restaurant.id ||
+                            restaurant.owner._id.equals(currUser.id))) { %>
+                            <span class="d-flex align-items-center justify-content-around">
+                                <form action="/restaurant/<%= restaurant._id %>/toggle" method="POST" class="d-inline">
+                                    <button type="submit" class="btn btn-danger">
+                                        <%- restaurant.isOpen ? '<i class="fa-solid fa-lock"></i>'
+                                            : '<i class="fa-solid fa-lock-open"></i>' %>
+                                    </button>
                                 </form>
-                                <% } %>
-                            </div>
-                                                          
-                            <p class="starability-result card-text justify-content-center" data-rating="<%=review.rating%>"></p>
-                            <p class="mb-3"><%=review.comment%></p>
-                        </div>
-
+                                <a href="/restaurant/<%= restaurant._id %>/edit" class="btn btn-primary">
+                                    <i class="fa-solid fa-pen-to-square"></i>
+                                </a>
+                                <a href="/items/new" class="btn btn-success">
+                                    <i class="fa-solid fa-plus"></i>
+                                </a>
+                            </span>
+                            <% } %>
                     </div>
-                    <br>
-                <% }) %>
-            </div>
-        <% } %>
-    </div>  
-</div>
+                </div>
+
+                <div class="row <%= restaurant.isOpen ? '' : 'closed-restaurant' %>">
+                    <% for (let item of allItem) { %>
+                        <div class="col-md-6 col-lg-4 mb-4">
+                            <a href="/items/<%= item._id %>/show.ejs" class="item-link text-decoration-none text-dark">
+                                <div class="card item-card shadow-sm h-100 d-flex flex-column">
+                                    <div class="row g-0">
+                                        <div class="col-6">
+                                            <img src="<%= item.image.url %>" class="card-img-top img-fluid"
+                                                alt="<%= item.title %>">
+                                        </div>
+                                        <div class="col-6 d-flex flex-column justify-content-center p-3">
+                                            <h5 class="item-title mb-2">
+                                                <%= item.title %>
+                                            </h5>
+                                            <span class="item-price text-primary fw-bold">
+                                                &#8377;<%= item.detail[0].price.toLocaleString("en-IN") %>/<%= item.unit
+                                                        %>
+                                            </span>
+                                        </div>
+                                    </div>
+                                </div>
+                            </a>
+                        </div>
+                        <% } %>
+                </div>
+
+                <hr>
+                <div class="col-md-6 offset-md-2">
+                    <% if(currUser && (!currUser.type || currUser.type!="Restaurant" )) { %>
+                        <h4>Leave a Review</h4>
+                        <form action="/restaurant/<%=restaurant._id%>/reviews/restaurant" method="POST"
+                            class="needs-validation" novalidate>
+                            <div class="mb-3 mt-3 no-spinner">
+                                <label for="rating" class="form-label">Rating</label>
+                                <fieldset class="starability-growRotate">
+                                    <input type="radio" id="no-rate" class="input-no-rate" name="review[rating]"
+                                        value="3" checked aria-label="No rating." />
+                                    <input type="radio" id="first-rate1" name="review[rating]" value="1" />
+                                    <label for="first-rate1" title="Terrible"></label>
+                                    <input type="radio" id="first-rate2" name="review[rating]" value="2" />
+                                    <label for="first-rate2" title="Not good"></label>
+                                    <input type="radio" id="first-rate3" name="review[rating]" value="3" />
+                                    <label for="first-rate3" title="Average"></label>
+                                    <input type="radio" id="first-rate4" name="review[rating]" value="4" />
+                                    <label for="first-rate4" title="Very good"></label>
+                                    <input type="radio" id="first-rate5" name="review[rating]" value="5" />
+                                    <label for="first-rate5" title="Amazing"></label>
+                                </fieldset>
+                            </div>
+
+                            <div class="mt-3">
+                                <label for="comment" class="form-label">Comments</label>
+                                <textarea name="review[comment]" id="comment" cols="30" rows="5" class="form-control"
+                                    required></textarea>
+                                <div class="invalid-feedback">Please write some comment</div>
+                            </div>
+                            <br>
+                            <button class="btn btn-dark add-btn">Submit</button>
+                            <br>
+                            <br>
+                        </form>
+                        <hr>
+                        <% } %>
+                            <% if(restaurant.reviews.length> 0) { %>
+                                <p><b>All Reviews</b></p>
+                                <div class="row">
+                                    <% restaurant.reviews.forEach(review=> { %>
+                                        <div class="card col-12 ms-3 mb-3 review-card ">
+                                            <div class="card-body">
+                                                <div class="d-flex justify-content-between align-item-center">
+                                                    <div>
+                                                        <p class="mb-0 d-flex justify-content-start"><b>
+                                                                <%=review.author.username%>
+                                                            </b></p>
+                                                        <p class="mb-0" style="font-size: 0.75rem; color: grey;">
+                                                            <%= (()=> {
+                                                                const date = new Date(review.createdAt);
+                                                                const day = String(date.getDate()).padStart(2, '0');
+                                                                const month = String(date.getMonth() + 1).padStart(2,
+                                                                '0');
+                                                                const year = date.getFullYear();
+                                                                return `${day}.${month}.${year}`;
+                                                                })() %>
+                                                        </p>
+                                                    </div>
+                                                    <% if(currUser && (review.author._id==currUser.id || (currUser.type
+                                                        && currUser.type==='Owner' )) ) { %>
+                                                        <form class="mb-3" method="POST"
+                                                            action="/restaurant/<%=restaurant._id%>/reviews/<%=review._id%>/restaurant?_method=DELETE">
+                                                            <button class="btn btn-sm btn-dark"><i
+                                                                    class="fa-solid fa-trash"></i></button>
+                                                        </form>
+                                                        <% } %>
+                                                </div>
+
+                                                <p class="starability-result card-text justify-content-center"
+                                                    data-rating="<%=review.rating%>"></p>
+                                                <p class="mb-3">
+                                                    <%=review.comment%>
+                                                </p>
+                                            </div>
+
+                                        </div>
+                                        <br>
+                                        <% }) %>
+                                </div>
+                                <% } %>
+                </div>
+    </div>
