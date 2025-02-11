@@ -255,7 +255,7 @@
         }
     </style>
 
-    <div class="container" style="padding: 0!important;" >
+    <div class="container" style="padding: 0!important;">
         <% if(currUser && restaurant.owner._id.equals(currUser.id)){ %>
             <span class="d-flex align-items-center gap-2 justify-content-between mt-1">
                 <a class="btn btn-success" href="/restaurant/<%=restaurant._id%>/statistics" aria-label="My Cart">
@@ -319,21 +319,36 @@
                 <div class="row <%= restaurant.isOpen ? '' : 'closed-restaurant' %>">
                     <% for (let item of allItem) { %>
                         <div class="col-md-6 col-lg-4 mb-4">
-                            <a href="/items/<%= item._id %>/show.ejs" class="item-link text-decoration-none text-dark">
+                            <a href="/items/<%= item._id %>/show.ejs" class="text-decoration-none text-dark">
                                 <div class="card item-card shadow-sm h-100 d-flex flex-column">
                                     <div class="row g-0">
                                         <div class="col-6">
-                                            <img src="<%= item.image.url %>" class="card-img-top img-fluid"
-                                                alt="<%= item.title %>">
+                                            <img src="<%= item.image.url %>"
+                                                class="card-img-top img-fluid rounded-start" alt="<%= item.title %>">
                                         </div>
-                                        <div class="col-6 d-flex flex-column justify-content-center p-3">
-                                            <h5 class="item-title mb-2">
+                                        <div class="col-6 d-flex flex-column justify-content-center p-1">
+                                            <h5 class="item-title">
                                                 <%= item.title %>
                                             </h5>
-                                            <span class="item-price text-primary fw-bold">
-                                                &#8377;<%= item.detail[0].price.toLocaleString("en-IN") %>/<%= item.unit
-                                                        %>
+                                            <span class="text-muted">
+                                                <%= item.detail.map(detail=> detail.typ).join(", ") %>
                                             </span>
+                                            <div class="d-flex flex-row justify-content-between">
+                                                <% if (item.detail.length> 0) { %>
+                                                <div class="item-price text-primary fw-bold ">
+                                                    &#8377;<%= item.detail[0].price.toLocaleString("en-IN") %>/<%=
+                                                            item.unit %>
+                                                </div>
+                                                <% } %>
+                                                <div>
+                                                    <% if (item.avgRating !=0) { %>
+                                                    <button type="button"
+                                                        class="btn-success btn-sm d-flex align-items-center px-1 m-0">
+                                                        <%= item.avgRating %><i class="fa-solid fa-star ms-1"></i>
+                                                    </button>
+                                                    <% } %>
+                                                    </div>
+                                                </div>
                                         </div>
                                     </div>
                                 </div>
@@ -341,6 +356,7 @@
                         </div>
                         <% } %>
                 </div>
+
 
                 <hr>
                 <div class="col-md-6">
