@@ -14,7 +14,7 @@
         }
 
         .card {
-            margin: 0rem -1.5rem;
+            margin: 0rem -0.5rem;
             border: none;
             border-radius: 15px;
             overflow: hidden;
@@ -162,7 +162,7 @@
         }
 
         .info-list li {
-            margin: 10px 0;
+            /* margin: 10px 0; */
         }
 
         .info-list li b {
@@ -255,9 +255,9 @@
         }
     </style>
 
-    <div class="container">
+    <div class="container" style="padding: 0!important;" >
         <% if(currUser && restaurant.owner._id.equals(currUser.id)){ %>
-            <span class="d-flex align-items-center gap-2 justify-content-between">
+            <span class="d-flex align-items-center gap-2 justify-content-between mt-1">
                 <a class="btn btn-success" href="/restaurant/<%=restaurant._id%>/statistics" aria-label="My Cart">
                     <i class="fa-solid fa-chart-line"></i>
                 </a>
@@ -278,7 +278,7 @@
                         <h3>
                             <%=restaurant.username%>
                         </h3>
-                        <ul class="info-list justify-content-start p-3" style="font-size: large;">
+                        <ul class="info-list justify-content-start px-3" style="font-size: large;">
                             <a href="https://www.google.com/maps?q=<%= restaurant.coordinates[0] %>,<%= restaurant.coordinates[1] %>"
                                 style="text-decoration: none; color: black;">
                                 <li>
@@ -298,7 +298,7 @@
 
                         <% if (currUser && (currUser.type==='Restaurant' && currUser.id===restaurant.id ||
                             restaurant.owner._id.equals(currUser.id))) { %>
-                            <span class="d-flex align-items-center justify-content-around">
+                            <span class="d-flex align-items-center justify-content-around mb-3">
                                 <form action="/restaurant/<%= restaurant._id %>/toggle" method="POST" class="d-inline">
                                     <button type="submit" class="btn btn-danger">
                                         <%- restaurant.isOpen ? '<i class="fa-solid fa-lock"></i>'
@@ -343,7 +343,7 @@
                 </div>
 
                 <hr>
-                <div class="col-md-6 offset-md-2">
+                <div class="col-md-6">
                     <% if(currUser && (!currUser.type || currUser.type!="Restaurant" )) { %>
                         <h4>Leave a Review</h4>
                         <form action="/restaurant/<%=restaurant._id%>/reviews/restaurant" method="POST"
