@@ -7,10 +7,9 @@
         }
 
         .show-img {
-            border-radius: 15px;
             height: auto;
             object-fit: cover;
-            /* box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2); */
+            box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
         }
 
         .card {
@@ -273,12 +272,12 @@
             </span>
             <% } %>
                 <div class="card col-md-8 <%= restaurant.isOpen ? '' : 'closed-restaurant' %>">
-                    <img src="<%=restaurant.image.url%>" class="card-img-top show-img mt-2" alt="restaurant_image">
+                    <img src="<%=restaurant.image.url%>" class="card-img-top show-img mt-2" alt="restaurant_image" style="border-radius: 50%!important;" >
                     <div class="card-body restaurant-details pt-3">
                         <h3>
                             <%=restaurant.username%>
                         </h3>
-                        <ul class="info-list justify-content-start px-3" style="font-size: large;">
+                        <ul class="info-list text-center px-3" style="font-size: large;">
                             <a href="https://www.google.com/maps?q=<%= restaurant.coordinates[0] %>,<%= restaurant.coordinates[1] %>"
                                 style="text-decoration: none; color: black;">
                                 <li>
@@ -315,6 +314,7 @@
                             <% } %>
                     </div>
                 </div>
+                <hr>
 
                 <div class="row <%= restaurant.isOpen ? '' : 'closed-restaurant' %>">
                     <% for (let item of allItem) { %>
