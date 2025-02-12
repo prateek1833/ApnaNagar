@@ -18,14 +18,15 @@ module.exports.showRestaurant = async (req, res) => {
             })
             .populate("orders"); // Populates the `orders` field
 
-        const allItem = await Item.find({ RestaurantId: id });
+        const availableItem = await Item.find({ RestaurantId: id,isAvailable:true });
+        const notAvailableItem = await Item.find({ RestaurantId: id,isAvailable:false });
 
         if (!restaurant) {
             req.flash("error", "The restaurant you are trying to access does not exist.");
             return res.redirect("/restaurant");
         }
 
-        res.render("restaurant/show.ejs", { restaurant, allItem });
+        res.render("restaurant/show.ejs", { restaurant, availableItem,notAvailableItem });
     } catch (err) {
         console.error("Error fetching restaurant:", err);
         req.flash("error", "Something went wrong. Please try again later.");

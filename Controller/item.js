@@ -165,7 +165,7 @@ module.exports.showItem = async (req, res) => {
         })
         .populate("owner");
 
-    if (!item || !item.isAvailable) {
+    if (!item) {
         req.flash("error", "Item you are trying to access is not available");
         return res.redirect("/items");
     }
