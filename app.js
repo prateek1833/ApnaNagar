@@ -28,8 +28,8 @@ const employeeRouter = require("./routes/employee");
 
 const app = express();
 
-const dbUrl = "mongodb://localhost:27017/Store";
-// const dbUrl = process.env.ATLASDB_URL;
+// const dbUrl = "mongodb://localhost:27017/Store";
+const dbUrl = process.env.ATLASDB_URL;
 
 mongoose
     .connect(dbUrl)
