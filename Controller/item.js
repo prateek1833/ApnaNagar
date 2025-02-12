@@ -112,6 +112,7 @@ module.exports.search = async (req, res) => {
         const keyword = req.query.keyword; // Get the search keyword
         // Find items matching the keyword in title, description, key, or category
         const allItem = await Item.find({
+            isAvailable: true,
             $or: [
                 { title: { $regex: new RegExp(keyword, 'i') } },
                 { description: { $regex: new RegExp(keyword, 'i') } },
@@ -164,8 +165,8 @@ module.exports.showItem = async (req, res) => {
         })
         .populate("owner");
 
-    if (!item) {
-        req.flash("error", "Item you are trying to access does not exist");
+    if (!item || !item.isAvailable) {
+        req.flash("error", "Item you are trying to access is not available");
         return res.redirect("/items");
     }
 
