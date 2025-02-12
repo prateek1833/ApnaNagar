@@ -39,5 +39,8 @@ router.delete("/:id/delete", isLoggedIn, itemController.destroyItem);
 // Autocomplete Endpoint
 router.get("/autocomplete", itemController.autocomplete)
 
+router.post("/:id/toggle", isLoggedIn, wrapAsync(itemController.toggleAvailable));
+
+
 
 module.exports = router;

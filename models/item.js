@@ -2,6 +2,7 @@ const mongoose = require("mongoose");
 const Schema = mongoose.Schema;
 const Review = require("./review.js");
 const Restaurant = require("./restaurant.js");
+const { bool } = require("joi");
 
 
 const itemSchema = new Schema({
@@ -32,7 +33,8 @@ const itemSchema = new Schema({
         type: Schema.Types.ObjectId,
         ref: "User",
     },
-    RestaurantId: String
+    RestaurantId: String,
+    isAvailable: Boolean
 });
 itemSchema.post("findOneAndDelete", async (item) => {
     if (item) {

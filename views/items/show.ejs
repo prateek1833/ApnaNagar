@@ -209,12 +209,18 @@
         <br>
 
         <% if(currUser && currUser.type && ((currUser.type==="Restaurant" && currUser.id==item.RestaurantId)||(currUser.type==="Owner"))) { %>
-            <a href="/items/<%=item._id%>/edit" class="btn btn-primary d-grid gap-2 col-6 mx-auto">Edit</a>
+            <a href="/items/<%=item._id%>/edit" class="btn btn-primary d-grid col-6 mx-auto">Edit</a>
             <br>
             <form method="POST" action="/items/<%=item._id%>/delete?_method=DELETE">
-                <button class="btn btn-danger d-grid gap-2 col-6 mx-auto">Delete</button>
+                <button class="btn btn-danger d-grid col-6 mx-auto">Delete</button>
             </form>
             <br>
+            <form action="/items/<%=item._id%>/toggle" method="POST" class="d-inline">
+                <button type="submit" class="btn btn-success d-grid col-6 mx-auto">
+                    <%- item.isAvailable ? 'Not Available'
+                        : 'Available' %>
+                </button>
+            </form>
         <% } %>
         <hr>
     </div>

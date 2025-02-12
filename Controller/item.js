@@ -302,3 +302,20 @@ module.exports.destroyItem = async (req, res) => {
     req.flash("success", " Item deleted");
     res.redirect("/");
 }
+
+module.exports.toggleAvailable = async (req, res) => {
+    const { id } = req.params;
+    const item = await Item.findById(id);
+
+    if (!item) {
+        req.flash("error", "Item not found.");
+        return res.redirect(`/items/${id}/show.ejs`);
+    }
+
+    // Toggle the isOpen status
+    item.isAvailable = !item.isAvailable;
+    await item.save();
+
+    req.flash("success", `Item is now marked as ${item.isAvailable ? "Available" : "Not Available"}.`);
+    res.redirect(`/items/${id}/show.ejs`);
+};
