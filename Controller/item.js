@@ -7,7 +7,7 @@ const Restaurant = require("../models/restaurant");
 
 module.exports.index = async (req, res) => {
     try {
-        const allItem = await Item.find({});
+        const allItem = await Item.find({ isAvailable: true });
         const allRestaurant = await Restaurant.find({});
         
         // Fetch all unique restaurant IDs
