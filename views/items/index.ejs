@@ -1,5 +1,23 @@
 <% layout('../layout/boilerplate') -%>
-    <div id="holidayapi" class="holiday-wish"></div>
+<div id="holidayapi" class="holiday-wish">
+    <% if (currUser) { %>
+        <%
+            const today = new Date();
+            const dob = new Date(currUser.dob);
+
+            // Create a new date object for today with only the day and month, ignore the year
+            const todayDayMonth = new Date(today.getFullYear(), today.getMonth(), today.getDate());
+            const dobDayMonth = new Date(today.getFullYear(), dob.getMonth(), dob.getDate());
+
+            // Compare only the day and month
+            if (todayDayMonth.getTime() === dobDayMonth.getTime()) {
+        %>
+            <h5 class="mt-2">🎉 Happy Birthday!!</h5>
+            <p class="fs-8" style="margin:0;">May your day be filled with as much joy as your stomach is about to be with our food. 🍔🍕</p>
+        <% } %>
+    <% } %>
+</div>
+
 
     <style>
         .holiday-wish {
@@ -278,7 +296,6 @@
                                 try {
                                     const response = await fetch(url);
                                     const data = await response.json();
-                                    console.log("url", url);
                                     if (data.response && data.response.holidays && data.response.holidays.length > 0) {
                                         localStorage.setItem("holidayData", JSON.stringify(data.response.holidays[0]));
                                         localStorage.setItem("holidayDate", `${year}-${month}-${day}`);
