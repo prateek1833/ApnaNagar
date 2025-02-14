@@ -2,6 +2,8 @@ const express = require("express");
 const router = express.Router();
 const Employee = require("../models/employee");
 const Order = require("../models/order.js");
+const Restaurant = require("../models/restaurant");
+
 
 
 module.exports.renderLogin = (req, res) => {
@@ -31,16 +33,30 @@ module.exports.renderSignUp = (req, res) => {
 }
 module.exports.renderDashboard = async (req, res) => {
     try {
-        const employeeId = req.params.id; // Or whatever method you're using to get the employee's ID
-        const employee = await Employee.findById(employeeId).populate('active_order').populate('completed_orders');
-        
-        // Fetch pending orders from the queue (orders that are yet to be assigned to any delivery boy)
+        const employeeId = req.params.id;
+        const employee = await Employee.findById(employeeId)
+            .populate('active_order')
+            .populate('completed_orders');
+
+        // Fetch pending orders
         const pendingOrders = await Order.find({ db_status: 'Pending' }).populate('author');
 
+        // Fetch restaurant names for each item in the active order
+        let restaurantNames = {};
+        if (employee.active_order) {
+            for (const item of employee.active_order.items) {
+                if (item.item.RestaurantId) {
+                    const restaurant = await Restaurant.findById(item.item.RestaurantId);
+                    restaurantNames[item.item._id] = restaurant ? restaurant.username : 'No Restaurant';
+                }
+            }
+        }
+
         // Render the dashboard view and pass necessary data
-        res.render('employee/dashboard', {
-            employee,        // Employee details
-            pendingOrders    // Pending orders for the employee to see
+        res.render(`employee/dashboard`, {
+            employee,
+            pendingOrders,
+            restaurantNames // Send restaurant names to the frontend
         });
     } catch (error) {
         console.error(error);
@@ -48,6 +64,7 @@ module.exports.renderDashboard = async (req, res) => {
         res.redirect('/some-error-page');
     }
 };
+
 
 module.exports.signup = async (req, res, next) => {
     try {
