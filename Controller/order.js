@@ -326,7 +326,14 @@ module.exports.createOrder = async (req, res) => {
             author: {
                 _id: user._id,
                 name: user.username,
-                mobile: user.mobile
+                area: user.area,
+                district: user.district,
+                state: user.state,
+                pincode: user.pincode,
+                coordinates: user.coordinates,
+                mobile: user.mobile,
+                distance: user.distance,
+                balance_due: user.balance_due,
             },
             createdAt: new Date(),
         });
