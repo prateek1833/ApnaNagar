@@ -262,7 +262,7 @@
     <div class="header">
         <div class="text-center bg-transparent border-0">
             <div class="card-body">
-                <h1 class="card-title" id="tripleTapHeading">अपना नगर</h1>
+                <h1 class="card-title" >अपना नगर</h1>
             </div>
         </div>
         <div class="navbar-nav ms-auto search-bar d-flex align-items-center flex-row">
@@ -524,25 +524,7 @@
                                                 <script src="/js/script.js"></script>
                                                 <script src="/js/map.js"></script>
                                                 <script src="/js/main.js"></script>
-                                                <script>
-                                                    let tapCount = 0;
-                                                    let timeout;
-
-                                                    document.getElementById("tripleTapHeading").addEventListener("click", function () {
-                                                        tapCount++;
-
-                                                        if (tapCount === 5) {
-                                                            window.location.href = "/employee/login"; // Replace with your desired URL
-                                                            tapCount = 0;
-                                                        }
-
-                                                        clearTimeout(timeout);
-                                                        timeout = setTimeout(() => {
-                                                            tapCount = 0;
-                                                        }, 500); // Reset tap count if more than 500ms passes between taps
-                                                    });
-
-                                                </script>
+                                                
 
 </body>
 

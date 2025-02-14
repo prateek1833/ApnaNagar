@@ -44,7 +44,12 @@ const orderSchema = new Schema({
             type: [Number],
             required: true
         },
-    }
+    },
+    db_status: {
+        type: String,
+        enum: ["Pending", "Assigned", "Completed"],
+        default: "Pending"
+    },
 });
 
 const Order = mongoose.model('Order', orderSchema);

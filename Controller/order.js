@@ -4,6 +4,8 @@ const Order = require("../models/order.js");
 const User = require("../models/user.js"); // Assuming User model exists for storing user details
 const axios = require('axios'); // To fetch location details using an API
 const Restaurant = require("../models/restaurant.js");
+const Employee = require("../models/employee");
+
 
 
 const calculateWalkingDistance = async (userCoordinates) => {
@@ -283,32 +285,22 @@ module.exports.createOrder = async (req, res) => {
             return res.redirect("/items");
         }
 
-        const itemsGroupedByRestaurant = orders.reduce((groupedItems, orderItem) => {
-            const restaurantId = orderItem.RestaurantId;
-
-            if (!groupedItems[restaurantId]) {
-                groupedItems[restaurantId] = [];
-            }
-
-            groupedItems[restaurantId].push(orderItem);
-            return groupedItems;
-        }, {});
-
         const remainingItems = [];
+        const orderItems = [];
 
-        for (const restaurantId in itemsGroupedByRestaurant) {
-            const items = itemsGroupedByRestaurant[restaurantId];
+        // Consolidate items from all orders into a unified list
+        for (const orderItem of orders) {
+            const restaurantId = orderItem.RestaurantId;
 
             // Check if the restaurant is open
             const restaurant = await Restaurant.findById(restaurantId);
             if (!restaurant || !restaurant.isOpen) {
                 console.log(`Restaurant is closed: ${restaurantId}`);
-                remainingItems.push(...items);
+                remainingItems.push(orderItem);  // Add items from closed restaurant to remaining items
                 continue;
             }
 
-            // Create a new order
-            const orderItems = items.map(orderItem => ({
+            orderItems.push({
                 item: {
                     _id: orderItem.id,
                     title: orderItem.title,
@@ -316,42 +308,55 @@ module.exports.createOrder = async (req, res) => {
                     quantity: orderItem.quantity,
                     unit: orderItem.unit,
                     typ: orderItem.detail.typ,
-                    RestaurantId: restaurantId,
+                    RestaurantId: restaurantId,  // Still associate the restaurant ID for reference
                 },
-            }));
-
-            const newOrder = new Order({
-                items: orderItems,
-                status: "Order Received",
-                author: {
-                    _id: user._id,
-                    name: user.username,
-                    area: user.area,
-                    district: user.district,
-                    state: user.state,
-                    pincode: user.pincode,
-                    coordinates: user.coordinates,
-                    mobile: user.mobile,
-                    distance: user.distance,
-                    balance_due: user.balance_due,
-                },
-                createdAt: new Date(),
             });
-
-            const savedOrder = await newOrder.save();
-
-            // Link order to restaurant
-            await Restaurant.findByIdAndUpdate(restaurantId, { $push: { orders: savedOrder._id } });
-
-            // Link restaurant ID to order
-            savedOrder.RestaurantId = restaurantId;
-            await savedOrder.save();
-
-            // Add order to user's orders
-            user.orders.push(savedOrder._id);
         }
 
+        // If no items can be ordered (all restaurants are closed)
+        if (orderItems.length === 0) {
+            req.flash("error", "All restaurants are closed. Please try again later.");
+            return res.redirect("/items");
+        }
+
+        // Create a new order with status "Pending"
+        const newOrder = new Order({
+            items: orderItems,
+            status: "Pending",  // Set the initial status to "Pending"
+            author: {
+                _id: user._id,
+                name: user.username,
+                mobile: user.mobile
+            },
+            createdAt: new Date(),
+        });
+
+        const savedOrder = await newOrder.save();
+
+        // Link the order to the user
+        user.orders.push(savedOrder._id);
         await user.save();
+
+        // Check for available delivery boys
+        const availableDeliveryBoy = await Employee.findOne({
+            status: "Free",
+            isAvailable: true
+        }).sort({ total_deliveries: 1 }); // Sort by the least number of deliveries today
+
+        if (availableDeliveryBoy) {
+            // Assign the order to the available delivery boy
+            savedOrder.status = "Assigned";
+            availableDeliveryBoy.status = "Busy";
+            availableDeliveryBoy.isAvailable = false;
+            availableDeliveryBoy.active_order = savedOrder._id;
+            await savedOrder.save();
+            await availableDeliveryBoy.save();
+
+            req.flash("success", "Your order has been assigned to a delivery boy.");
+        } else {
+            // If no delivery boy is available, leave the order in the queue (status remains "Pending")
+            req.flash("success", "Your order is in the queue and will be assigned to a delivery boy once available.");
+        }
 
         // Update the order cookie with items from closed restaurants
         if (remainingItems.length > 0) {
@@ -360,14 +365,15 @@ module.exports.createOrder = async (req, res) => {
             res.clearCookie("order");
         }
 
-        req.flash("success", "Your orders have been placed. Keep shopping!");
         res.redirect("/items");
+
     } catch (error) {
         console.error(error);
         req.flash("error", `Error placing your order: ${error.message}`);
         res.redirect("/order/checkout");
     }
 };
+
 
 
 module.exports.destroyOrder = async (req, res) => {

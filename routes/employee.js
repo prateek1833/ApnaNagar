@@ -12,7 +12,7 @@ const employeeController=require("../Controller/employee");
 router
 .route("/login")
 .get(employeeController.renderLogin)
-.post( saveRedirectUrl, passport.authenticate("local", { failureRedirect: '/login', failureFlash: true }), employeeController.login);
+.post( saveRedirectUrl, passport.authenticate("employee-local", { failureRedirect: '/login', failureFlash: true }), employeeController.login);
 
 router
 .route("/signup")
@@ -24,5 +24,7 @@ router
 .get( employeeController.renderDashboard)
 
 router.post("/:id/toggle", isLoggedIn, wrapAsync(employeeController.toggleStatus));
+
+router.post("/:id/delivered", isLoggedIn, wrapAsync(employeeController.completeOrder));
 
 module.exports = router;

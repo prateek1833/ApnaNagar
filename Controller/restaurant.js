@@ -219,21 +219,37 @@ module.exports.status = async (req, res, next) => {
 };
 
 
+// Order Route: Fetch and filter relevant orders
 module.exports.orders = async (req, res, next) => {
     try {
-        let { id } = req.params; // Restaurant ID from logged-in user
+        let { id } = req.params; // Logged-in restaurant ID
         const restaurant = await Restaurant.findById(id);
         if (!restaurant) {
             return res.status(404).send("Restaurant not found");
         }
 
-        // Fetch detailed orders using the stored order IDs
-        const orders = await Orders.find({ _id: { $in: restaurant.orders } });
-        res.render("restaurant/order.ejs", { orders });
+        // Fetch all orders containing items from any restaurant
+        let orders = await Orders.find({});
+
+        // Filter orders to retain only relevant items for this restaurant
+        let filteredOrders = [];
+
+        for (let order of orders) {
+            let filteredItems = order.items.filter(item => item.item.RestaurantId === id);
+            if (filteredItems.length > 0) {
+                filteredOrders.push({
+                    ...order.toObject(),
+                    items: filteredItems // Keep only relevant items
+                });
+            }
+        }
+
+        res.render("restaurant/order.ejs", { orders: filteredOrders });
     } catch (error) {
         next(error);
     }
-};
+}
+
 
 // Backend Code
 module.exports.statistics = async (req, res, next) => {

@@ -1,6 +1,7 @@
 const express = require("express");
 const router = express.Router();
 const Employee = require("../models/employee");
+const Order = require("../models/order.js");
 
 
 module.exports.renderLogin = (req, res) => {
@@ -19,11 +20,21 @@ module.exports.renderSignUp = (req, res) => {
 }
 module.exports.renderDashboard = async (req, res) => {
     try {
-        let employee = await Employee.findById(res.locals.currUser._id);
-        res.render("employee/dashboard.ejs", { employee }); // Pass as an object
+        const employeeId = req.params.id; // Or whatever method you're using to get the employee's ID
+        const employee = await Employee.findById(employeeId).populate('active_order').populate('completed_orders');
+        
+        // Fetch pending orders from the queue (orders that are yet to be assigned to any delivery boy)
+        const pendingOrders = await Order.find({ status: 'Pending' }).populate('author');
+
+        // Render the dashboard view and pass necessary data
+        res.render('employee/dashboard', {
+            employee,        // Employee details
+            pendingOrders    // Pending orders for the employee to see
+        });
     } catch (error) {
         console.error(error);
-        res.status(500).send("Internal Server Error");
+        req.flash('error', 'There was an error fetching the dashboard.');
+        res.redirect('/some-error-page');
     }
 };
 
@@ -92,4 +103,40 @@ module.exports.toggleStatus = async (req, res) => {
     req.flash("success", `You is now marked as ${employee.isAvailable ? "Available" : "Not Availbale"}.`);
     res.redirect(`/employee/${id}/dashboard`);
 };
+
+// Assume the delivery boy completes the order
+module.exports.completeOrder = async (req, res) => {
+    try {
+        const { employeeId } = req.params;
+        const employee = await Employee.findById(employeeId);
+        const order = await Order.findById(orderId);
+
+        // Check if the employee and order exist
+        if (!employee || !order) {
+            req.flash("error", "Invalid employee or order.");
+            return res.redirect("/orders");
+        }
+
+        // Update the delivery boy's status and mark the order as completed
+        employee.status = "Free";
+        employee.isAvailable = true;
+        employee.total_deliveries += 1;
+        employee.completed_orders.push(orderId);
+        employee.active_order = null;
+
+        // Mark the order as completed
+        order.db_status = "Completed";
+
+        await employee.save();
+        await order.save();
+
+        req.flash("success", "Order completed successfully!");
+        res.redirect("/orders");
+    } catch (error) {
+        console.error(error);
+        req.flash("error", `Error completing order: ${error.message}`);
+        res.redirect("/orders");
+    }
+};
+
 
