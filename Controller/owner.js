@@ -100,8 +100,7 @@ module.exports.status = async (req, res) => {
 
 module.exports.update = async (req, res) => {
     const { id } = req.params;
-    let { area, district, state, pincode, balance_due, mobile } = req.body;
-    console.log(req.body);
+    let { area, district, state, pincode, balance_due, mobile,dob } = req.body;
 
     try {
         let user = await User.findByIdAndUpdate(id, {
@@ -111,18 +110,19 @@ module.exports.update = async (req, res) => {
             pincode,
             balance_due,
             mobile,
+            dob
         })
 
         if (!user) {
             req.flash("error", "User not found");
-            return res.redirect(`/owner`);
+            return res.redirect(`/items`);
         }
         req.flash("success", "User Updated");
-        return res.redirect(`/owner`);
+        return res.redirect(`/items`);
     } catch (error) {
         console.error("Error updating user:", error);
         req.flash("error", "Error updating user");
-        return res.redirect(`/owner`);
+        return res.redirect(`/items`);
     }
 }
 

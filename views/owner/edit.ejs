@@ -9,6 +9,14 @@
                     <label for="username" class="form-label">Name</label>
                     <input type="text" name="username" value="<%=user.username%>" class="form-control" required readonly>
                 </div>
+                <div class="mb-3">
+                    <label for="balance_due" class="form-label">Balance due</label>
+                    <input type="number" name="balance_due" value="<%=user.balance_due%>" class="form-control" readonly>
+                </div>
+                <div class="mb-3">
+                    <label for="mobile" class="form-label">Mobile</label>
+                    <input type="number" name="mobile" value="<%=user.mobile%>" class="form-control" required readonly>
+                </div>
                 <div class="row">
                     <div class="col-md-4 mb-3">
                         <label for="area" class="form-label">Area</label>
@@ -28,12 +36,8 @@
                     <input type="number" name="pincode" value="<%=user.pincode%>" class="form-control">
                 </div>
                 <div class="mb-3">
-                    <label for="balance_due" class="form-label">Balance due</label>
-                    <input type="number" name="balance_due" value="<%=user.balance_due%>" class="form-control">
-                </div>
-                <div class="mb-3">
-                    <label for="mobile" class="form-label">Mobile</label>
-                    <input type="number" name="mobile" value="<%=user.mobile%>" class="form-control" required>
+                    <label for="dob" class="form-label">Date of Birth</label>
+                    <input type="date" name="dob" value="<%=user.dob%>" class="form-control">
                 </div>
 
                 <button class="btn btn-dark add-btn">Submit</button>

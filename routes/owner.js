@@ -14,8 +14,8 @@ const ownerController=require("../Controller/owner.js");
 router.get("/",isOwner,isLoggedIn, wrapAsync(ownerController.index))
 
 router
-.get("/:id/edit",isOwner,isLoggedIn, wrapAsync(ownerController.renderEdit))
-.put("/:id/edit",isLoggedIn,isOwner,ownerController.update)
+.get("/:id/edit",isLoggedIn, wrapAsync(ownerController.renderEdit))
+.put("/:id/edit",isLoggedIn,ownerController.update)
 
 router
 .post("/:id/status",isLoggedIn,isOwner,ownerController.status)

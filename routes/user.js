@@ -50,7 +50,7 @@ router.get("/:id/cart", isLoggedIn, async (req, res) => {
     res.render('user/cart.ejs', { openItems, closedItems, id });
 });
 
-router.get("/:id/statistics", isLoggedIn, wrapAsync(userController.statistics));
+router.get("/:id/statistics", isLoggedIn, isOwner, wrapAsync(userController.statistics));
 
 router.get("/cart-data", (req, res) => {
     const cartItems = req.cookies.order ? JSON.parse(req.cookies.order) : [];

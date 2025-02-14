@@ -39,6 +39,9 @@ const userSchema=new Schema({
       },
     balance_due: Number,
     type: String,
+    dob: {
+        type: Date,
+    },
 
 })
 

@@ -15,6 +15,7 @@
       <p><strong>Address:</strong> <span class="text-muted"><%= user.area %>, <%= user.district %>, <%= user.state %></span></p>
       <p><strong>Total Orders:</strong> <span class="badge bg-success"><%= user.orders.length %></span></p>
       <p><strong>Mobile:</strong> <span class="text-dark"><%= user.mobile %></span></p>
+      <p><strong>Date of Birth:</strong> <span class="text-dark"><%= user.dob ? user.dob.toLocaleDateString() : 'N/A' %></span></p>
     </div>
     
   

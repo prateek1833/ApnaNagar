@@ -37,8 +37,7 @@ module.exports.saveRedirectUrl=(req,res,next)=>{
 }
 module.exports.isOwner=async (req,res,next)=>{
     let {id}=req.params;
-    let item =await Item.findById(id);
-    if(res.locals.currUser &&  !res.locals.currUser.owner._id.equals(res.locals.currUser._id) && !res.locals.currUser.type==="Delivery Boy"){
+    if(res.locals.currUser &&  !res.locals.currUser.owner._id.equals(res.locals.currUser._id)){
         console.log(res.locals.currUser);
         req.flash("error","You don't have permission to perform this task");
         return res.redirect(`/items/${id}/show.ejs`);
