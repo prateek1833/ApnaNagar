@@ -136,7 +136,7 @@
 
 
             <hr>
-            <% if (allItem.length === 0) { %>
+            <% if (allItem.length===0) { %>
                 <div style="text-align: center; padding: 20px;">
                     <p style="font-size: 18px; font-weight: 500; color: #444;">
                         Can't find what you're looking for? Don't worry!
@@ -144,10 +144,7 @@
                     <h3 style="opacity: 0.9; font-size: 20px; color: #6A0DAD; font-weight: 600;">
                         Let us know, and we'll add it for you.
                     </h3>
-                    <a class="filter"
-                        href="/owner/addItem"
-                        aria-label="Add Item"
-                        style="
+                    <a class="filter" href="/owner/addItem" aria-label="Add Item" style="
                             display: inline-flex;
                             align-items: center;
                             justify-content: center;
@@ -165,7 +162,7 @@
                         Add Item
                     </a>
                 </div>
-            <% } else { %>            
+                <% } else { %>
                     <div class="row row-cols-lg-4 row-cols-md-3 row-cols-sm-2 g-1">
                         <p style=" margin: 0;padding: 0;color: grey;">Order the items you are craving for!</p>
                         <% for (let item of allItem) { %>
@@ -235,7 +232,14 @@
                                     }
                                 });
                             });
-                            const apiKeys = ["0SH7c1V3IFq8m0LHs14iJRCN3ztNJ3wA", "IWwlA4RiVGiAehfVj5G9Zmd8C1PvVg8a"]; // Replace with actual API keys
+                            const apiKeys = [
+                                "IWwlA4RiVGiAehfVj5G9Zmd8C1PvVg8a",
+                                "j3ifcrkw9ApVrylMbd9gQ8DsnZZtR8aZ",
+                                "s963L4PdHmfi5rFf3IjSDv78QWoCRSzS",
+                                "xoSRFxd4fKGZKOpTnaiVqxdKkzvufay8",
+                                "0SH7c1V3IFq8m0LHs14iJRCN3ztNJ3wA"
+                            ]; // Replace with actual API keys
+
                             const country = "IN";
                             const today = new Date();
                             const year = today.getFullYear();
@@ -244,21 +248,20 @@
                             const urlBase = `https://calendarific.com/api/v2/holidays?country=${country}&year=${year}&month=${month}&day=${day}`;
 
                             // Retrieve API usage data
-                            let apiUsage = JSON.parse(localStorage.getItem("apiUsage")) || { 0: 0, 1: 0 };
+                            let apiUsage = JSON.parse(localStorage.getItem("apiUsage")) || { 0: 0, 1: 0, 2: 0, 3: 0, 4: 0 };
                             let lastMonth = localStorage.getItem("lastMonth");
-
                             // Reset API usage at the start of a new month
                             if (lastMonth !== month.toString()) {
-                                apiUsage = { 0: 0, 1: 0 };
+                                apiUsage = { 0: 0, 1: 0, 2: 0, 3: 0, 4: 0 };
                                 localStorage.setItem("lastMonth", month.toString());
                             }
 
-                            // Select API key based on usage
-                            let apiIndex = apiUsage[0] < 500 ? 0 : apiUsage[1] < 500 ? 1 : null;
+                            // Determine API key index based on the day
+                            const apiIndex = Math.floor((day - 1) / 6);  // Divides days into groups of 6
 
                             async function fetchHoliday() {
-                                if (apiIndex === null) {
-                                    console.log("API limit reached for both keys this month.");
+                                if (apiIndex >= apiKeys.length) {
+                                    console.log("Invalid API index.");
                                     return;
                                 }
 
@@ -275,11 +278,11 @@
                                 try {
                                     const response = await fetch(url);
                                     const data = await response.json();
-
+                                    console.log("url", url);
                                     if (data.response && data.response.holidays && data.response.holidays.length > 0) {
                                         localStorage.setItem("holidayData", JSON.stringify(data.response.holidays[0]));
                                         localStorage.setItem("holidayDate", `${year}-${month}-${day}`);
-
+                                        console.log("hi", data.response);
                                         // Increment API usage counter
                                         apiUsage[apiIndex]++;
                                         localStorage.setItem("apiUsage", JSON.stringify(apiUsage));
@@ -288,7 +291,15 @@
                                     }
                                 } catch (error) {
                                     console.log("Error fetching holiday data:", error);
+                                    if (error.response) {
+                                        console.log("Response error:", error.response);
+                                    } else if (error.request) {
+                                        console.log("Request error:", error.request);
+                                    } else {
+                                        console.log("Error message:", error.message);
+                                    }
                                 }
+
                             }
 
                             function displayHoliday(holiday) {
@@ -298,6 +309,7 @@
                             }
 
                             fetchHoliday();
+
 
                         </script>
 
