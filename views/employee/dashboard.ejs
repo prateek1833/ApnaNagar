@@ -21,13 +21,13 @@
         <div class="card mb-3 shadow-lg p-1" style="margin: 0!important;">
             <span class="bg-primary text-white rounded-top d-flex justify-content-between align-items-center">
                 <h5 class="m-0">Active Order</h5>
-                <a class="btn btn-link" 
-                href="https://www.google.com/maps?q=<%= employee.active_order.author.coordinates[1] %>,<%= employee.active_order.author.coordinates[0] %>" 
-                style="color: white;" 
-                target="_blank">
-                <i class="fa-solid fa-location-dot"></i>
-             </a></span>
-            
+                <a class="btn btn-link"
+                    href="https://www.google.com/maps?q=<%= employee.active_order.author.coordinates[1] %>,<%= employee.active_order.author.coordinates[0] %>"
+                    style="color: white;" target="_blank">
+                    <i class="fa-solid fa-location-dot"></i>
+                </a>
+            </span>
+
             <div class="card-body">
                 <p><strong>ID:</strong>
                     <%= employee.active_order._id %>
@@ -37,6 +37,10 @@
                 </p>
                 <p><strong>Mobile:</strong>
                     <%= employee.active_order.author.mobile %>
+                </p>
+                <p><strong>Total Price :</strong>
+                    <%= employee.active_order.items.reduce((total, item)=> total + item.item.price * item.item.quantity,
+                        0) %> Rs
                 </p>
                 <table>
                     <thead>
@@ -48,18 +52,59 @@
                         </tr>
                     </thead>
                     <tbody>
-                        <% employee.active_order.items.forEach(item => { %>
+                        <% employee.active_order.items.forEach(item=> { %>
                             <tr>
-                                <td><%= item.item.typ %> <%= item.item.title %></td>
-                                <td><%= item.item.quantity %> <%= item.item.unit %></td>
-                                <td><%= item.item.price %></td>
-                                <td><%= restaurantNames[item.item._id] || 'No Restaurant' %></td> <!-- Fetch restaurant name -->
+                                <td>
+                                    <%= item.item.typ %>
+                                        <%= item.item.title %>
+                                </td>
+                                <td>
+                                    <%= item.item.quantity %>
+                                        <%= item.item.unit %>
+                                </td>
+                                <td>
+                                    <%= item.item.price %>
+                                </td>
+                                <td>
+                                    <%= restaurantNames[item.item._id] || 'No Restaurant' %>
+                                </td> <!-- Fetch restaurant name -->
                             </tr>
-                        <% }) %>
+                            <% }) %>
                     </tbody>
                 </table>
-                
-                
+
+                <hr>
+                <table class="table table-bordered">
+                    <thead>
+                        <tr>
+                            <th>Restaurant</th>
+                            <th>Total Payable Price</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <% let restaurantWisePrice={}; employee.active_order.items.forEach(item=> {
+                            let restaurant = restaurantNames[item.item._id] || 'No Restaurant';
+                            if (restaurantWisePrice[restaurant]) {
+                            restaurantWisePrice[restaurant] += item.item.price * item.item.quantity*0.8;
+                            } else {
+                            restaurantWisePrice[restaurant] = item.item.price * item.item.quantity*0.8;
+                            }
+                            });
+                            %>
+                            <% for (let restaurant in restaurantWisePrice) { %>
+                                <tr>
+                                    <td>
+                                        <%= restaurant %>
+                                    </td>
+                                    <td>
+                                        <%= restaurantWisePrice[restaurant] %> Rs
+                                    </td>
+                                </tr>
+                                <% } %>
+                    </tbody>
+                </table>
+
+
 
                 <p><strong>Status:</strong> <span class="badge bg-warning text-dark">
                         <%= employee.active_order.status %>
