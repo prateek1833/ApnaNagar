@@ -322,7 +322,7 @@ module.exports.createOrder = async (req, res) => {
         // Create a new order with status "Pending"
         const newOrder = new Order({
             items: orderItems,
-            status: "Pending",  // Set the initial status to "Pending"
+            db_status: "Pending",  // Set the initial status to "Pending"
             author: {
                 _id: user._id,
                 name: user.username,
@@ -345,7 +345,7 @@ module.exports.createOrder = async (req, res) => {
 
         if (availableDeliveryBoy) {
             // Assign the order to the available delivery boy
-            savedOrder.status = "Assigned";
+            savedOrder.db_status = "Assigned";
             availableDeliveryBoy.status = "Busy";
             availableDeliveryBoy.isAvailable = false;
             availableDeliveryBoy.active_order = savedOrder._id;

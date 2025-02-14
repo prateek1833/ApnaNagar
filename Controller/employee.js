@@ -35,7 +35,7 @@ module.exports.renderDashboard = async (req, res) => {
         const employee = await Employee.findById(employeeId).populate('active_order').populate('completed_orders');
         
         // Fetch pending orders from the queue (orders that are yet to be assigned to any delivery boy)
-        const pendingOrders = await Order.find({ status: 'Pending' }).populate('author');
+        const pendingOrders = await Order.find({ db_status: 'Pending' }).populate('author');
 
         // Render the dashboard view and pass necessary data
         res.render('employee/dashboard', {
