@@ -9,11 +9,22 @@ module.exports.renderLogin = (req, res) => {
 }
 
 module.exports.login = async (req, res) => {
-    req.flash("success", "Welcome back to Apna Nagar");
-    let redirectUrl = res.locals.redirectUrl || "/employee/dashboard";
+    try {
+        if (!req.user) {
+            req.flash("error", "Invalid credentials. Please try again.");
+            return res.redirect("/login");
+        }
 
-    res.redirect(redirectUrl);
-}
+        req.flash("success", "Welcome back to Apna Nagar");
+        let redirectUrl = res.locals.redirectUrl || `/employee/${req.user.id}/dashboard`;
+
+        res.redirect(redirectUrl);
+    } catch (error) {
+        req.flash("error", "Something went wrong. Please try again later.");
+        res.redirect("/login");
+    }
+};
+
 
 module.exports.renderSignUp = (req, res) => {
     res.render("employee/signup.ejs");

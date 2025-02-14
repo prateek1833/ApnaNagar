@@ -75,6 +75,7 @@ const employeeSchema = new Schema({
         ref: "User",
         required: true,
     },
+    type: String,
 
 });
 
