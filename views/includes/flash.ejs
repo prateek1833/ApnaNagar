@@ -1,21 +1,54 @@
-<%if(success && success.length>0){%>
-    <div class="alert alert-success alert-dismissible fade show col-14 mt-2 mb-4" role="alert" style="margin: 0 -20px 0 -20px;background-color: #fad4cf;color: #4b0280;">
-        <%=success%>
+<% if(success && success.length > 0) { %>
+    <div class="alert alert-success alert-dismissible fade show col-14 mt-2 mb-4" role="alert" style="margin: 0 -20px 0 -20px;background-color: #fad4cf;color: #4b0280;">        <%= success %>
         <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
     </div>
-<%}%>
-<%if(error && error.length>0){%>
-    <div class="alert alert-danger alert-dismissible fade show col-12" role="alert">
-        <%=error%>
+<% } %>
+
+<% if(error && error.length > 0) { %>
+    <div class="alert alert-danger alert-dismissible fade show col-12" role="alert">        <%= error %>
         <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
     </div>
-<%}%>
+<% } %>
+
+<style>
+   /* Add this to your CSS file or inside <style> tag */
+.alert {
+    overflow: hidden;
+    opacity: 0;
+    max-height: 0;
+    padding: 0;
+    margin-bottom: 10px;
+    transition: max-height 0.5s ease-in-out, opacity 0.5s ease-in-out, padding 0.5s ease-in-out;
+}
+
+/* This class is added to make the alert visible */
+.alert.show {
+    opacity: 1;
+    max-height: 500px; /* Set a large enough max-height */
+    padding: 12px; /* Add padding when the alert is visible */
+}
+</style>
 <script>
-    setTimeout(function() {
+    // Function to trigger showing and hiding flash messages
+    function showFlashMessage() {
         let alerts = document.querySelectorAll('.alert');
         alerts.forEach(alert => {
-            let bsAlert = new bootstrap.Alert(alert);
-            bsAlert.close();
+            // Add 'show' class to trigger the transition
+            alert.classList.add('show');
+
+            // Set a timeout to remove the 'show' class after 3 seconds (transition time)
+            setTimeout(() => {
+                alert.classList.remove('show'); // Remove the show class to trigger the hide transition
+
+                // After the hide transition is completed, close the alert
+                let bsAlert = new bootstrap.Alert(alert);
+                bsAlert.close();
+            }, 3000); // 3 seconds
         });
-    }, 3000); // 3 seconds
+    }
+
+    // Call the function to show the message when the page is ready
+    window.onload = function() {
+        showFlashMessage();
+    };
 </script>
