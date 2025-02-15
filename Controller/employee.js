@@ -236,7 +236,7 @@ module.exports.completeOrderAndAssignNext = async (req, res) => {
             employee.status = "Busy";
             employee.isAvailable = false;
 
-            nextOrder.status = "Assigned";
+            nextOrder.db_status = "Assigned";
 
             await employee.save();
             await nextOrder.save();
