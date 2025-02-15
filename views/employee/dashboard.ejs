@@ -8,6 +8,13 @@
             </button>
         </form>
     </span>
+    <% if (!employee.isAvailable) { %>
+        <style>
+            .container {
+                filter: grayscale(80%);
+            }
+        </style>
+    <% } %>    
 
     <h2 class="text-center text-primary mb-4">Delivery Dashboard</h2>
 
@@ -130,8 +137,10 @@
             </div>
         </div>
         <% } else { %>
-            <div class="alert alert-info">
-                <i class="fa-solid fa-clock"></i> No active orders. Waiting for assignment.
+            <div class="">
+                <form action="/employee/<%= employee.id %>/takeNextPending" method="POST">
+                    <button type="submit" class="btn light-btn">Take pending Order</button>
+                </form>
             </div>
             <% } %>
 

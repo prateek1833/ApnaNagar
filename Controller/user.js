@@ -54,6 +54,10 @@ module.exports.renderLogin = (req, res) => {
 }
 
 module.exports.logout = async (req, res, next) => {
+    if(req.user.isAvailable){
+        req.user.isAvailable = false;
+            await req.user.save();
+    }
     req.logout((err) => {
         if (err) {
             next(err);
@@ -62,7 +66,6 @@ module.exports.logout = async (req, res, next) => {
         req.flash("success", "you are logged out!");
         res.redirect("/");
     })
-
 }
 
 module.exports.login = async (req, res) => {
