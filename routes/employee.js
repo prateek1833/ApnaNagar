@@ -25,6 +25,8 @@ router
 
 router.post("/:id/toggle", isLoggedIn, wrapAsync(employeeController.toggleStatus));
 
-router.post("/:id/delivered", isLoggedIn, wrapAsync(employeeController.completeOrder));
+router.post("/:id/complete", isLoggedIn, wrapAsync(employeeController.completeOrder));
+
+router.post("/:id/completeAndNext", isLoggedIn, wrapAsync(employeeController.completeOrderAndAssignNext));
 
 module.exports = router;

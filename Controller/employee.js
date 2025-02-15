@@ -1,3 +1,4 @@
+const mongoose = require("mongoose");
 const express = require("express");
 const router = express.Router();
 const Employee = require("../models/employee");
@@ -132,38 +133,124 @@ module.exports.toggleStatus = async (req, res) => {
     res.redirect(`/employee/${id}/dashboard`);
 };
 
-// Assume the delivery boy completes the order
+
 module.exports.completeOrder = async (req, res) => {
     try {
-        const { employeeId } = req.params;
-        const employee = await Employee.findById(employeeId);
-        const order = await Order.findById(orderId);
+        let employeeId = req.params.id; // Correct way to extract employeeId
 
-        // Check if the employee and order exist
-        if (!employee || !order) {
-            req.flash("error", "Invalid employee or order.");
+        // Validate ObjectId format
+        if (!mongoose.Types.ObjectId.isValid(employeeId)) {
+            console.log("Invalid Employee ID:", req.params);
+            req.flash("error", "Invalid Employee ID format.");
             return res.redirect("/orders");
         }
 
-        // Update the delivery boy's status and mark the order as completed
+        const employee = await Employee.findById(employeeId);
+        if (!employee) {
+            req.flash("error", "Employee not found.");
+            return res.redirect("/orders");
+        }
+
+        // Validate if `active_order` exists before querying
+        if (!employee.active_order || !mongoose.Types.ObjectId.isValid(employee.active_order)) {
+            req.flash("error", "No active order found for the employee.");
+            return res.redirect("/orders");
+        }
+
+        const order = await Order.findById(employee.active_order);
+        if (!order) {
+            req.flash("error", "Order not found.");
+            return res.redirect("/orders");
+        }
+
+        // Update employee and order status
         employee.status = "Free";
         employee.isAvailable = true;
         employee.total_deliveries += 1;
-        employee.completed_orders.push(orderId);
+        employee.completed_orders.push(employee.active_order);
         employee.active_order = null;
 
-        // Mark the order as completed
         order.db_status = "Completed";
+        order.status = "Delivered";
 
         await employee.save();
         await order.save();
 
         req.flash("success", "Order completed successfully!");
-        res.redirect("/orders");
+        return res.redirect(`/employee/${employeeId}/dashboard`);
     } catch (error) {
-        console.error(error);
+        console.error("Error in completeOrder:", error);
         req.flash("error", `Error completing order: ${error.message}`);
-        res.redirect("/orders");
+        return res.redirect("/orders");
+    }
+};
+
+module.exports.completeOrderAndAssignNext = async (req, res) => {
+    try {
+        let employeeId = req.params.id; // Extract employeeId
+
+        // Validate ObjectId format
+        if (!mongoose.Types.ObjectId.isValid(employeeId)) {
+            console.log("Invalid Employee ID:", req.params);
+            req.flash("error", "Invalid Employee ID format.");
+            return res.redirect("/orders");
+        }
+
+        const employee = await Employee.findById(employeeId);
+        if (!employee) {
+            req.flash("error", "Employee not found.");
+            return res.redirect("/orders");
+        }
+
+        // Validate if `active_order` exists before querying
+        if (!employee.active_order || !mongoose.Types.ObjectId.isValid(employee.active_order)) {
+            req.flash("error", "No active order found for the employee.");
+            return res.redirect("/orders");
+        }
+
+        const order = await Order.findById(employee.active_order);
+        if (!order) {
+            req.flash("error", "Order not found.");
+            return res.redirect("/orders");
+        }
+
+        // Complete the current order
+        employee.status = "Free";
+        employee.isAvailable = true;
+        employee.total_deliveries += 1;
+        employee.completed_orders.push(employee.active_order);
+        employee.active_order = null;
+
+        order.db_status = "Completed";
+        order.status = "Delivered";
+
+        await employee.save();
+        await order.save();
+
+        // Find the next pending order
+        const nextOrder = await Order.findOne({ status: "Pending" }).sort({ createdAt: 1 });
+
+        if (nextOrder) {
+            // Assign the new order to the employee
+            employee.active_order = nextOrder._id;
+            employee.status = "Busy";
+            employee.isAvailable = false;
+
+            nextOrder.status = "Assigned";
+
+            await employee.save();
+            await nextOrder.save();
+
+            req.flash("success", "Order completed and next pending order assigned successfully!");
+        } else {
+            req.flash("success", "Order completed, but no pending orders available.");
+        }
+
+        return res.redirect(`/employee/${employeeId}/dashboard`);
+    } catch (error) {
+        console.error("Error in completeOrderAndAssignNext:", error);
+        req.flash("error", `Error completing and assigning order: ${error.message}`);
+        return res.redirect("/orders");
     }
 };
 
