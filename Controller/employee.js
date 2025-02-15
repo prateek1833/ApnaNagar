@@ -228,7 +228,7 @@ module.exports.completeOrderAndAssignNext = async (req, res) => {
         await order.save();
 
         // Find the next pending order
-        const nextOrder = await Order.findOne({ status: "Pending" }).sort({ createdAt: 1 });
+        const nextOrder = await Order.findOne({ db_status: "Pending" }).sort({ createdAt: 1 });
 
         if (nextOrder) {
             // Assign the new order to the employee
