@@ -17,12 +17,13 @@
 
         <section class="statistics">
             <h2>Today's Statistics</h2>
-            <canvas id="todayStatsChart"></canvas> 
+            <canvas id="todayStatsChart"></canvas>
+            <canvas id="platformChargesChart"></canvas> <!-- Added missing canvas -->
         </section>
 
         <section class="total-statistics">
             <h2>Overall Statistics</h2>
-            <canvas id="overallStatsChart"></canvas> 
+            <canvas id="overallStatsChart"></canvas>
         </section>
 
         <footer>
@@ -40,10 +41,32 @@
             data: {
                 labels: ['Earnings (₹)', 'Deliveries'],
                 datasets: [{
-                    label: 'Today\'s Performance',
+                    label: "Today's Performance",
                     data: [<%= totalEarningsToday %>, <%= totalDeliveriesToday %>],
                     backgroundColor: ['#4CAF50', '#2196F3'],
                     borderColor: ['#388E3C', '#1976D2'],
+                    borderWidth: 1
+                }]
+            },
+            options: {
+                responsive: true,
+                scales: {
+                    y: { beginAtZero: true }
+                }
+            }
+        });
+
+        // Data for Today's Platform Charges Chart
+        const platformChargesCtx = document.getElementById('platformChargesChart').getContext('2d');
+        new Chart(platformChargesCtx, {
+            type: 'bar',
+            data: {
+                labels: ['Platform Charges (₹)'],
+                datasets: [{
+                    label: "Today's Platform Charges",
+                    data: [<%= totalPlatformChargesToday %>],
+                    backgroundColor: ['#FF5722'],
+                    borderColor: ['#E64A19'],
                     borderWidth: 1
                 }]
             },

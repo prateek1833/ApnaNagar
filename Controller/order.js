@@ -353,8 +353,8 @@ module.exports.createOrder = async (req, res) => {
         if (availableDeliveryBoy) {
             // Assign the order to the available delivery boy
             savedOrder.db_status = "Assigned";
+            savedOrder.status = "Order Received";
             availableDeliveryBoy.status = "Busy";
-            availableDeliveryBoy.isAvailable = false;
             availableDeliveryBoy.active_order = savedOrder._id;
             await savedOrder.save();
             await availableDeliveryBoy.save();

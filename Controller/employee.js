@@ -304,49 +304,48 @@ module.exports.completeNextPendingOrder = async (req, res) => {
 
 module.exports.Statistics = async (req, res) => {
     try {
-        // Fetch the delivery boy's data using the ID
         const employee = await Employee.findById(req.params.id);
-
         if (!employee) {
             return res.status(404).json({ message: 'Delivery Boy not found' });
         }
-
-        // Fetch orders using the completed order IDs
         const completedOrders = await Order.find({ '_id': { $in: employee.completed_orders } });
-
         if (!completedOrders || completedOrders.length === 0) {
             return res.status(404).json({ message: 'No completed orders found' });
         }
-
-        // Get today's date in YYYY-MM-DD format
         const todayDate = new Date().toISOString().split('T')[0];
-
-        // Filter orders completed today
         const todayOrders = completedOrders.filter(order => {
-            if (order.createdAt) { // Ensure createdAt exists
-                const orderDate = new Date(order.createdAt).toISOString().split('T')[0];
-                return orderDate === todayDate;
+            if (order.createdAt) {
+                return new Date(order.createdAt).toISOString().split('T')[0] == todayDate;
             }
             return false;
         });
 
-        // Calculate total earnings for today
-        const totalEarningsToday = todayOrders.reduce((acc, order) => acc + (order.earnings || 0), 0); // Ensure earnings exist
-        const totalDeliveriesToday = todayOrders.length;
+        let totalEarningsToday = 0;
+        let totalPlatformChargesToday = 0;
+        todayOrders.forEach(order => {
+            let totalPrice = order.items.reduce((sum, item) => sum + (item.item.price * item.item.quantity), 0);
+            let earnings = 1; 
+            if (totalPrice > 100) {
+                earnings += Math.round(totalPrice * 0.01);
+            }
+            earnings += Math.round(order.author.distance);
+            totalEarningsToday += earnings;
 
-        // Get overall stats from the employee object
-        const totalEarnings = employee.total_earnings || 0;
-        const totalDeliveries = employee.total_deliveries || 0;
-        const rating = employee.rating || 0;
-
+            let platformCharge = order.items.reduce((sum, item) => {
+                return sum + ((item.item.price > 50 ? 0.1 : 0.2) * item.item.price * item.item.quantity);
+            }, 0);
+            totalPlatformChargesToday += Math.round(platformCharge);
+        });
+        
         res.render('employee/statistics.ejs', {
             username: employee.username,
             mobile: employee.mobile,
             totalEarningsToday,
-            totalDeliveriesToday,
-            totalEarnings,
-            totalDeliveries,
-            rating
+            totalDeliveriesToday: todayOrders.length,
+            totalEarnings: employee.total_earnings || 0,
+            totalDeliveries: employee.total_deliveries || 0,
+            rating: employee.rating || 0,
+            totalPlatformChargesToday
         });
     } catch (error) {
         console.error("Error in Statistics Controller:", error);
