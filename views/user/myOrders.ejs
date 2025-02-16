@@ -113,10 +113,10 @@
                                         <div class="contact-info">
                                             <% if (order.deliveryBoy) { %>
                                                 <p><strong>Delivery Boy:</strong>
-                                                    <%= order.deliveryBoy.name %> (<a
-                                                            href="tel:<%= order.deliveryBoy.phone %>">
+                                                    <%= order.deliveryBoy.name %> <a
+                                                            href="<%= order.deliveryBoy.phone %>">
                                                             <%= order.deliveryBoy.phone %>
-                                                        </a>)
+                                                        </a>
                                                 </p>
                                                 <% } else { %>
                                                     <p><strong>Delivery Boy:</strong> Not Assigned</p>
