@@ -1,0 +1,87 @@
+<% layout('../layout/boilerplate') -%>
+
+<% if (completedOrders.length === 0) { %>
+    <h2 style="opacity: 0.5;">You haven't completed any orders yet.</h2>
+<% } else { %>
+    <div class="accordion" id="orderHistoryAccordion">
+        <% for (let i = completedOrders.length - 1; i >= 0; i--) { %>
+            <% let order = completedOrders[i]; %>
+            <% let user = order.author; %>
+            <div class="accordion-item">
+                <h2 class="accordion-header" id="heading<%= order._id %>">
+                    <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse"
+                        data-bs-target="#collapse<%= order._id %>" aria-expanded="false" aria-controls="collapse<%= order._id %>">
+                        <div>
+                            <!-- Order Details -->
+                            <div><%= order.status %></div>
+                            <div style="font-size: 0.85rem; color: gray;">Created on: <%= new Date(order.createdAt).toLocaleString("en-IN", { timeZone: "Asia/Kolkata" }) %></div>
+
+                            <!-- Order Items (small font) -->
+                            <div style="font-size: 0.75rem; color: #6c757d;">
+                                Items: 
+                                <% order.items.forEach((orderItem, index) => { %>
+                                    <%= orderItem.item.title %><%= index < order.items.length - 1 ? ', ' : '' %>
+                                <% }); %>
+                            </div>
+                        </div>
+                    </button>
+                </h2>
+                <div id="collapse<%= order._id %>" class="accordion-collapse collapse" 
+                    aria-labelledby="heading<%= order._id %>" data-bs-parent="#orderHistoryAccordion">
+                    <div class="accordion-body p-0">
+                        <table class="table table-striped">
+                            <thead class="thead-light">
+                                <tr>
+                                    <th>Item</th>
+                                    <th>Type</th>
+                                    <th>Price</th>
+                                    <th>Q</th>
+                                    <th>Sub Total</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <% let sum = 0; %>
+                                <% let weight = 0; %>
+                                <% order.items.forEach(orderItem => { %>
+                                    <tr>
+                                        <td><%= orderItem.item.title %></td>
+                                        <td><%= orderItem.item.typ %></td>
+                                        <td><%= orderItem.item.price.toLocaleString("en-IN") %> &#8377; / <%= orderItem.item.unit %></td>
+                                        <td><%= orderItem.item.quantity.toLocaleString("en-IN") %> <%= orderItem.item.unit %></td>
+                                        <td><%= (orderItem.item.quantity * orderItem.item.price).toLocaleString("en-IN") %> &#8377;</td>
+                                    </tr>
+                                    <% sum += orderItem.item.quantity * orderItem.item.price; %>
+                                    <% weight += parseInt(orderItem.item.quantity); %>
+                                <% }); %>
+                                
+                                <!-- Delivery Charges -->
+                                <% let deliveryCost = user.distance > 3 ? Math.floor(user.distance * 4) : 0; %>
+                                <tr>
+                                    <td><b>Delivery</b></td>
+                                    <td></td>
+                                    <td></td>
+                                    <td></td>
+                                    <td><b>₹<%= deliveryCost.toLocaleString("en-IN") %></b></td>
+                                </tr>
+
+
+                                <!-- Total -->
+                                <tr>
+                                    <td><b>Total</b></td>
+                                    <td></td>
+                                    <td></td>
+                                    <td></td>
+                                    <td>
+                                        <b>₹<%= Math.floor(sum + user.balance_due + deliveryCost).toFixed(0).toLocaleString("en-IN") %></b>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table> 
+                    </div>
+                </div>
+            </div>
+            <br>
+        <% } %>
+    </div>
+<% } %>
+

@@ -380,3 +380,29 @@ module.exports.Statistics = async (req, res) => {
         res.status(500).json({ message: 'Server Error', error: error.message });
     }
 };
+
+module.exports.OrderHistory = async (req, res) => {
+    try {
+        const employee = await Employee.findById(req.params.id);
+        if (!employee) {
+            return res.status(404).json({ message: 'Delivery Boy not found' });
+        }
+
+        // Fetch completed orders of the delivery boy
+        const completedOrders = await Order.find({ '_id': { $in: employee.completed_orders } }).sort({ createdAt: -1 });
+        
+        if (!completedOrders || completedOrders.length === 0) {
+            return res.status(404).json({ message: 'No completed orders found' });
+        }
+
+        res.render('employee/order.ejs', {
+            username: employee.username,
+            mobile: employee.mobile,
+            completedOrders,
+        });
+    } catch (error) {
+        console.error("Error in OrderHistory Controller:", error);
+        res.status(500).json({ message: 'Server Error', error: error.message });
+    }
+};
+
