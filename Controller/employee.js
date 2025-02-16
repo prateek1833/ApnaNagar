@@ -171,6 +171,7 @@ module.exports.completeOrder = async (req, res) => {
 
         order.db_status = "Completed";
         order.status = "Delivered";
+        order.deliveryBoy = { _id: employee._id, name: employee.username, mobile: employee.mobile };
 
         await employee.save();
         await order.save();
@@ -237,6 +238,7 @@ module.exports.completeOrderAndAssignNext = async (req, res) => {
             employee.active_order = nextOrder._id;
             employee.status = "Busy";
             nextOrder.db_status = "Assigned";
+            nextOrder.deliveryBoy = { _id: employee._id, name: employee.username, mobile: employee.mobile };
 
             await employee.save();
             await nextOrder.save();
@@ -289,6 +291,7 @@ module.exports.completeNextPendingOrder = async (req, res) => {
         employee.active_order = nextOrder._id;
         employee.status = "Busy";
         nextOrder.db_status = "Assigned";
+        nextOrder.deliveryBoy = { _id: employee._id, name: employee.username, mobile: employee.mobile };
 
         await employee.save();
         await nextOrder.save();

@@ -323,6 +323,7 @@ module.exports.createOrder = async (req, res) => {
         const newOrder = new Order({
             items: orderItems,
             db_status: "Pending",  // Set the initial status to "Pending"
+            status: "Order Received",
             author: {
                 _id: user._id,
                 name: user.username,
@@ -353,7 +354,12 @@ module.exports.createOrder = async (req, res) => {
         if (availableDeliveryBoy) {
             // Assign the order to the available delivery boy
             savedOrder.db_status = "Assigned";
-            savedOrder.status = "Order Received";
+            savedOrder.deliveryBoy = {
+                _id: availableDeliveryBoy._id,
+                name: availableDeliveryBoy.username, // Assuming 'owner' holds the name
+                mobile: availableDeliveryBoy.mobile,
+            };
+            savedOrder.db_status = "Assigned";
             availableDeliveryBoy.status = "Busy";
             availableDeliveryBoy.active_order = savedOrder._id;
             await savedOrder.save();

@@ -1,158 +1,216 @@
 <% layout('../layout/boilerplate') -%>
 
-<% if (allOrder.length === 0) { %>
-    <h2 style="opacity: 0.5;">You haven't made any orders yet.</h2>
-<% } else { %>
-    <% for (let i = allOrder.length - 1; i >= 0; i--) { %>
-        <% let order = allOrder[i]; %>
-        <% let user = order.author; %>
-        <div class="accordion"  id="orderAccordion">
-            <div class="accordion-item" >
-                <h2 class="accordion-header"  id="heading<%= order._id %>">
-                    <button class="accordion-button collapsed"  type="button" data-bs-toggle="collapse"
-                        data-bs-target="#collapse<%= order._id %>" aria-expanded="false" aria-controls="collapse<%= order._id %>">
-                        <div>
-                            <!-- Order Details -->
-                            <div> <%= order.status %></div>
-                            <div style="font-size: 0.85rem; color: gray;">Created on: <%= new Date(order.createdAt).toLocaleString("en-IN", { timeZone: "Asia/Kolkata" }) %></div>
-                            
-                            <!-- Order Items (small font) -->
-                            <div style="font-size: 0.75rem; color: #6c757d;">
-                                Items: 
-                                <% order.items.forEach((orderItem, index) => { %>
-                                    <%= orderItem.item.title %><%= index < order.items.length - 1 ? ', ' : '' %>
-                                <% }); %>
+    <% if (allOrder.length===0) { %>
+        <h2 style="opacity: 0.5;">You haven't made any orders yet.</h2>
+        <% } else { %>
+            <% for (let i=allOrder.length - 1; i>= 0; i--) { %>
+                <% let order=allOrder[i]; %>
+                    <% let user=order.author; %>
+                        <div class="accordion" id="orderAccordion">
+                            <div class="accordion-item">
+                                <h2 class="accordion-header" id="heading<%= order._id %>">
+                                    <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse"
+                                        data-bs-target="#collapse<%= order._id %>" aria-expanded="false"
+                                        aria-controls="collapse<%= order._id %>">
+                                        <div>
+                                            <!-- Order Details -->
+                                            <div>
+                                                <%= order.status %>
+                                            </div>
+                                            <div style="font-size: 0.85rem; color: gray;">Created on: <%= new
+                                                    Date(order.createdAt).toLocaleString("en-IN", {
+                                                    timeZone: "Asia/Kolkata" }) %>
+                                            </div>
+
+                                            <!-- Order Items (small font) -->
+                                            <div style="font-size: 0.75rem; color: #6c757d;">
+                                                Items:
+                                                <% order.items.forEach((orderItem, index)=> { %>
+                                                    <%= orderItem.item.title %>
+                                                        <%= index < order.items.length - 1 ? ', ' : '' %>
+                                                            <% }); %>
+                                            </div>
+                                        </div>
+                                    </button>
+                                </h2>
+                                <div id="collapse<%= order._id %>" class="accordion-collapse collapse"
+                                    aria-labelledby="heading<%= order._id %>" data-bs-parent="#orderAccordion">
+                                    <div class="accordion-body p-0">
+                                        <table class="table table-primary">
+                                            <thead class="thead-primary">
+                                                <tr>
+                                                    <th>Item</th>
+                                                    <th>Type</th>
+                                                    <th>Price</th>
+                                                    <th>Quant.</th>
+                                                    <th>Rate</th>
+                                                </tr>
+                                            </thead>
+                                            <tbody>
+                                                <% let sum=0; %>
+                                                    <% let weight=0; %>
+                                                        <% for (let j=order.items.length - 1; j>= 0; j--) { %>
+                                                            <% let orderItem=order.items[j]; %>
+                                                                <tr>
+                                                                    <td>
+                                                                        <%= orderItem.item.title %>
+                                                                    </td>
+                                                                    <td>
+                                                                        <%= orderItem.item.typ %>
+                                                                    </td>
+                                                                    <td>
+                                                                        <%= orderItem.item.price.toLocaleString("en-IN")
+                                                                            %> &#8377; / <%= orderItem.item.unit %>
+                                                                    </td>
+                                                                    <td>
+                                                                        <%= orderItem.item.quantity.toLocaleString("en-IN")
+                                                                            %>
+                                                                            <%= orderItem.item.unit %>
+                                                                    </td>
+                                                                    <td>
+                                                                        <%= (orderItem.item.quantity *
+                                                                            orderItem.item.price).toLocaleString("en-IN")
+                                                                            %> &#8377;
+                                                                    </td>
+                                                                </tr>
+                                                                <% sum +=orderItem.item.quantity * orderItem.item.price;
+                                                                    %>
+                                                                    <% weight +=parseInt(orderItem.item.quantity); %>
+                                                                        <% } %>
+                                                                            <% let deliveryCost=user.distance> 3 ?
+                                                                                Math.round(user.distance * 4) : 0; %>
+                                                                                <tr>
+                                                                                    <td><b>Delivery</b></td>
+                                                                                    <td></td>
+                                                                                    <td></td>
+                                                                                    <td></td>
+                                                                                    <td><b>₹<%= deliveryCost.toLocaleString("en-IN")
+                                                                                                %></b></td>
+                                                                                </tr>
+                                                                                <tr>
+                                                                                    <td><b>Balance Due</b></td>
+                                                                                    <td></td>
+                                                                                    <td></td>
+                                                                                    <td></td>
+                                                                                    <td><b>₹<%= user.balance_due.toLocaleString("en-IN")
+                                                                                                %></b></td>
+                                                                                </tr>
+                                                                                <tr>
+                                                                                    <td><b>Total</b></td>
+                                                                                    <td></td>
+                                                                                    <td></td>
+                                                                                    <td></td>
+                                                                                    <td>
+                                                                                        <b>₹<%= Math.round(sum +
+                                                                                                user.balance_due +
+                                                                                                deliveryCost).toFixed(2).toLocaleString("en-IN")
+                                                                                                %></b>
+                                                                                    </td>
+                                                                                </tr>
+                                            </tbody>
+                                        </table>
+                                        <!-- Delivery Boy and Restaurant Contact Info -->
+                                        <div class="contact-info">
+                                            <% if (order.deliveryBoy) { %>
+                                                <p><strong>Delivery Boy:</strong>
+                                                    <%= order.deliveryBoy.name %> (<a
+                                                            href="tel:<%= order.deliveryBoy.phone %>">
+                                                            <%= order.deliveryBoy.phone %>
+                                                        </a>)
+                                                </p>
+                                                <% } else { %>
+                                                    <p><strong>Delivery Boy:</strong> Not Assigned</p>
+                                                    <% } %>
+
+                                                    
+                                        </div>
+                                        <!-- Progress Bar Section -->
+                                        <div class="progress" role="progressbar" aria-valuenow="25" aria-valuemin="0"
+                                            aria-valuemax="100">
+                                            <% let progress=0; %>
+                                                <% if (order.status==="Order Received" ) progress=25; %>
+                                                    <% if (order.status==="Preparing" ) progress=50; %>
+                                                        <% if (order.status==="Out for Delivery" ) progress=75; %>
+                                                            <% if (order.status==="Delivered" ) progress=100; %>
+                                                                <div class="progress-bar bg-info"
+                                                                    style="width: <%= progress %>%"></div>
+                                        </div>
+
+                                        <!-- Order Progress Steps -->
+                                        <div class="order-progress">
+                                            <div
+                                                class="step <%= order.status === 'Order Received' || order.status === 'Preparing' || order.status === 'Out for Delivery' || order.status === 'Delivered' ? 'completed' : '' %>">
+                                                Ordered</div>
+                                            <div
+                                                class="step <%= order.status === 'Preparing' || order.status === 'Out for Delivery' || order.status === 'Delivered' ? 'completed' : '' %>">
+                                                Preparing</div>
+                                            <div
+                                                class="step <%= order.status === 'Out for Delivery' || order.status === 'Delivered' ? 'completed' : '' %>">
+                                                Out for Delivery</div>
+                                            <div class="step <%= order.status === 'Delivered' ? 'completed' : '' %>">
+                                                Delivered</div>
+                                        </div>
+                                    </div>
+                                </div>
                             </div>
                         </div>
-                    </button>
-                </h2>
-                <div id="collapse<%= order._id %>" class="accordion-collapse collapse" 
-                    aria-labelledby="heading<%= order._id %>" data-bs-parent="#orderAccordion">
-                    <div class="accordion-body p-0">
-                        <table class="table table-primary">
-                            <thead class="thead-primary">
-                                <tr>
-                                    <th>Item</th>
-                                    <th>Type</th>
-                                    <th>Price</th>
-                                    <th>Quant.</th>
-                                    <th>Rate</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                <% let sum = 0; %>
-                                <% let weight = 0; %>
-                                <% for (let j = order.items.length - 1; j >= 0; j--) { %>
-                                    <% let orderItem = order.items[j]; %>
-                                    <tr>
-                                        <td><%= orderItem.item.title %></td>
-                                        <td><%= orderItem.item.typ %></td>
-                                        <td><%= orderItem.item.price.toLocaleString("en-IN") %> &#8377; / <%= orderItem.item.unit %></td>
-                                        <td><%= orderItem.item.quantity.toLocaleString("en-IN") %> <%= orderItem.item.unit %></td>
-                                        <td><%= (orderItem.item.quantity * orderItem.item.price).toLocaleString("en-IN") %> &#8377;</td>
-                                    </tr>
-                                    <% sum += orderItem.item.quantity * orderItem.item.price; %> 
-                                    <% weight += parseInt(orderItem.item.quantity); %>
-                                <% } %>
-                                <% let deliveryCost = user.distance > 3 ? Math.round(user.distance * 4) : 0; %>
-                                <tr>
-                                    <td><b>Delivery</b></td>
-                                    <td></td>
-                                    <td></td>
-                                    <td></td>
-                                    <td><b>₹<%= deliveryCost.toLocaleString("en-IN") %></b></td>
-                                </tr>
-                                <tr>
-                                    <td><b>Balance Due</b></td>
-                                    <td></td>
-                                    <td></td>
-                                    <td></td>
-                                    <td><b>₹<%= user.balance_due.toLocaleString("en-IN") %></b></td>
-                                </tr>
-                                <tr>
-                                    <td><b>Total</b></td>
-                                    <td></td>
-                                    <td></td>
-                                    <td></td>
-                                    <td>
-                                        <b>₹<%= Math.round(sum + user.balance_due + deliveryCost).toFixed(2).toLocaleString("en-IN") %></b>
-                                    </td>
-                                </tr>
-                            </tbody>                            
-                        </table>
+                        <br>
+                        <% } %>
+                            <% } %>
 
-                        <!-- Progress Bar Section -->
-                        <div class="progress" role="progressbar" aria-valuenow="25" aria-valuemin="0" aria-valuemax="100">
-                            <% let progress = 0; %>
-                            <% if (order.status === "Order Received") progress = 25; %>
-                            <% if (order.status === "Preparing") progress = 50; %>
-                            <% if (order.status === "Out for Delivery") progress = 75; %>
-                            <% if (order.status === "Delivered") progress = 100; %>
-                            <div class="progress-bar bg-info" style="width: <%= progress %>%"></div>
-                        </div>
+                                <!-- CSS for Progress Bar and Order Steps -->
+                                <style>
+                                    .progress {
+                                        height: 10px;
+                                        margin-bottom: 20px;
+                                    }
 
-                        <!-- Order Progress Steps -->
-                        <div class="order-progress">
-                            <div class="step <%= order.status === 'Order Received' || order.status === 'Preparing' || order.status === 'Out for Delivery' || order.status === 'Delivered' ? 'completed' : '' %>">Ordered</div>
-                            <div class="step <%= order.status === 'Preparing' || order.status === 'Out for Delivery' || order.status === 'Delivered' ? 'completed' : '' %>">Preparing</div>
-                            <div class="step <%= order.status === 'Out for Delivery' || order.status === 'Delivered' ? 'completed' : '' %>">Out for Delivery</div>
-                            <div class="step <%= order.status === 'Delivered' ? 'completed' : '' %>">Delivered</div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-        <br>
-    <% } %>
-<% } %>
+                                    .order-progress {
+                                        display: flex;
+                                        justify-content: space-between;
+                                        margin-top: 10px;
+                                    }
 
-<!-- CSS for Progress Bar and Order Steps -->
-<style>
-    .progress {
-        height: 10px;
-        margin-bottom: 20px;
-    }
-    .order-progress {
-        display: flex;
-        justify-content: space-between;
-        margin-top: 10px;
-    }
-    .step {
-        width: 25%;
-        text-align: center;
-        position: relative;
-    }
-    .step:before {
-        content: '';
-        position: absolute;
-        top: -20px;
-        left: 50%;
-        transform: translateX(-50%);
-        width: 10px;
-        height: 10px;
-        border-radius: 50%;
-        background-color: #ddd;
-    }
-    .progress-bar {
-        background-color: #007bff !important;
-    }
-    .completed:before {
-        background-color: #007bff;
-    }
-    .completed:after {
-        content: '\2713';
-        position: absolute;
-        top: -25px;
-        left: 50%;
-        transform: translateX(-50%);
-        font-size: 14px;
-        color: white;
-        background-color: #007bff;
-        border-radius: 50%;
-        width: 18px;
-        height: 18px;
-        display: flex;
-        justify-content: center;
-        align-items: center;
-    }
-</style>
+                                    .step {
+                                        width: 25%;
+                                        text-align: center;
+                                        position: relative;
+                                    }
+
+                                    .step:before {
+                                        content: '';
+                                        position: absolute;
+                                        top: -20px;
+                                        left: 50%;
+                                        transform: translateX(-50%);
+                                        width: 10px;
+                                        height: 10px;
+                                        border-radius: 50%;
+                                        background-color: #ddd;
+                                    }
+
+                                    .progress-bar {
+                                        background-color: #007bff !important;
+                                    }
+
+                                    .completed:before {
+                                        background-color: #007bff;
+                                    }
+
+                                    .completed:after {
+                                        content: '\2713';
+                                        position: absolute;
+                                        top: -25px;
+                                        left: 50%;
+                                        transform: translateX(-50%);
+                                        font-size: 14px;
+                                        color: white;
+                                        background-color: #007bff;
+                                        border-radius: 50%;
+                                        width: 18px;
+                                        height: 18px;
+                                        display: flex;
+                                        justify-content: center;
+                                        align-items: center;
+                                    }
+                                </style>

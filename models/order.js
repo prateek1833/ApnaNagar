@@ -50,6 +50,14 @@ const orderSchema = new Schema({
         enum: ["Pending", "Assigned", "Completed"],
         default: "Pending"
     },
+    deliveryBoy: {
+        _id: {
+            type: Schema.Types.ObjectId,
+            ref: "Employee",
+        },
+        name: String,
+        mobile: String,
+    },
 });
 
 const Order = mongoose.model('Order', orderSchema);
