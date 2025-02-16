@@ -1,102 +1,95 @@
 <% layout('../layout/boilerplate') -%>
-    <div class="container">
-        <header>
-            <h1>Statistics for <%= username %></h1>
-        </header>
+<div class="container">
+    <header>
+        <h1>Statistics for <%= username %></h1>
+    </header>
 
-        <section class="profile-info">
-            <div class="info">
-                <label for="username">Username:</label>
-                <span id="username"><%= username %></span>
-            </div>
-            <div class="info">
-                <label for="mobile">Mobile:</label>
-                <span id="mobile"><%= mobile %></span>
-            </div>
-        </section>
+    <section class="profile-info">
+        <div class="info">
+            <label for="username">Username:</label>
+            <span id="username"><%= username %></span>
+        </div>
+        <div class="info">
+            <label for="mobile">Mobile:</label>
+            <span id="mobile"><%= mobile %></span>
+        </div>
+    </section>
 
-        <section class="statistics">
-            <h2>Today's Statistics</h2>
-            <canvas id="todayStatsChart"></canvas>
-            <canvas id="platformChargesChart"></canvas> <!-- Added missing canvas -->
-        </section>
+    <section class="statistics">
+        <h2>Last Three Days Statistics</h2>
+        <canvas id="earningsChart"></canvas>
+        <canvas id="deliveriesChart"></canvas>
+        <canvas id="platformChargesChart"></canvas>
+    </section>
 
-        <section class="total-statistics">
-            <h2>Overall Statistics</h2>
-            <canvas id="overallStatsChart"></canvas>
-        </section>
+</div>
 
-        <footer>
-            <a href="/dashboard">Back to Dashboard</a>
-        </footer>
-    </div>
-
-    <!-- Include Chart.js -->
-    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-    <script>
-        // Data for Today's Statistics Chart
-        const todayStatsCtx = document.getElementById('todayStatsChart').getContext('2d');
-        new Chart(todayStatsCtx, {
-            type: 'bar',
-            data: {
-                labels: ['Earnings (₹)', 'Deliveries'],
-                datasets: [{
-                    label: "Today's Performance",
-                    data: [<%= totalEarningsToday %>, <%= totalDeliveriesToday %>],
-                    backgroundColor: ['#4CAF50', '#2196F3'],
-                    borderColor: ['#388E3C', '#1976D2'],
-                    borderWidth: 1
-                }]
-            },
-            options: {
-                responsive: true,
-                scales: {
-                    y: { beginAtZero: true }
-                }
+<!-- Include Chart.js -->
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script>
+    // Data for Earnings Chart
+    const earningsCtx = document.getElementById('earningsChart').getContext('2d');
+    new Chart(earningsCtx, {
+        type: 'bar',
+        data: {
+            labels: ['Today', 'Yesterday', 'Parso'],
+            datasets: [{
+                label: "Earnings (₹)",
+                data: [<%= todayEarnings %>, <%= yesterdayEarnings %>, <%= dayBeforeYesterdayEarnings %>],
+                backgroundColor: ['#6A0DAD', '#6A0DAD', '#6A0DAD'],
+                borderColor: ['#6A0DAD', '#6A0DAD', '#6A0DAD'],
+                borderWidth: 1
+            }]
+        },
+        options: {
+            responsive: true,
+            scales: {
+                y: { beginAtZero: true }
             }
-        });
+        }
+    });
 
-        // Data for Today's Platform Charges Chart
-        const platformChargesCtx = document.getElementById('platformChargesChart').getContext('2d');
-        new Chart(platformChargesCtx, {
-            type: 'bar',
-            data: {
-                labels: ['Platform Charges (₹)'],
-                datasets: [{
-                    label: "Today's Platform Charges",
-                    data: [<%= totalPlatformChargesToday %>],
-                    backgroundColor: ['#FF5722'],
-                    borderColor: ['#E64A19'],
-                    borderWidth: 1
-                }]
-            },
-            options: {
-                responsive: true,
-                scales: {
-                    y: { beginAtZero: true }
-                }
+    // Data for Deliveries Chart
+    const deliveriesCtx = document.getElementById('deliveriesChart').getContext('2d');
+    new Chart(deliveriesCtx, {
+        type: 'bar',
+        data: {
+            labels: ['Today', 'Yesterday', 'Parso'],
+            datasets: [{
+                label: "Deliveries",
+                data: [<%= todayDeliveries %>, <%= yesterdayDeliveries %>, <%= dayBeforeYesterdayDeliveries %>],
+                backgroundColor: ['#BA4185', '#BA4185', '#BA4185'],
+                borderColor: ['#BA4185', '#BA4185', '#BA4185'],
+                borderWidth: 1
+            }]
+        },
+        options: {
+            responsive: true,
+            scales: {
+                y: { beginAtZero: true }
             }
-        });
+        }
+    });
 
-        // Data for Overall Statistics Chart
-        const overallStatsCtx = document.getElementById('overallStatsChart').getContext('2d');
-        new Chart(overallStatsCtx, {
-            type: 'bar',
-            data: {
-                labels: ['Total Earnings (₹)', 'Total Deliveries', 'Rating'],
-                datasets: [{
-                    label: 'Overall Performance',
-                    data: [<%= totalEarnings %>, <%= totalDeliveries %>, <%= rating %>],
-                    backgroundColor: ['#FF9800', '#3F51B5', '#F44336'],
-                    borderColor: ['#F57C00', '#303F9F', '#D32F2F'],
-                    borderWidth: 1
-                }]
-            },
-            options: {
-                responsive: true,
-                scales: {
-                    y: { beginAtZero: true }
-                }
+    // Data for Platform Charges Chart
+    const platformChargesCtx = document.getElementById('platformChargesChart').getContext('2d');
+    new Chart(platformChargesCtx, {
+        type: 'bar',
+        data: {
+            labels: ['Today', 'Yesterday', 'Parso'],
+            datasets: [{
+                label: "Platform Charges (₹)",
+                data: [<%= todayPlatformCharges %>, <%= yesterdayPlatformCharges %>, <%= dayBeforeYesterdayPlatformCharges %>],
+                backgroundColor: ['#FF6F61', '#FF6F61', '#FF6F61'],
+                borderColor: ['#FF6F61', '#FF6F61', '#FF6F61'],
+                borderWidth: 1
+            }]
+        },
+        options: {
+            responsive: true,
+            scales: {
+                y: { beginAtZero: true }
             }
-        });
-    </script>
+        }
+    });
+</script>

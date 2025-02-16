@@ -312,44 +312,71 @@ module.exports.Statistics = async (req, res) => {
         if (!completedOrders || completedOrders.length === 0) {
             return res.status(404).json({ message: 'No completed orders found' });
         }
-        const todayDate = new Date().toISOString().split('T')[0];
-        const todayOrders = completedOrders.filter(order => {
-            if (order.createdAt) {
-                return new Date(order.createdAt).toISOString().split('T')[0] == todayDate;
-            }
-            return false;
+
+        const getDateString = (date) => date.toISOString().split('T')[0];
+
+        // Get today's, yesterday's, and the day before yesterday's date
+        const todayDate = new Date();
+        const yesterdayDate = new Date(todayDate);
+        const dayBeforeYesterdayDate = new Date(todayDate);
+
+        yesterdayDate.setDate(todayDate.getDate() - 1);
+        dayBeforeYesterdayDate.setDate(todayDate.getDate() - 2);
+
+        const todayStr = getDateString(todayDate);
+        const yesterdayStr = getDateString(yesterdayDate);
+        const dayBeforeYesterdayStr = getDateString(dayBeforeYesterdayDate);
+
+        // Filter orders for each day
+        const filterOrdersByDate = (dateStr) => completedOrders.filter(order => {
+            return order.createdAt && getDateString(new Date(order.createdAt)) === dateStr;
         });
 
-        let totalEarningsToday = 0;
-        let totalPlatformChargesToday = 0;
-        todayOrders.forEach(order => {
-            let totalPrice = order.items.reduce((sum, item) => sum + (item.item.price * item.item.quantity), 0);
-            let earnings = 1; 
-            if (totalPrice > 100) {
-                earnings += Math.round(totalPrice * 0.01);
-            }
-            earnings += Math.round(order.author.distance);
-            totalEarningsToday += earnings;
+        const todayOrders = filterOrdersByDate(todayStr);
+        const yesterdayOrders = filterOrdersByDate(yesterdayStr);
+        const dayBeforeYesterdayOrders = filterOrdersByDate(dayBeforeYesterdayStr);
 
-            let platformCharge = order.items.reduce((sum, item) => {
-                return sum + ((item.item.price > 50 ? 0.1 : 0.2) * item.item.price * item.item.quantity);
-            }, 0);
-            totalPlatformChargesToday += Math.round(platformCharge);
-        });
-        
+        // Calculate earnings and platform charges for each day
+        const calculateStats = (orders) => {
+            let totalEarnings = 0;
+            let totalPlatformCharges = 0;
+            orders.forEach(order => {
+                let totalPrice = order.items.reduce((sum, item) => sum + (item.item.price * item.item.quantity), 0);
+                let earnings = 1;
+                if (totalPrice > 100) {
+                    earnings += Math.round(totalPrice * 0.01);
+                }
+                earnings += Math.round(order.author.distance);
+                totalEarnings += earnings;
+
+                let platformCharge = order.items.reduce((sum, item) => {
+                    return sum + ((item.item.price > 50 ? 0.1 : 0.2) * item.item.price * item.item.quantity);
+                }, 0);
+                totalPlatformCharges += Math.round(platformCharge);
+            });
+
+            return { totalEarnings, totalPlatformCharges, totalDeliveries: orders.length };
+        };
+
+        const todayStats = calculateStats(todayOrders);
+        const yesterdayStats = calculateStats(yesterdayOrders);
+        const dayBeforeYesterdayStats = calculateStats(dayBeforeYesterdayOrders);
+
         res.render('employee/statistics.ejs', {
             username: employee.username,
             mobile: employee.mobile,
-            totalEarningsToday,
-            totalDeliveriesToday: todayOrders.length,
-            totalEarnings: employee.total_earnings || 0,
-            totalDeliveries: employee.total_deliveries || 0,
-            rating: employee.rating || 0,
-            totalPlatformChargesToday
+            todayEarnings: todayStats.totalEarnings,
+            yesterdayEarnings: yesterdayStats.totalEarnings,
+            dayBeforeYesterdayEarnings: dayBeforeYesterdayStats.totalEarnings,
+            todayDeliveries: todayStats.totalDeliveries,
+            yesterdayDeliveries: yesterdayStats.totalDeliveries,
+            dayBeforeYesterdayDeliveries: dayBeforeYesterdayStats.totalDeliveries,
+            todayPlatformCharges: todayStats.totalPlatformCharges,
+            yesterdayPlatformCharges: yesterdayStats.totalPlatformCharges,
+            dayBeforeYesterdayPlatformCharges: dayBeforeYesterdayStats.totalPlatformCharges,
         });
     } catch (error) {
         console.error("Error in Statistics Controller:", error);
         res.status(500).json({ message: 'Server Error', error: error.message });
     }
 };
-
