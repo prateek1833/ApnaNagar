@@ -98,3 +98,11 @@ module.exports.isRestaurant = async (req, res, next) => {
     }
     next();
 };
+
+module.exports.isEmployee = async (req, res, next) => {
+    if (!req.user || req.user.type !== 'Delivery Boy') {
+        req.flash("error", "You don't have permission to access this.");
+        return res.redirect("/");
+    }
+    next();
+};

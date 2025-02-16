@@ -3,7 +3,7 @@ const passport = require("passport");
 const Employee = require("../models/employee");
 const wrapAsync = require("../utils/wrapAsync");
 const { saveRedirectUrl } = require("../middleware");
-const {isLoggedIn,validateItem,isOwner}=require("../middleware.js");
+const {isLoggedIn,validateItem,isEmployee}=require("../middleware.js");
 
 const router = express.Router();
 const employeeController=require("../Controller/employee");
@@ -23,16 +23,16 @@ router
 .route("/:id/dashboard")
 .get( employeeController.renderDashboard)
 
-router.post("/:id/toggle", isLoggedIn, wrapAsync(employeeController.toggleStatus));
+router.post("/:id/toggle", isLoggedIn,isEmployee, wrapAsync(employeeController.toggleStatus));
 
-router.post("/:id/complete", isLoggedIn, wrapAsync(employeeController.completeOrder));
+router.post("/:id/complete", isLoggedIn,isEmployee, wrapAsync(employeeController.completeOrder));
 
-router.post("/:id/completeAndNext", isLoggedIn, wrapAsync(employeeController.completeOrderAndAssignNext));
+router.post("/:id/completeAndNext", isLoggedIn,isEmployee, wrapAsync(employeeController.completeOrderAndAssignNext));
 
-router.post("/:id/takeNextPending", isLoggedIn, wrapAsync(employeeController.completeNextPendingOrder)); 
+router.post("/:id/takeNextPending", isLoggedIn,isEmployee, wrapAsync(employeeController.completeNextPendingOrder)); 
 
-router.get("/:id/statistics", isLoggedIn, wrapAsync(employeeController.Statistics)); 
+router.get("/:id/statistics", isLoggedIn,isEmployee, wrapAsync(employeeController.Statistics)); 
 
-router.get("/:id/order", isLoggedIn, wrapAsync(employeeController.OrderHistory)); 
+router.get("/:id/order", isLoggedIn,isEmployee, wrapAsync(employeeController.OrderHistory)); 
 
 module.exports = router;

@@ -111,18 +111,13 @@
                                         </table>
                                         <!-- Delivery Boy and Restaurant Contact Info -->
                                         <div class="contact-info">
-                                            <% if (order.deliveryBoy) { %>
-                                                <p><strong>Delivery Boy:</strong>
-                                                    <%= order.deliveryBoy.name %> <a
-                                                            href="<%= order.deliveryBoy.mobile %>">
-                                                            <%= order.deliveryBoy.mobile %>
-                                                        </a>
+                                            <% if (order.deliveryBoy.name) { %>
+                                                        <button class="btn light-btn"><i class="fa-solid fa-phone"> <a
+                                                            style="text-decoration: none;color: white;"
+                                                            href="tel:<%=order.deliveryBoy.mobile %>">Call Delivery Boy</a></i>
+                                                        <br></button>
                                                 </p>
-                                                <% } else { %>
-                                                    <p><strong>Delivery Boy:</strong> Not Assigned</p>
-                                                    <% } %>
-
-                                                    
+                                                <% } %>
                                         </div>
                                         <!-- Progress Bar Section -->
                                         <div class="progress" role="progressbar" aria-valuenow="25" aria-valuemin="0"
