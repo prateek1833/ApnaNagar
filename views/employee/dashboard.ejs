@@ -43,10 +43,6 @@
                 <p><strong>Mobile:</strong>
                     <%= employee.active_order.author.mobile %>
                 </p>
-                <p><strong>Total Price :</strong>
-                    <%= employee.active_order.items.reduce((total, item)=> total + item.item.price * item.item.quantity,
-                        0) %> Rs
-                </p>
                 <p><strong>Distance</strong>
                     <%= employee.active_order.author.distance %> km
                 </p>
@@ -64,11 +60,11 @@
                             <tr>
                                 <td>
                                     <%= item.item.typ %>
-                                        <%= item.item.title %>
+                                    <%= item.item.title %>
                                 </td>
                                 <td>
                                     <%= item.item.quantity %>
-                                        <%= item.item.unit %>
+                                    <%= item.item.unit %>
                                 </td>
                                 <td>
                                     <%= item.item.price %>
@@ -77,9 +73,30 @@
                                     <%= restaurantNames[item.item._id] || 'No Restaurant' %>
                                 </td> <!-- Fetch restaurant name -->
                             </tr>
-                            <% }) %>
+                        <% }) %>
+                
+                        <!-- Delivery Cost Row -->
+                        <% 
+                            const distance = employee.active_order.author.distance;
+                            const deliveryCost = distance > 3 ? Math.round(distance * 4) : 0;
+                        %>
+                        <tr>
+                            <td colspan="3" class="text-start"><strong>Delivery Cost</strong></td>
+                            <td><%= deliveryCost %> Rs</td>
+                        </tr>
+                
+                        <!-- Total Price Row -->
+                        <% 
+                            const itemTotalPrice = employee.active_order.items.reduce((total, item) => total + item.item.price * item.item.quantity, 0);
+                            const totalPrice = itemTotalPrice + deliveryCost;
+                        %>
+                        <tr>
+                            <td colspan="3" class="text-start"><strong>Total Price</strong></td>
+                            <td><%= totalPrice %> Rs</td>
+                        </tr>
                     </tbody>
                 </table>
+                
 
                 <hr>
                 <table class="table table-bordered">

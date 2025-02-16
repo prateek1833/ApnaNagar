@@ -92,8 +92,8 @@ module.exports.signup = async (req, res, next) => {
             balance_due: 0,
             active_order: null,
             completed_orders: [],
-            type:"Delivery Boy",
-            isAvailable:false,
+            type: "Delivery Boy",
+            isAvailable: false,
         });
 
         // Register the employee using passport-local-mongoose
@@ -237,14 +237,14 @@ module.exports.completeOrderAndAssignNext = async (req, res) => {
             employee.active_order = nextOrder._id;
             employee.status = "Busy";
             nextOrder.db_status = "Assigned";
-        
+
             await employee.save();
             await nextOrder.save();
-        
+
             req.flash("success", "Order completed and next pending order assigned successfully!");
         } else {
             req.flash("success", "Order completed, but no pending orders available.");
-        }        
+        }
 
         return res.redirect(`/employee/${employeeId}/dashboard`);
     } catch (error) {
@@ -352,7 +352,11 @@ module.exports.Statistics = async (req, res) => {
                 let platformCharge = order.items.reduce((sum, item) => {
                     return sum + ((item.item.price > 50 ? 0.1 : 0.2) * item.item.price * item.item.quantity);
                 }, 0);
+                let distance = order.author.distance;
                 totalPlatformCharges += Math.round(platformCharge);
+                if (distance > 3) {
+                    totalPlatformCharges += Math.round(distance * 4);
+                }
             });
 
             return { totalEarnings, totalPlatformCharges, totalDeliveries: orders.length };
@@ -390,7 +394,7 @@ module.exports.OrderHistory = async (req, res) => {
 
         // Fetch completed orders of the delivery boy
         const completedOrders = await Order.find({ '_id': { $in: employee.completed_orders } }).sort({ createdAt: -1 });
-        
+
         if (!completedOrders || completedOrders.length === 0) {
             return res.status(404).json({ message: 'No completed orders found' });
         }

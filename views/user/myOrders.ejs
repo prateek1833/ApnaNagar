@@ -54,7 +54,7 @@
                                     <% sum += orderItem.item.quantity * orderItem.item.price; %> 
                                     <% weight += parseInt(orderItem.item.quantity); %>
                                 <% } %>
-                                <% let deliveryCost = user.distance > 3 ? Math.floor(user.distance * 4) : 0; %>
+                                <% let deliveryCost = user.distance > 3 ? Math.round(user.distance * 4) : 0; %>
                                 <tr>
                                     <td><b>Delivery</b></td>
                                     <td></td>
@@ -75,10 +75,7 @@
                                     <td></td>
                                     <td></td>
                                     <td>
-                                        <p style="text-decoration: line-through;">
-                                            ₹<%= (sum + user.balance_due + deliveryCost).toFixed(2).toLocaleString("en-IN") %>
-                                        </p>
-                                        <b>₹<%= Math.floor(sum + user.balance_due + deliveryCost).toFixed(2).toLocaleString("en-IN") %></b>
+                                        <b>₹<%= Math.round(sum + user.balance_due + deliveryCost).toFixed(2).toLocaleString("en-IN") %></b>
                                     </td>
                                 </tr>
                             </tbody>                            

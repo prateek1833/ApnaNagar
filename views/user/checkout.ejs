@@ -1,7 +1,7 @@
 <% layout('../layout/boilerplateLocation') -%>
 
 <% user = currUser %>
-<% let deliveryCost = user.distance > 3 ? Math.floor(user.distance * 4) : 0; %>
+<% let deliveryCost = user.distance > 3 ? Math.round(user.distance * 4) : 0; %>
 
 <% if (user.distance > 50) { %>
     <h1 style="color: gray;">Sorry, we are not here yet!</h1>
