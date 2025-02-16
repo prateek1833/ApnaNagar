@@ -29,4 +29,6 @@ router
 
 router.get("/statistics", isLoggedIn, isOwner, ownerController.statistics);
 
+router.get("/employee", isLoggedIn, isOwner, ownerController.renderEmployee);
+
 module.exports=router;

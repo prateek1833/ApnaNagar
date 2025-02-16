@@ -1,7 +1,7 @@
 const Orders = require("../models/order");
 const User = require("../models/user");
 const Restaurant = require("../models/restaurant");
-
+const Employee = require("../models/employee");
 
 module.exports.index = async (req, res) => {
     const allUser = await User.find({});
@@ -21,6 +21,11 @@ module.exports.renderQuantity = async (req, res) => {
     let { id } = req.params;
     const order = await Orders.findById(id);
     res.render("owner/quantity.ejs", { order });
+}
+
+module.exports.renderEmployee= async (req,res)=>{
+    const Employees=await Employee.find({});
+    res.render("owner/employee.ejs",{Employees});
 }
 
 module.exports.quantity = async (req, res) => {
@@ -214,6 +219,113 @@ module.exports.statistics = async (req, res, next) => {
                 customerPurchases[userID].totalItems += order.items.length;
             }
         }
+        const getDateString = (date) => date.toISOString().split('T')[0];
+        const today = new Date();
+        const yesterday = new Date(today);
+        const dayBeforeYesterday = new Date(today);
+
+        yesterday.setDate(today.getDate() - 1);
+        dayBeforeYesterday.setDate(today.getDate() - 2);
+
+        const todayStr = getDateString(today);
+        const yesterdayStr = getDateString(yesterday);
+        const dayBeforeYesterdayStr = getDateString(dayBeforeYesterday);
+
+        // 2. Initialize stats for Today, Yesterday, and Day Before Yesterday
+        let employeeStats = {};
+
+        // Fetch all employees
+        const employees = await Employee.find().lean();
+
+        // 3. Loop through each employee and calculate earnings for the last three days
+        for (let employee of employees) {
+            let totalEarningsEmployee = 0;
+            let totalDeliveriesEmployee = 0;
+            let totalPlatformChargesEmployee = 0;
+            let todayEarnings = 0;
+            let yesterdayEarnings = 0;
+            let dayBeforeYesterdayEarnings = 0;
+            let todayDeliveries = 0;
+            let yesterdayDeliveries = 0;
+            let dayBeforeYesterdayDeliveries = 0;
+            let todayPlatformCharges = 0;
+            let yesterdayPlatformCharges = 0;
+            let dayBeforeYesterdayPlatformCharges = 0;
+
+            // Fetch completed orders for the employee
+            const completedOrders = await Orders.find({ '_id': { $in: employee.completed_orders } }).lean();
+
+            // Filter orders for today, yesterday, and the day before yesterday
+            const todayOrders = completedOrders.filter(order => getDateString(new Date(order.createdAt)) === todayStr);
+            const yesterdayOrders = completedOrders.filter(order => getDateString(new Date(order.createdAt)) === yesterdayStr);
+            const dayBeforeYesterdayOrders = completedOrders.filter(order => getDateString(new Date(order.createdAt)) === dayBeforeYesterdayStr);
+
+            // Function to calculate earnings and platform charges for each day
+            const calculateStats = (orders) => {
+                let earnings = 0;
+                let platformCharges = 0;
+                let deliveries = 0;
+                orders.forEach(order => {
+                    let totalPrice = order.items.reduce((sum, item) => sum + (item.item.price * item.item.quantity), 0);
+                    let orderEarnings = 1;
+                    if (totalPrice > 100) {
+                        orderEarnings += Math.round(totalPrice * 0.01);
+                    }
+                    orderEarnings += Math.round(order.author.distance);
+                    earnings += orderEarnings;
+
+                    let charge = order.items.reduce((sum, item) => {
+                        return sum + ((item.item.price > 50 ? 0.1 : 0.2) * item.item.price * item.item.quantity);
+                    }, 0);
+
+                    platformCharges += Math.round(charge);
+                    if (order.author.distance > 3) {
+                        platformCharges += Math.round(order.author.distance * 4);
+                    }
+                    deliveries++;
+                });
+                return { earnings, platformCharges, deliveries };
+            };
+
+            // Calculate stats for each day
+            const todayStats = calculateStats(todayOrders);
+            const yesterdayStats = calculateStats(yesterdayOrders);
+            const dayBeforeYesterdayStats = calculateStats(dayBeforeYesterdayOrders);
+
+            // Aggregate employee stats
+            totalEarningsEmployee = todayStats.earnings + yesterdayStats.earnings + dayBeforeYesterdayStats.earnings;
+            totalDeliveriesEmployee = todayStats.deliveries + yesterdayStats.deliveries + dayBeforeYesterdayStats.deliveries;
+            totalPlatformChargesEmployee = todayStats.platformCharges + yesterdayStats.platformCharges + dayBeforeYesterdayStats.platformCharges;
+
+            todayEarnings = todayStats.earnings;
+            yesterdayEarnings = yesterdayStats.earnings;
+            dayBeforeYesterdayEarnings = dayBeforeYesterdayStats.earnings;
+
+            todayDeliveries = todayStats.deliveries;
+            yesterdayDeliveries = yesterdayStats.deliveries;
+            dayBeforeYesterdayDeliveries = dayBeforeYesterdayStats.deliveries;
+
+            todayPlatformCharges = todayStats.platformCharges;
+            yesterdayPlatformCharges = yesterdayStats.platformCharges;
+            dayBeforeYesterdayPlatformCharges = dayBeforeYesterdayStats.platformCharges;
+
+            // Store the stats for this employee
+            employeeStats[employee._id] = {
+                username: employee.username,
+                totalEarnings: totalEarningsEmployee,
+                totalDeliveries: totalDeliveriesEmployee,
+                totalPlatformCharges: totalPlatformChargesEmployee,
+                todayEarnings,
+                yesterdayEarnings,
+                dayBeforeYesterdayEarnings,
+                todayDeliveries,
+                yesterdayDeliveries,
+                dayBeforeYesterdayDeliveries,
+                todayPlatformCharges,
+                yesterdayPlatformCharges,
+                dayBeforeYesterdayPlatformCharges
+            };
+        }
 
         // Get top selling items
         const topSellingItems = Object.entries(itemSales)
@@ -226,6 +338,7 @@ module.exports.statistics = async (req, res, next) => {
             .sort((a, b) => b.totalSpent - a.totalSpent)
             .slice(0, 10);
 
+        const formattedEmployeeStats = Object.values(employeeStats);
         res.render("owner/statistics", {
             totalEarnings,
             totalOrders,
@@ -235,6 +348,10 @@ module.exports.statistics = async (req, res, next) => {
             previousMonthName,
             peakOrderTimes,
             ordersByDay,
+            employeeStats: formattedEmployeeStats, // Now it's an array
+            todayStr,
+            yesterdayStr,
+            dayBeforeYesterdayStr,
         });
 
     } catch (error) {

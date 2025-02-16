@@ -65,6 +65,12 @@
         <h3>Peak Order Times</h3>
         <canvas id="peakOrderTimeChart"></canvas>
     </div>
+    <div class="mt-5">
+        <h3>Employee Performance</h3>
+        <canvas id="employeeEarningsChart"></canvas>
+        <canvas id="employeeDeliveriesChart" class="mt-4"></canvas>
+        <canvas id="employeePlatformChargesChart" class="mt-4"></canvas>
+    </div>
 </div>
 
 <script>
@@ -148,4 +154,36 @@ new Chart(restaurantSalesCtx, {
         },
         options: { responsive: true, scales: { y: { beginAtZero: true } } }
     });
+
+   const employeeStats = <%- JSON.stringify(employeeStats) %>;
+
+const employeeNames = employeeStats.map(emp => emp.username);
+const earnings = employeeStats.map(emp => emp.totalEarnings);
+const deliveries = employeeStats.map(emp => emp.totalDeliveries);
+const platformCharges = employeeStats.map(emp => emp.totalPlatformCharges);
+
+
+    function createBarChart(ctxId, label, data, color) {
+        new Chart(document.getElementById(ctxId).getContext('2d'), {
+            type: 'bar',
+            data: {
+                labels: employeeNames,
+                datasets: [{
+                    label: label,
+                    data: data,
+                    backgroundColor: color,
+                    borderColor: color.replace('0.7', '1'),
+                    borderWidth: 1
+                }]
+            },
+            options: {
+                responsive: true,
+                scales: { y: { beginAtZero: true } }
+            }
+        });
+    }
+
+    createBarChart('employeeEarningsChart', 'Earnings (₹)', earnings, 'rgba(54, 162, 235, 0.7)');
+    createBarChart('employeeDeliveriesChart', 'Deliveries', deliveries, 'rgba(255, 99, 132, 0.7)');
+    createBarChart('employeePlatformChargesChart', 'Platform Charges (₹)', platformCharges, 'rgba(75, 192, 192, 0.7)');
 </script>
