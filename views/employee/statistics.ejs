@@ -1,0 +1,79 @@
+<% layout('../layout/boilerplate') -%>
+    <div class="container">
+        <header>
+            <h1>Statistics for <%= username %></h1>
+        </header>
+
+        <section class="profile-info">
+            <div class="info">
+                <label for="username">Username:</label>
+                <span id="username"><%= username %></span>
+            </div>
+            <div class="info">
+                <label for="mobile">Mobile:</label>
+                <span id="mobile"><%= mobile %></span>
+            </div>
+        </section>
+
+        <section class="statistics">
+            <h2>Today's Statistics</h2>
+            <canvas id="todayStatsChart"></canvas> 
+        </section>
+
+        <section class="total-statistics">
+            <h2>Overall Statistics</h2>
+            <canvas id="overallStatsChart"></canvas> 
+        </section>
+
+        <footer>
+            <a href="/dashboard">Back to Dashboard</a>
+        </footer>
+    </div>
+
+    <!-- Include Chart.js -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script>
+        // Data for Today's Statistics Chart
+        const todayStatsCtx = document.getElementById('todayStatsChart').getContext('2d');
+        new Chart(todayStatsCtx, {
+            type: 'bar',
+            data: {
+                labels: ['Earnings (₹)', 'Deliveries'],
+                datasets: [{
+                    label: 'Today\'s Performance',
+                    data: [<%= totalEarningsToday %>, <%= totalDeliveriesToday %>],
+                    backgroundColor: ['#4CAF50', '#2196F3'],
+                    borderColor: ['#388E3C', '#1976D2'],
+                    borderWidth: 1
+                }]
+            },
+            options: {
+                responsive: true,
+                scales: {
+                    y: { beginAtZero: true }
+                }
+            }
+        });
+
+        // Data for Overall Statistics Chart
+        const overallStatsCtx = document.getElementById('overallStatsChart').getContext('2d');
+        new Chart(overallStatsCtx, {
+            type: 'bar',
+            data: {
+                labels: ['Total Earnings (₹)', 'Total Deliveries', 'Rating'],
+                datasets: [{
+                    label: 'Overall Performance',
+                    data: [<%= totalEarnings %>, <%= totalDeliveries %>, <%= rating %>],
+                    backgroundColor: ['#FF9800', '#3F51B5', '#F44336'],
+                    borderColor: ['#F57C00', '#303F9F', '#D32F2F'],
+                    borderWidth: 1
+                }]
+            },
+            options: {
+                responsive: true,
+                scales: {
+                    y: { beginAtZero: true }
+                }
+            }
+        });
+    </script>

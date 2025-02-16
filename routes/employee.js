@@ -29,6 +29,8 @@ router.post("/:id/complete", isLoggedIn, wrapAsync(employeeController.completeOr
 
 router.post("/:id/completeAndNext", isLoggedIn, wrapAsync(employeeController.completeOrderAndAssignNext));
 
-router.post("/:id/takeNextPending", isLoggedIn, wrapAsync(employeeController.completeNextPendingOrder));
+router.post("/:id/takeNextPending", isLoggedIn, wrapAsync(employeeController.completeNextPendingOrder)); 
+
+router.get("/:id/statistics", isLoggedIn, wrapAsync(employeeController.Statistics)); 
 
 module.exports = router;

@@ -4,13 +4,13 @@
     <% if(currUser && currUser.type && (currUser.type==="Delivery Boy")) { %>
     <nav class="navbar navbar-expand-lg fixed-bottom navbar-custom">
         <div class="container-fluid d-flex justify-content-between align-items-center">
-            <a class="filter nav-link" href="/employee/:id/dashboard" aria-label="Home">
+            <a class="filter nav-link" href="/employee/<%=currUser.id  %>/dashboard" aria-label="Home">
                 <i class="fa-solid fa-table"></i>
                 <p>Dash</p>
             </a>
-            <a class="filter nav-link" href="/employee" aria-label="Orders">
-                <i class="fa-solid fa-bag-shopping"></i>
-                <p>Orders</p>
+            <a class="filter nav-link" href="/employee/<%=currUser.id  %>/statistics" aria-label="Statistics">
+                <i class="fa-solid fa-chart-line"></i>
+                <p>Statistics</p>
             </a>
             <a class="filter nav-link" href="/employee" aria-label="My Cart">
                 <i class="fa-solid fa-users"></i>
