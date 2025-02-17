@@ -79,7 +79,7 @@
                                                                     <% weight +=parseInt(orderItem.item.quantity); %>
                                                                         <% } %>
                                                                             <% let deliveryCost=user.distance> 3 ?
-                                                                                Math.round(user.distance * 4) : 0; %>
+                                                                                Math.ceil(user.distance * 4) : 0; %>
                                                                                 <tr>
                                                                                     <td><b>Delivery</b></td>
                                                                                     <td></td>
@@ -95,9 +95,8 @@
                                                                                     <td></td>
                                                                                     <td></td>
                                                                                     <td>
-                                                                                        <b>₹<%= Math.round(sum +
-                                                                                                user.balance_due +
-                                                                                                deliveryCost).toFixed(2).toLocaleString("en-IN")
+                                                                                        <b>₹<%= Math.ceil(sum +
+                                                                                                deliveryCost).toLocaleString("en-IN")
                                                                                                 %></b>
                                                                                     </td>
                                                                                 </tr>
