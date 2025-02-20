@@ -10,7 +10,7 @@ const Employee = require("../models/employee");
 
 const calculateWalkingDistance = async (userCoordinates) => {
     try {
-        const startCoordinates = [82.6785652247138,26.72607612402932]; // Static starting coordinate
+        const startCoordinates = [82.6785652247138, 26.72607612402932]; // Static starting coordinate
         const endCoordinates = userCoordinates;
 
         // Replace with your Mapbox access token
@@ -120,11 +120,11 @@ module.exports.addToCart = async (req, res) => {
         // Extract the selected type and quantity from the request body
         const selectedTypeIndex = req.body.selectedType;
         const quantity = req.body.quantity;
-        const title=item.title;
-        const category=item.category;
-        const unit=item.unit;
-        const id=item._id;
-        const RestaurantId=item.RestaurantId;
+        const title = item.title;
+        const category = item.category;
+        const unit = item.unit;
+        const id = item._id;
+        const RestaurantId = item.RestaurantId;
 
         // Check if the item exists
         if (!item) {
@@ -142,7 +142,7 @@ module.exports.addToCart = async (req, res) => {
         }
 
         // Create the new order with the selected type and quantity
-        const newOrder = { title: title,category:category,unit:unit, detail: selectedType, quantity:quantity,id:id, RestaurantId:RestaurantId };
+        const newOrder = { title: title, category: category, unit: unit, detail: selectedType, quantity: quantity, id: id, RestaurantId: RestaurantId };
 
         // Get the current order array from the cookie, or initialize it as an empty array if it doesn't exist
         let orders = req.cookies.order ? JSON.parse(req.cookies.order) : [];
@@ -194,7 +194,7 @@ module.exports.buy = async (req, res) => {
             detail: selectedDetail,
             quantity: quantity,
             id: item._id,
-            RestaurantId:item.RestaurantId,
+            RestaurantId: item.RestaurantId,
         };
 
         // Get the current order array from the cookie, or initialize it as an empty array if it doesn't exist
@@ -345,31 +345,71 @@ module.exports.createOrder = async (req, res) => {
         user.orders.push(savedOrder._id);
         await user.save();
 
-        // Check for available delivery boys
-        const availableDeliveryBoy = await Employee.findOne({
+        const today = new Date();
+today.setHours(0, 0, 0, 0); // Start of today
+
+const availableDeliveryBoy = await Employee.aggregate([
+    {
+        $lookup: {
+            from: "orders",
+            localField: "completed_orders",
+            foreignField: "_id",
+            as: "completedOrdersDetails",
+        },
+    },
+    {
+        $addFields: {
+            todayDeliveries: {
+                $size: {
+                    $filter: {
+                        input: "$completedOrdersDetails",
+                        as: "order",
+                        cond: {
+                            $gte: ["$$order.completedAt", today],
+                        },
+                    },
+                },
+            },
+        },
+    },
+    {
+        $match: {
             status: "Free",
-            isAvailable: true
-        }).sort({ total_deliveries: 1 }); // Sort by the least number of deliveries today
+            isAvailable: true,
+        },
+    },
+    {
+        $sort: { todayDeliveries: 1 }, // Add additional sorting if needed
+    },
+    
+]);
+const selectedDeliveryBoy = availableDeliveryBoy.length > 0 ? availableDeliveryBoy[0] : null;
 
-        if (availableDeliveryBoy) {
-            // Assign the order to the available delivery boy
-            savedOrder.db_status = "Assigned";
-            savedOrder.deliveryBoy = {
-                _id: availableDeliveryBoy._id,
-                name: availableDeliveryBoy.username, // Assuming 'owner' holds the name
-                mobile: availableDeliveryBoy.mobile,
-            };
-            savedOrder.db_status = "Assigned";
-            availableDeliveryBoy.status = "Busy";
-            availableDeliveryBoy.active_order = savedOrder._id;
-            await savedOrder.save();
-            await availableDeliveryBoy.save();
+if (selectedDeliveryBoy) {
+    const updatedDeliveryBoy = await Employee.findOneAndUpdate(
+        { _id: selectedDeliveryBoy._id, status: "Free" }, // Ensure it's still free
+        {
+            $set: { status: "Busy", active_order: savedOrder._id },
+        },
+        { new: true }
+    );
 
-            req.flash("success", "Your order has been assigned to a delivery boy.");
-        } else {
-            // If no delivery boy is available, leave the order in the queue (status remains "Pending")
-            req.flash("success", "Your order is in the queue and will be assigned to a delivery boy once available.");
-        }
+    if (updatedDeliveryBoy) { // Check if the update was successful
+        savedOrder.db_status = "Assigned";
+        savedOrder.deliveryBoy = {
+            _id: updatedDeliveryBoy._id,
+            name: updatedDeliveryBoy.username,
+            mobile: updatedDeliveryBoy.mobile,
+        };
+
+        await savedOrder.save();
+        req.flash("success", "Your order has been assigned to a delivery boy.");
+    } else {
+        req.flash("success", "Your order is in the queue and will be assigned once available.");
+    }
+} else {
+    req.flash("success", "Your order is in the queue and will be assigned to a delivery boy once available.");
+}
 
         // Update the order cookie with items from closed restaurants
         if (remainingItems.length > 0) {
