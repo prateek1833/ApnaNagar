@@ -33,6 +33,8 @@ router.post("/:id/takeNextPending", isLoggedIn,isEmployee, wrapAsync(employeeCon
 
 router.get("/:id/statistics", isLoggedIn,isEmployee, wrapAsync(employeeController.Statistics)); 
 
-router.get("/:id/order", isLoggedIn,isEmployee, wrapAsync(employeeController.OrderHistory)); 
+router.get("/:id/order", isLoggedIn,isEmployee, wrapAsync(employeeController.OrderHistory));
+
+router.post("/:id/delivered", isLoggedIn,isEmployee, wrapAsync(employeeController.DeliveredStatus)); 
 
 module.exports = router;

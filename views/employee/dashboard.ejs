@@ -36,6 +36,10 @@
                     </span>
 
                     <div class="card-body">
+                        <p><strong>Created at</strong>
+                            <%= new Date(employee.active_order.createdAt).toLocaleString("en-IN", {
+                                timeZone: "Asia/Kolkata" }) %>
+                        </p>
                         <p><strong>ID:</strong>
                             <%= employee.active_order._id %>
                         </p>
@@ -149,6 +153,13 @@
 
                         <!-- Mark Order as Completed -->
                         <span>
+                            <div class="d-flex justify-content-center gap-2 mb-2">
+                                <%if(employee.active_order.status!='Delivered'){%>
+                                    <form action="/employee/<%=  employee.id  %>/delivered" method="POST">
+                                        <button type="submit" class="btn btn-success">Delivered</button>
+                                    </form>
+                                <% } %>
+                            </div>
                             <div class="d-flex justify-content-center gap-2">
                                 <form action="/employee/<%=  employee.id  %>/completeAndNext" method="POST">
                                     <button type="submit" class="btn add-btn">Complete & take next</button>

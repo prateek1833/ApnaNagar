@@ -413,3 +413,42 @@ module.exports.OrderHistory = async (req, res) => {
     }
 };
 
+module.exports.DeliveredStatus = async (req, res) => {
+    try {
+        let employeeId = req.params.id; // Extract employeeId
+
+        // Validate ObjectId format
+        if (!mongoose.Types.ObjectId.isValid(employeeId)) {
+            console.log("Invalid Employee ID:", req.params);
+            req.flash("error", "Invalid Employee ID format.");
+            return res.redirect("/orders");
+        }
+
+        const employee = await Employee.findById(employeeId);
+        if (!employee) {
+            req.flash("error", "Employee not found.");
+            return res.redirect("/orders");
+        }
+
+        // Validate if `active_order` exists before querying
+        if (!employee.active_order || !mongoose.Types.ObjectId.isValid(employee.active_order)) {
+            req.flash("error", "No active order found for the employee.");
+            return res.redirect("/orders");
+        }
+
+        const order = await Order.findById(employee.active_order);
+        if (!order) {
+            req.flash("error", "Order not found.");
+            return res.redirect("/orders");
+        }
+
+        order.status = "Delivered";
+        await order.save();
+        req.flash("Order delivered");
+        return res.redirect(`/employee/${employeeId}/dashboard`);
+    } catch (error) {
+        console.error("Error in completeOrderAndAssignNext:", error);
+        req.flash("error", `Error completing and assigning order: ${error.message}`);
+        return res.redirect("/orders");
+    }
+};
