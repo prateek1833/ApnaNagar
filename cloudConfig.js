@@ -1,5 +1,7 @@
 const cloudinary = require('cloudinary').v2;
 const { CloudinaryStorage } = require('multer-storage-cloudinary');
+const admin = require("firebase-admin");
+const serviceAccount = require("./utils/firebaseConfig.json"); // Path to your Firebase key
 
 cloudinary.config({
     cloud_name: process.env.CLOUD_NAME,
@@ -15,7 +17,14 @@ const storage = new CloudinaryStorage({
     },
 });
 
+
+admin.initializeApp({
+  credential: admin.credential.cert(serviceAccount),
+});
+
+
 module.exports={
     cloudinary,
     storage,
+    admin,
 }

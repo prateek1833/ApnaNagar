@@ -1,168 +1,132 @@
 <% layout('../layout/boilerplateLocation') -%>
 
-<div class="row">
-    <div class="text-center" >
-        <img src="https://res.cloudinary.com/dzrxswqur/image/upload/v1739196654/icon-512x512_iqnv9i.png" height="180px" style="border-radius: 50%; box-shadow: 5px 5px 10px rgba(0, 0, 0, 0.3);">
-    </div>
-    <div class="col-12 col-md-6 offset-md-3 mt-4">
-        <ul class="nav nav-tabs" id="signupTab" role="tablist">
-            <li class="nav-item" role="presentation">
-                <button class="nav-link active" id="customer-signup-tab" data-bs-toggle="tab" data-bs-target="#customer-signup" type="button" role="tab" aria-controls="customer-signup" aria-selected="true">Customer</button>
-            </li>
-            <li class="nav-item" role="presentation">
-                <button class="nav-link" id="restaurant-signup-tab" data-bs-toggle="tab" data-bs-target="#restaurant-signup" type="button" role="tab" aria-controls="restaurant-signup" aria-selected="false">Restaurant</button>
-            </li>
-        </ul>
-        <div class="tab-content mt-3" id="signupTabContent">
-            <!-- Customer Sign Up -->
-            <div class="tab-pane fade show active" id="customer-signup" role="tabpanel" aria-labelledby="customer-signup-tab">
-                <form action="/signup" method="POST" class="needs-validation" novalidate>
-                    <div class="mb-3">
-                        <label for="customer-username" class="form-label">Name/username</label>
-                        <input type="text" name="username" id="customer-username" placeholder="Enter catchy username" class="form-control" required>
-                        <div class="valid-feedback">Looks good</div>
-                    </div>
-                    <div class="mb-3">
-                        <label for="customer-mobile" class="form-label">Mobile No.</label>
-                        <input type="number" name="mobile" id="customer-mobile" placeholder="Enter your Mobile Number" class="form-control" required>
-                        <div class="valid-feedback">Looks good</div>
-                    </div>
-                    <div class="mb-3">
-                        <label for="customer-password" class="form-label">Password</label>
-                        <input type="password" name="password" id="customer-password" placeholder="Enter strong password" class="form-control" required>
-                        <div class="valid-feedback">Looks good</div>
-                    </div>
-                    <button class="btn light-btn w-100">Sign Up as Customer</button>
-                </form>
-            </div>
+    <div class="row">
+        <div class="text-center">
+            <img src="https://res.cloudinary.com/dzrxswqur/image/upload/v1739196654/icon-512x512_iqnv9i.png"
+                height="180px" style="border-radius: 50%; box-shadow: 5px 5px 10px rgba(0, 0, 0, 0.3);">
+        </div>
+        <div>
+            <form action="/signup" method="POST">
+                <div class="mb-3">
+                    <label for="customer-username" class="form-label">Name/Username</label>
+                    <input type="text" name="username" id="customer-username" placeholder="Enter catchy username"
+                        class="form-control" required>
+                    <div class="valid-feedback">Looks good</div>
+                </div>
+                <div class="mb-3">
+                    <label for="customer-mobile" class="form-label">Mobile No.</label>
+                    <input type="tel" name="mobile" id="customer-mobile" placeholder="+91XXXXXXXXXX"
+                        class="form-control" pattern="^\+91\d{10}$" required value="+91">
+                    <div class="invalid-feedback">Please enter a valid mobile number in +91XXXXXXXXXX format.</div>
 
-            <!-- Restaurant Sign Up -->
-            <div class="tab-pane fade" id="restaurant-signup" role="tabpanel" aria-labelledby="restaurant-signup-tab">
-                <form action="/restaurant/signup" method="POST" class="needs-validation" novalidate enctype="multipart/form-data">
-                    <div class="mb-3">
-                        <label for="restaurant-name" class="form-label">Restaurant Name</label>
-                        <input type="text" name="username" id="restaurant-name" placeholder="Enter your restaurant name" class="form-control" required>
-                        <div class="valid-feedback">Looks good</div>
-                    </div>
-                    <div class="mb-3">
-                        <label for="restaurant-address" class="form-label">Address</label>
-                        <input type="text" name="address" id="restaurant-address" placeholder="Enter your restaurant address" class="form-control" required>
-                        <div class="valid-feedback">Looks good</div>
-                    </div>
-                    <div class="mb-3">
-                        <label for="restaurant-mobile" class="form-label">Mobile Number</label>
-                        <input type="tel" name="mobile" id="restaurant-mobile" placeholder="Enter your mobile number" class="form-control" pattern="[0-9]{10}" required>
-                        <div class="valid-feedback">Looks good</div>
-                        <div class="invalid-feedback">Please provide a valid 10-digit mobile number</div>
-                    </div>
-                    <div class="row mb-3">
-                        <div class="col-6">
-                            <label for="restaurant-latitude" class="form-label">Latitude</label>
-                            <input 
-                                type="number" 
-                                name="latitude" 
-                                id="restaurant-latitude" 
-                                placeholder="Enter latitude" 
-                                class="form-control" 
-                                required 
-                                step="any" 
-                                title="Enter valid latitude"
-                            >
-                            <div class="valid-feedback">Looks good</div>
-                            <div class="invalid-feedback">Please provide valid latitude</div>
-                        </div>
-                        <div class="col-6">
-                            <label for="restaurant-longitude" class="form-label">Longitude</label>
-                            <input 
-                                type="number" 
-                                name="longitude" 
-                                id="restaurant-longitude" 
-                                placeholder="Enter longitude" 
-                                class="form-control" 
-                                step="any" 
-                                required 
-                                title="Enter valid longitude"
-                            >
-                            <div class="valid-feedback">Looks good</div>
-                            <div class="invalid-feedback">Please provide valid longitude</div>
-                        </div>
-                    </div>
-                    <div class="row mb-3">
-                        <div class="col-6">
-                            <label for="restaurant-open-time" class="form-label">Opening Time</label>
-                            <input type="time" name="open_time" id="restaurant-open-time" class="form-control" required>
-                            <div class="valid-feedback">Looks good</div>
-                        </div>
-                        <div class="col-6">
-                            <label for="restaurant-close-time" class="form-label">Closing Time</label>
-                            <input type="time" name="close_time" id="restaurant-close-time" class="form-control" required>
-                            <div class="valid-feedback">Looks good</div>
-                        </div>
-                    </div>
-                    <div class="mb-3">
-                        <label for="restaurant-category" class="form-label">Category</label>
-                        <select name="category" id="restaurant-category" class="form-select" required>
-                            <option value="Fast Food">Fast Food</option>
-                            <option value="Casual Dining">Casual Dining</option>
-                            <option value="Fine Dining">Fine Dining</option>
-                            <option value="Cafe">Cafe</option>
-                            <option value="Buffet">Buffet</option>
-                            <option value="Other">Other</option>
-                        </select>
-                        <div class="valid-feedback">Looks good</div>
-                    </div>
-                    <div class="mb-3">
-                        <label for="restaurant-image" class="form-label">Upload Restaurant Image</label>
-                        <input type="file" name="image" id="restaurant-image" class="form-control" accept="image/*" required>
-                        <div class="valid-feedback">Looks good</div>
-                    </div>
-                    <div class="mb-3">
-                        <label for="restaurant-password" class="form-label">Password</label>
-                        <input type="password" name="password" id="restaurant-password" placeholder="Enter strong password" class="form-control" required>
-                        <div class="valid-feedback">Looks good</div>
-                    </div>
-                    <button class="btn add-btn w-100">Sign Up as Restaurant</button>
-                </form>
-            </div>            
+                </div>
+                <button type="button" class="btn btn-primary w-100 no-spinner" id="get-otp">Get OTP</button>
+
+                <div class="mb-3 mt-3 d-none" id="otp-section">
+                    <label for="otp-input" class="form-label fs-8" style="font-size: smaller;color: green;">Enter the
+                        OTP that we have sent on WhatsApp</label>
+                    <input type="number" id="otp-input" class="form-control" placeholder="Enter OTP" required>
+                    <div class="invalid-feedback">Please enter a valid OTP.</div>
+                    <button type="button" class="btn btn-success w-100 mt-2 no-spinner" id="verify-otp">Verify
+                        OTP</button>
+                </div>
+
+                <div class="mb-3 mt-3 d-none" id="password-section">
+                    <label for="customer-password" class="form-label">Password</label>
+                    <input type="password" name="password" id="customer-password" placeholder="Enter strong password"
+                        class="form-control" required>
+
+                    <label for="customer-confirm-password" class="form-label mt-2">Confirm Password</label>
+                    <input type="password" name="confirm-password" id="customer-confirm-password"
+                        placeholder="Re-enter password" class="form-control" required>
+                    <div class="invalid-feedback">Passwords do not match.</div>
+                </div>
+
+                <button type="submit" class="btn btn-success w-100 d-none" id="signup-button">Sign Up as
+                    Customer</button>
+            </form>
         </div>
     </div>
-</div>
-<br>
+    <br>
 
+    <script>
+       document.getElementById("get-otp").addEventListener("click", async function () {
+            let mobileInput = document.getElementById("customer-mobile");
+            let mobileValue = mobileInput.value.trim();
 
-<script>
-    // JavaScript for maintaining tab switching and validations
-    document.addEventListener('DOMContentLoaded', function () {
-        const tabs = document.querySelectorAll('[data-bs-toggle="tab"]');
-        tabs.forEach(tab => {
-            tab.addEventListener('shown.bs.tab', (event) => {
-                console.log(`Switched to ${event.target.id}`);
-            });
-        });
-    });
-    document.addEventListener('DOMContentLoaded', function () {
-    const tabs = document.querySelectorAll('[data-bs-toggle="tab"]');
-    tabs.forEach(tab => {
-        tab.addEventListener('shown.bs.tab', (event) => {
-            console.log(`Switched to ${event.target.id}`);
-        });
-    });
-
-    // Image size validation
-    document.getElementById('restaurant-image').addEventListener('change', function (event) {
-        const file = event.target.files[0]; // Get the selected file
-        if (file) {
-            const maxSize = 500 * 1024; // 500 KB in bytes
-            const errorElement = document.getElementById('image-error');
-            if (file.size > maxSize) {
-                errorElement.textContent = "Image size must not exceed 500 KB.";
-                event.target.value = ""; // Reset the file input
-            } else {
-                errorElement.textContent = "";
+            // Validate: Must start with +91 and have exactly 13 characters
+            if (!/^\+91\d{10}$/.test(mobileValue)) {
+                mobileInput.classList.add("is-invalid");
+                return;
             }
-        }
-    });
-});
+            mobileInput.classList.remove("is-invalid");
+
+            this.textContent = "Sending OTP...";
+
+            try {
+                let response = await fetch("http://localhost:8080/send-otp", {
+                    method: "POST",
+                    headers: { "Content-Type": "application/json" },
+                    body: JSON.stringify({ mobile: mobileValue })
+                });
+
+                let data = await response.json();
+                if (response.ok) {
+                    document.getElementById("otp-section").classList.remove("d-none");
+                    this.classList.add("d-none");
+                } else {
+                    alert(data.error);
+                }
+            } catch (error) {
+                alert("Failed to send OTP. Try again.");
+            }
+        });
+
+        document.getElementById("verify-otp").addEventListener("click", async function () {
+            let otpInput = document.getElementById("otp-input");
+            let otpValue = otpInput.value.trim();
+            let mobileValue = document.getElementById("customer-mobile").value.trim();
+
+            if (otpValue.length < 4) {
+                otpInput.classList.add("is-invalid");
+                return;
+            }
+            otpInput.classList.remove("is-invalid");
+
+            this.textContent = "Verifying...";
+
+            try {
+                let response = await fetch("http://localhost:8080/verify-otp", {
+                    method: "POST",
+                    headers: { "Content-Type": "application/json" },
+                    body: JSON.stringify({ mobile: mobileValue, otp: otpValue })
+                });
+
+                let data = await response.json();
+                if (response.ok) {
+                    document.getElementById("otp-section").classList.add("d-none");
+                    document.getElementById("password-section").classList.remove("d-none");
+                    document.getElementById("signup-button").classList.remove("d-none");
+                } else {
+                    alert(data.error);
+                    this.textContent = "Verify OTP";
+                }
+            } catch (error) {
+                alert("Failed to verify OTP. Try again.");
+                this.textContent = "Verify OTP";
+            }
+        });
 
 
-</script>
+        document.getElementById("signup-button").addEventListener("click", function (e) {
+            let password = document.getElementById("customer-password").value;
+            let confirmPassword = document.getElementById("customer-confirm-password").value;
+
+            if (password !== confirmPassword) {
+                document.getElementById("customer-confirm-password").classList.add("is-invalid");
+                e.preventDefault();
+            } else {
+                document.getElementById("customer-confirm-password").classList.remove("is-invalid");
+            }
+        });
+    </script>

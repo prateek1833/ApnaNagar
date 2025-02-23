@@ -8,6 +8,13 @@ const { saveRedirectUrl } = require("../middleware");
 const mbxGeocoding = require('@mapbox/mapbox-sdk/services/geocoding');
 const mapToken = process.env.MAP_TOKEN;
 
+require("dotenv").config();
+const twilio = require("twilio");
+
+const client = twilio(process.env.TWILIO_ACCOUNT_SID, process.env.TWILIO_AUTH_TOKEN);
+
+const otpStore = {};
+
 
 module.exports.renderSignUp = (req, res) => {
     res.render("user/signup.ejs");
@@ -147,5 +154,45 @@ module.exports.statistics = async (req, res, next) => {
         });
     } catch (error) {
         next(error);
+    }
+};
+
+function generateOtp() {
+    return Math.floor(100000 + Math.random() * 900000).toString(); // 6-digit OTP
+}
+
+module.exports.sendOtp = async (req, res) => {
+    const { mobile } = req.body;
+    
+    // if (!mobile || mobile.length !== 10) {
+    //     return res.status(400).json({ error: "Invalid mobile number" });
+    // }
+
+    const otp = generateOtp();
+    otpStore[mobile] = otp; // Store OTP temporarily
+
+    try {
+        await client.messages.create({
+            from: `whatsapp:+14155238886`,
+            to: `whatsapp:${mobile}`,
+            body: `Your OTP for verification is: ${otp}. It is valid for 5 minutes.`
+        });
+
+        res.json({ message: "OTP sent successfully to WhatsApp!" });
+    } catch (error) {
+        console.log(error);
+        res.status(500).json({ error: "Failed to send OTP", details: error.message });
+    }
+};
+
+// Verify OTP
+module.exports.verifyOtp = (req, res) => {
+    const { mobile, otp } = req.body;
+
+    if (otpStore[mobile] === otp) {
+        delete otpStore[mobile]; // OTP is one-time use
+        res.json({ message: "OTP verified successfully!" });
+    } else {
+        res.status(400).json({ error: "Invalid OTP" });
     }
 };

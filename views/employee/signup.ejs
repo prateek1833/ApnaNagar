@@ -1,69 +1,214 @@
-<% layout('../layout/boilerplate') -%>
+<% layout('../layout/boilerplateLocation') -%>
 
-<div class="row mt-3">
-    <h3 class="col-12 text-center">Sign Up As Delivery Boy</h3>
+<div class="row">
+    <div class="text-center" >
+        <img src="https://res.cloudinary.com/dzrxswqur/image/upload/v1739196654/icon-512x512_iqnv9i.png" height="180px" style="border-radius: 50%; box-shadow: 5px 5px 10px rgba(0, 0, 0, 0.3);">
+    </div>
     <div class="col-12 col-md-6 offset-md-3 mt-4">
-        <form action="/employee/signup" method="POST" class="needs-validation" novalidate>
-            
-            <div class="mb-3">
-                <label for="username" class="form-label">Username</label>
-                <input type="text" name="username" id="username" placeholder="Enter your username"
-                    class="form-control" required>
-            </div>
+        <ul class="nav nav-tabs" id="signupTab" role="tablist">
+            <li class="nav-item" role="presentation">
+                <button class="nav-link" id="employee-signup-tab" data-bs-toggle="tab" data-bs-target="#employee-signup" type="button" role="tab" aria-controls="employee-signup" aria-selected="true">employee</button>
+            </li>
+            <li class="nav-item" role="presentation">
+                <button class="nav-link active" id="restaurant-signup-tab" data-bs-toggle="tab" data-bs-target="#restaurant-signup" type="button" role="tab" aria-controls="restaurant-signup" aria-selected="false">Restaurant</button>
+            </li>
+        </ul>
+        <div class="tab-content mt-3" id="signupTabContent">
+            <!-- employee Sign Up -->
+            <div class="tab-pane fade " id="employee-signup" role="tabpanel" aria-labelledby="employee-signup-tab">
+                <form action="/employee/signup" method="POST" class="needs-validation" novalidate>
 
-            <div class="mb-3">
-                <label for="password" class="form-label">Password</label>
-                <input type="password" name="password" id="password" placeholder="Enter your password"
+                    <div class="mb-3">
+                    <label for="username" class="form-label">Username</label>
+                    <input type="text" name="username" id="username" placeholder="Enter your username"
                     class="form-control" required>
-            </div>
-
-            <div class="mb-3">
-                <label for="mobile" class="form-label">Mobile Number</label>
-                <input type="text" name="mobile" id="mobile" placeholder="Enter your mobile number"
+                    </div>
+                    
+                    <div class="mb-3">
+                    <label for="password" class="form-label">Password</label>
+                    <input type="password" name="password" id="password" placeholder="Enter your password"
                     class="form-control" required>
-            </div>
-
-            <div class="mb-3">
-                <label for="area" class="form-label">Area</label>
-                <input type="text" name="area" id="area" placeholder="Enter your area"
+                    </div>
+                    
+                    <div class="mb-3">
+                    <label for="mobile" class="form-label">Mobile Number</label>
+                    <input type="text" name="mobile" id="mobile" placeholder="Enter your mobile number"
                     class="form-control" required>
-            </div>
-
-            <div class="mb-3">
-                <label for="district" class="form-label">District</label>
-                <input type="text" name="district" id="district" placeholder="Enter your district"
+                    </div>
+                    
+                    <div class="mb-3">
+                    <label for="area" class="form-label">Area</label>
+                    <input type="text" name="area" id="area" placeholder="Enter your area"
                     class="form-control" required>
-            </div>
-
-            <div class="mb-3">
-                <label for="state" class="form-label">State</label>
-                <input type="text" name="state" id="state" placeholder="Enter your state"
+                    </div>
+                    
+                    <div class="mb-3">
+                    <label for="district" class="form-label">District</label>
+                    <input type="text" name="district" id="district" placeholder="Enter your district"
                     class="form-control" required>
-            </div>
-
-            <div class="mb-3">
-                <label for="pincode" class="form-label">Pincode</label>
-                <input type="number" name="pincode" id="pincode" placeholder="Enter your pincode"
+                    </div>
+                    
+                    <div class="mb-3">
+                    <label for="state" class="form-label">State</label>
+                    <input type="text" name="state" id="state" placeholder="Enter your state"
                     class="form-control" required>
-            </div>
-
-            <div class="mb-3">
-                <label for="latitude" class="form-label">Latitude</label>
-                <input type="number" name="latitude" id="latitude" step="any"
+                    </div>
+                    
+                    <div class="mb-3">
+                    <label for="pincode" class="form-label">Pincode</label>
+                    <input type="number" name="pincode" id="pincode" placeholder="Enter your pincode"
+                    class="form-control" required>
+                    </div>
+                    
+                    <div class="mb-3">
+                    <label for="latitude" class="form-label">Latitude</label>
+                    <input type="number" name="latitude" id="latitude" step="any"
                     placeholder="Enter latitude" class="form-control" required>
-            </div>
-
-            <div class="mb-3">
-                <label for="longitude" class="form-label">Longitude</label>
-                <input type="number" name="longitude" id="longitude" step="any"
+                    </div>
+                    
+                    <div class="mb-3">
+                    <label for="longitude" class="form-label">Longitude</label>
+                    <input type="number" name="longitude" id="longitude" step="any"
                     placeholder="Enter longitude" class="form-control" required>
+                    </div>
+                    
+                    <button type="submit" class="btn btn-success w-100">Sign Up</button>
+                    </form>
+                    
+                    <p class="text-center mt-3">
+                    Already have an account? <a href="/employee/login">Log In</a>
+                    </p>
+                    </div>
+                    </div>
             </div>
 
-            <button type="submit" class="btn btn-success w-100">Sign Up</button>
-        </form>
-
-        <p class="text-center mt-3">
-            Already have an account? <a href="/employee/login">Log In</a>
-        </p>
+            <!-- Restaurant Sign Up -->
+            <div class="tab-pane fade show active" id="restaurant-signup" role="tabpanel" aria-labelledby="restaurant-signup-tab">
+                <form action="/restaurant/signup" method="POST" class="needs-validation" novalidate enctype="multipart/form-data">
+                    <div class="mb-3">
+                        <label for="restaurant-name" class="form-label">Restaurant Name</label>
+                        <input type="text" name="username" id="restaurant-name" placeholder="Enter your restaurant name" class="form-control" required>
+                        <div class="valid-feedback">Looks good</div>
+                    </div>
+                    <div class="mb-3">
+                        <label for="restaurant-address" class="form-label">Address</label>
+                        <input type="text" name="address" id="restaurant-address" placeholder="Enter your restaurant address" class="form-control" required>
+                        <div class="valid-feedback">Looks good</div>
+                    </div>
+                    <div class="mb-3">
+                        <label for="restaurant-mobile" class="form-label">Mobile Number</label>
+                        <input type="tel" name="mobile" id="restaurant-mobile" placeholder="Enter your mobile number" class="form-control" pattern="[0-9]{10}" required>
+                        <div class="valid-feedback">Looks good</div>
+                        <div class="invalid-feedback">Please provide a valid 10-digit mobile number</div>
+                    </div>
+                    <div class="row mb-3">
+                        <div class="col-6">
+                            <label for="restaurant-latitude" class="form-label">Latitude</label>
+                            <input 
+                                type="number" 
+                                name="latitude" 
+                                id="restaurant-latitude" 
+                                placeholder="Enter latitude" 
+                                class="form-control" 
+                                required 
+                                step="any" 
+                                title="Enter valid latitude"
+                            >
+                            <div class="valid-feedback">Looks good</div>
+                            <div class="invalid-feedback">Please provide valid latitude</div>
+                        </div>
+                        <div class="col-6">
+                            <label for="restaurant-longitude" class="form-label">Longitude</label>
+                            <input 
+                                type="number" 
+                                name="longitude" 
+                                id="restaurant-longitude" 
+                                placeholder="Enter longitude" 
+                                class="form-control" 
+                                step="any" 
+                                required 
+                                title="Enter valid longitude"
+                            >
+                            <div class="valid-feedback">Looks good</div>
+                            <div class="invalid-feedback">Please provide valid longitude</div>
+                        </div>
+                    </div>
+                    <div class="row mb-3">
+                        <div class="col-6">
+                            <label for="restaurant-open-time" class="form-label">Opening Time</label>
+                            <input type="time" name="open_time" id="restaurant-open-time" class="form-control" required>
+                            <div class="valid-feedback">Looks good</div>
+                        </div>
+                        <div class="col-6">
+                            <label for="restaurant-close-time" class="form-label">Closing Time</label>
+                            <input type="time" name="close_time" id="restaurant-close-time" class="form-control" required>
+                            <div class="valid-feedback">Looks good</div>
+                        </div>
+                    </div>
+                    <div class="mb-3">
+                        <label for="restaurant-category" class="form-label">Category</label>
+                        <select name="category" id="restaurant-category" class="form-select" required>
+                            <option value="Fast Food">Fast Food</option>
+                            <option value="Casual Dining">Casual Dining</option>
+                            <option value="Fine Dining">Fine Dining</option>
+                            <option value="Cafe">Cafe</option>
+                            <option value="Buffet">Buffet</option>
+                            <option value="Other">Other</option>
+                        </select>
+                        <div class="valid-feedback">Looks good</div>
+                    </div>
+                    <div class="mb-3">
+                        <label for="restaurant-image" class="form-label">Upload Restaurant Image</label>
+                        <input type="file" name="image" id="restaurant-image" class="form-control" accept="image/*" required>
+                        <div class="valid-feedback">Looks good</div>
+                    </div>
+                    <div class="mb-3">
+                        <label for="restaurant-password" class="form-label">Password</label>
+                        <input type="password" name="password" id="restaurant-password" placeholder="Enter strong password" class="form-control" required>
+                        <div class="valid-feedback">Looks good</div>
+                    </div>
+                    <button class="btn add-btn w-100">Sign Up as Restaurant</button>
+                </form>
+            </div>            
+        </div>
     </div>
 </div>
+<br>
+
+
+<script>
+    // JavaScript for maintaining tab switching and validations
+    document.addEventListener('DOMContentLoaded', function () {
+        const tabs = document.querySelectorAll('[data-bs-toggle="tab"]');
+        tabs.forEach(tab => {
+            tab.addEventListener('shown.bs.tab', (event) => {
+                console.log(`Switched to ${event.target.id}`);
+            });
+        });
+    });
+    document.addEventListener('DOMContentLoaded', function () {
+    const tabs = document.querySelectorAll('[data-bs-toggle="tab"]');
+    tabs.forEach(tab => {
+        tab.addEventListener('shown.bs.tab', (event) => {
+            console.log(`Switched to ${event.target.id}`);
+        });
+    });
+
+    // Image size validation
+    document.getElementById('restaurant-image').addEventListener('change', function (event) {
+        const file = event.target.files[0]; // Get the selected file
+        if (file) {
+            const maxSize = 500 * 1024; // 500 KB in bytes
+            const errorElement = document.getElementById('image-error');
+            if (file.size > maxSize) {
+                errorElement.textContent = "Image size must not exceed 500 KB.";
+                event.target.value = ""; // Reset the file input
+            } else {
+                errorElement.textContent = "";
+            }
+        }
+    });
+});
+
+
+</script>

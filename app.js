@@ -14,6 +14,14 @@ const session = require("express-session");
 const flash = require("connect-flash");
 const passport = require("passport");
 const LocalStrategy = require("passport-local");
+
+const cors = require("cors");
+const bodyParser = require("body-parser");
+
+const http = require("http");
+const socketIo = require("socket.io");
+const admin = require("./cloudConfig"); // Firebase Config
+
 const User = require("./models/user");
 const Restaurant = require("./models/restaurant");
 const Employee = require("./models/employee");
@@ -31,6 +39,9 @@ const app = express();
 // const dbUrl = "mongodb://localhost:27017/Store";
 const dbUrl = process.env.ATLASDB_URL;
 
+const server = http.createServer(app);
+const io = socketIo(server);
+
 mongoose
     .connect(dbUrl)
     .then(() => {
@@ -47,6 +58,8 @@ app.use(methodOverride("_method"));
 app.use(express.static(path.join(__dirname, "/public")));
 app.engine("ejs", ejsMate);
 app.use(cookieParser());
+app.use(cors());
+app.use(bodyParser.json());
 
 const store = MongoStore.create({
     mongoUrl: dbUrl,
@@ -183,3 +196,53 @@ app.use((err, req, res, next) => {
 app.listen(8080, () => {
     console.log("Server is listening on port 8080");
 });
+
+io.on("connection", (socket) => {
+    console.log("New client connected:", socket.id);
+  
+    // Handle new order event
+    socket.on("newOrder", (orderData) => {
+      console.log("New order received:", orderData);
+      if (!orderData) {
+        console.error("❌ No order data received!");
+        return;
+        }
+      io.emit("orderUpdate", orderData); // Send update to restaurant and delivery boy
+  
+      // Send Firebase Notification
+      sendPushNotification(orderData);
+    });
+  
+    socket.on("disconnect", () => {
+      console.log("Client disconnected:", socket.id);
+    });
+  });
+  
+  // Start Server
+  const PORT = 5000;
+  server.listen(PORT, () => console.log(`Server running on port ${PORT}`));
+  
+  // Function to send Firebase Push Notifications
+  async function sendPushNotification(orderData) {
+    console.log("FCM Token:", orderData.restaurantToken);
+
+    if (!orderData.restaurantToken) {
+        console.error("❌ Error: No FCM token provided!");
+        return;
+    }
+    const message = {
+      notification: {
+        title: "New Order Received!",
+        body: `Order #${orderData.id} from ${orderData.user}`,
+      },
+      token: orderData.restaurantToken, // Get FCM token from DB
+    };
+  
+    try {
+      await admin.messaging().send(message);
+      console.log("Push notification sent successfully!");
+    } catch (error) {
+      console.error("Error sending push notification:", error);
+    }
+  }
+  

@@ -5,6 +5,8 @@ const User = require("../models/user.js"); // Assuming User model exists for sto
 const axios = require('axios'); // To fetch location details using an API
 const Restaurant = require("../models/restaurant.js");
 const Employee = require("../models/employee");
+const crypto = require("crypto");
+
 
 
 
@@ -318,12 +320,14 @@ module.exports.createOrder = async (req, res) => {
             req.flash("error", "All restaurants are closed. Please try again later.");
             return res.redirect("/items");
         }
+        const restaurantToken = crypto.randomBytes(6).toString("hex"); 
 
         // Create a new order with status "Pending"
         const newOrder = new Order({
             items: orderItems,
             db_status: "Pending",  // Set the initial status to "Pending"
             status: "Order Received",
+            restaurantToken,
             author: {
                 _id: user._id,
                 name: user.username,
@@ -395,13 +399,14 @@ if (selectedDeliveryBoy) {
     );
 
     if (updatedDeliveryBoy) { // Check if the update was successful
+        const deliveryBoyToken = crypto.randomBytes(6).toString("hex");
         savedOrder.db_status = "Assigned";
         savedOrder.deliveryBoy = {
             _id: updatedDeliveryBoy._id,
             name: updatedDeliveryBoy.username,
             mobile: updatedDeliveryBoy.mobile,
         };
-
+        savedOrder.deliveryBoyToken = deliveryBoyToken; 
         await savedOrder.save();
         req.flash("success", "Your order has been assigned to a delivery boy.");
     } else {

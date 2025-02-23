@@ -58,5 +58,8 @@ router.get("/cart-data", (req, res) => {
     res.json(cartItems);
 });
 
+router.post("/send-otp", userController.sendOtp);
+router.post("/verify-otp", userController.verifyOtp);
+
 
 module.exports = router;

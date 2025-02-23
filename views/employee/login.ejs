@@ -1,23 +1,59 @@
-<% layout('../layout/boilerplate') -%>
+<% layout('../layout/boilerplateLocation') -%>
 
 <div class="row mt-3">
-    <h3 class="col-12 text-center">Log In As Delivery Boy</h3>
+    <div class="text-center">
+        <img id="tripleTapHeading" src="https://res.cloudinary.com/dzrxswqur/image/upload/v1739196654/icon-512x512_iqnv9i.png"
+            height="180px" style="border-radius: 50%; box-shadow: 5px 5px 10px rgba(0, 0, 0, 0.3);">
+    </div>
+
     <div class="col-12 col-md-6 offset-md-3 mt-4">
-        <!-- Employee Login -->
-        <div class="tab-pane fade show active" id="employee" role="tabpanel" aria-labelledby="employee-tab">
-            <form action="/employee/login" method="POST" class="needs-validation" novalidate>
-                <div class="mb-3">
-                    <label for="employee-username" class="form-label">Name</label>
-                    <input type="text" name="username" id="employee-username" placeholder="Enter your username"
-                        class="form-control" required>
-                </div>
-                <div class="mb-3">
-                    <label for="employee-password" class="form-label">Password</label>
-                    <input type="password" name="password" id="employee-password" placeholder="Enter your password"
-                        class="form-control" required>
-                </div>
-                <button type="submit" class="btn btn-warning w-100">Log In as Employee</button>
-            </form>
+        <ul class="nav nav-tabs" id="loginTab" role="tablist">
+            <li class="nav-item" role="presentation">
+                <button class="nav-link" id="employee-tab" data-bs-toggle="tab" data-bs-target="#employee"
+                    type="button" role="tab" aria-controls="employee" aria-selected="true">Employee</button>
+            </li>
+            <li class="nav-item" role="presentation">
+                <button class="nav-link active" id="restaurant-tab" data-bs-toggle="tab" data-bs-target="#restaurant"
+                    type="button" role="tab" aria-controls="restaurant" aria-selected="false">Restaurant</button>
+            </li>
+        </ul>
+
+        <div class="tab-content mt-3" id="loginTabContent">
+            <!-- Employee Login -->
+            <div class="tab-pane fade " id="employee" role="tabpanel" aria-labelledby="employee-tab">
+                <form action="/employee/login" method="POST" class="needs-validation" novalidate>
+                    <div class="mb-3">
+                        <label for="employee-username" class="form-label">Name</label>
+                        <input type="text" name="username" id="employee-username" placeholder="Enter your username"
+                            class="form-control" required>
+                    </div>
+                    <div class="mb-3">
+                        <label for="employee-password" class="form-label">Password</label>
+                        <input type="password" name="password" id="employee-password" placeholder="Enter your password"
+                            class="form-control" required>
+                    </div>
+                    <button type="submit" class="btn btn-warning w-100">Log In as Employee</button>
+                </form>
+            </div>
+
+            <!-- Restaurant Login -->
+            <div class="tab-pane fade show active" id="restaurant" role="tabpanel" aria-labelledby="restaurant-tab">
+                <form action="/restaurant/login" method="POST" class="needs-validation" novalidate>
+                    <div class="mb-3">
+                        <label for="restaurant-username" class="form-label">Restaurant Name</label>
+                        <input type="text" name="username" id="restaurant-username"
+                            placeholder="Enter your username" class="form-control" required>
+                    </div>
+                    <div class="mb-3">
+                        <label for="restaurant-password" class="form-label">Password</label>
+                        <input type="password" name="password" id="restaurant-password"
+                            placeholder="Enter your password" class="form-control" required>
+                    </div>
+                    <button type="submit" class="btn btn-primary w-100">Log In as Restaurant</button>
+                </form>
+                <p class="text-center mt-3">Don't have an account? <a href="/signup"><b>Sign Up</b></a></p>
+            </div>
         </div>
     </div>
 </div>
+

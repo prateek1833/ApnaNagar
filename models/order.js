@@ -58,6 +58,8 @@ const orderSchema = new Schema({
         name: String,
         mobile: String,
     },
+    restaurantToken: String,  // FCM Token for Restaurant
+    deliveryBoyToken: String, // FCM Token for Delivery Boy
 });
 
 const Order = mongoose.model('Order', orderSchema);
