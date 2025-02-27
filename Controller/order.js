@@ -299,8 +299,8 @@ async function notifyRestaurant(restaurantId, orderDetails) {
             title: "New Order Received",
             body: `You have a new order! Order ID: ${orderDetails._id}`,
             icon: "/icons/icon-72x72.png",
-            url: `/restaurant/${restaurantId}/order`
-        });
+            data: { url: `/restaurant/${restaurantId}/order` } // ✅ Ensure this exists
+        });        
 
         await webPush.sendNotification(restaurant.pushSubscription, payload);
         console.log("✅ Push Notification Sent to Restaurant!");
