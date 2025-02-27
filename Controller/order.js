@@ -298,8 +298,8 @@ async function notifyRestaurant(restaurantId, orderDetails) {
         const payload = JSON.stringify({
             title: "New Order Received",
             body: `You have a new order! Order ID: ${orderDetails._id}`,
-            icon: "/icon.png",
-            url: "/restaurant/orders"
+            icon: "/icons/icon-72x72.png",
+            url: `/restaurant/${restaurantId}/order`
         });
 
         await webPush.sendNotification(restaurant.pushSubscription, payload);

@@ -70,16 +70,40 @@ messaging.onBackgroundMessage((payload) => {
     const notificationTitle = payload.notification.title;
     const notificationOptions = {
         body: payload.notification.body,
-        icon: "/icon.png",
+        icon: "/icons/icon-72x72.png",
     };
 
     self.registration.showNotification(notificationTitle, notificationOptions);
 });
-self.addEventListener("push", event => {
-    const data = event.data.json();
-    self.registration.showNotification(data.title, {
-        body: data.body,
-        icon: "/icons/icon-72x72.png", // Change to your website logo
-    });
+self.addEventListener("push", (event) => {
+    if (event.data) {
+        const data = event.data.json();
+
+        // Show notification
+        event.waitUntil(
+            self.registration.showNotification(data.title, {
+                body: data.body,
+                icon: data.icon || "/icons/icon-72x72.png",
+                badge: "/icons/badge.png",
+                data: { url: data.url },
+                requireInteraction: true // Keeps notification visible until user interacts
+            })
+        );
+
+        // Notify the client to play a sound
+        self.clients.matchAll().then((clients) => {
+            clients.forEach(client => {
+                client.postMessage({ type: "playSound" });
+            });
+        });
+    }
+});
+
+// Handle notification click event
+self.addEventListener("notificationclick", (event) => {
+    event.notification.close();
+    if (event.notification.data && event.notification.data.url) {
+        event.waitUntil(clients.openWindow(event.notification.data.url));
+    }
 });
 

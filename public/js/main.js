@@ -40,6 +40,19 @@ if ("serviceWorker" in navigator && "PushManager" in window) {
 
                 console.log("✅ Push Subscription sent to server");
             }
+
+            // Listen for messages from service worker to play a sound
+            navigator.serviceWorker.addEventListener("message", (event) => {
+                if (event.data && event.data.type === "playSound") {
+                    playNotificationSound();
+                }
+            });
+
+            // Function to play the notification sound
+            function playNotificationSound() {
+                const audio = new Audio("/sounds/notification.mp3"); // Make sure this file exists
+                audio.play().catch(error => console.error("❌ Error playing sound:", error));
+            }
         })
         .catch((err) => console.log("❌ Service Worker Not Registered", err));
 } else {
