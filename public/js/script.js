@@ -24,7 +24,7 @@ importScripts("https://www.gstatic.com/firebasejs/9.6.1/firebase-messaging-compa
 
 // Firebase Configuration
 firebase.initializeApp({
-    apiKey: "AIzaSyCKRiwnq4MCYzbQhNj1E9ewfJU9oNksLFs",
+    apiKey: "jIGykfNP8oTM0a3ektrJweyQKbupfH2zE3wKxf9SdMc",
     authDomain: "apna-nagar.firebaseapp.com",
     projectId: "apna-nagar",
     storageBucket: "apna-nagar.appspot.com",
@@ -46,4 +46,13 @@ messaging.onBackgroundMessage((payload) => {
     };
 
     self.registration.showNotification(notificationTitle, notificationOptions);
+});
+document.addEventListener("DOMContentLoaded", function () {
+    Notification.requestPermission().then(permission => {
+        if (permission === "granted") {
+            console.log("✅ Notification permission granted");
+        } else {
+            console.error("❌ Notification permission denied");
+        }
+    });
 });

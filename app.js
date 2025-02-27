@@ -169,6 +169,11 @@ app.post("/login-user", passport.authenticate("user-local", {
     res.redirect("/");
 });
 
+app.get("/api/getCurrentUser", (req, res) => {
+    res.json(req.user || null);
+});
+
+
 app.post("/login-restaurant", passport.authenticate("restaurant-local", {
     failureRedirect: "/login",
     failureFlash: true,
@@ -183,9 +188,7 @@ app.post("/login", passport.authenticate("employee-local", {
     res.redirect("/employee/dashboard");
 });
 
-app.all("*", (req, res, next) => {
-    next(new ExpressError(404, "Page Not Found!"));
-});
+
 
 app.use((err, req, res, next) => {
     console.error(err); // Log the error for debugging
@@ -245,4 +248,17 @@ io.on("connection", (socket) => {
       console.error("Error sending push notification:", error);
     }
   }
-  
+  app.post("/restaurant/subscribe", async (req, res) => {
+    const { restaurantId, subscription } = req.body;
+
+    try {
+        await Restaurant.findByIdAndUpdate(restaurantId, { pushSubscription: subscription });
+        res.status(201).json({ message: "Restaurant subscribed successfully!" });
+    } catch (error) {
+        res.status(500).json({ message: "Error subscribing restaurant", error });
+    }
+});
+
+app.all("*", (req, res, next) => {
+    next(new ExpressError(404, "Page Not Found!"));
+});

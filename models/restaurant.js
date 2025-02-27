@@ -80,7 +80,14 @@ const restaurantSchema = new Schema({
             },
             message: props => `${props.value} is not a valid time format (HH:mm)!`,
         },
-    }
+    },
+    pushSubscription: {
+        endpoint: String,
+        keys: {
+            p256dh: String,
+            auth: String,
+        },
+    },
 });
 
 // Add a username field for authentication

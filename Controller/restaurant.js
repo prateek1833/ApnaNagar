@@ -2,6 +2,8 @@ const Restaurant = require("../models/restaurant");
 const Item = require("../models/item");
 const Orders = require("../models/order");
 const Review = require("../models/review");
+const webPush = require("web-push");
+
 
 module.exports.indexRestaurant = async (req, res) => {
     const allRestaurant = await Restaurant.find({});
@@ -384,3 +386,30 @@ module.exports.destroyRestaurant = async (req, res) => {
         res.status(500).json({ message: "An error occurred while deleting the restaurant." });
     }
 };
+
+module.exports.subscribe = async (req, res) => {
+    try {
+        const { id } = req.params; // Restaurant ID from URL
+        const { subscription } = req.body; // Subscription object
+
+        if (!subscription || !subscription.endpoint) {
+            return res.status(400).json({ error: "Invalid subscription object" });
+        }
+
+        const restaurant = await Restaurant.findById(id);
+        if (!restaurant) {
+            return res.status(404).json({ error: "Restaurant not found" });
+        }
+
+        restaurant.pushSubscription = subscription;
+        await restaurant.save();
+
+        console.log("✅ Subscription saved for restaurant:", restaurant._id);
+
+        res.status(200).json({ message: "Subscription successful" });
+    } catch (error) {
+        console.error("❌ Error subscribing to notifications:", error);
+        res.status(500).json({ error: "Internal server error" });
+    }
+};
+

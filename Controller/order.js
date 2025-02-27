@@ -6,6 +6,7 @@ const axios = require('axios'); // To fetch location details using an API
 const Restaurant = require("../models/restaurant.js");
 const Employee = require("../models/employee");
 const crypto = require("crypto");
+const webpush = require("web-push");
 
 
 
@@ -274,6 +275,39 @@ module.exports.destroyFromCart = async (req, res) => {
     }
 };
 
+const webPush = require("web-push");
+// Web Push Configuration
+const publicVapidKey = process.env.PUBLIC_VAPID_KEY; // Use the same key as in main.js
+const privateVapidKey = process.env.PRIVATE_VAPID_KEY;  // Replace with your private key
+
+webPush.setVapidDetails(
+    "mailto:kumarprateek1833@gmail.com",
+    publicVapidKey,
+    privateVapidKey
+);
+
+// Function to Notify Restaurant
+async function notifyRestaurant(restaurantId, orderDetails) {
+    try {
+        const restaurant = await Restaurant.findById(restaurantId);
+        if (!restaurant || !restaurant.pushSubscription) {
+            console.log("❌ No push subscription found for this restaurant.");
+            return;
+        }
+
+        const payload = JSON.stringify({
+            title: "New Order Received",
+            body: `You have a new order! Order ID: ${orderDetails._id}`,
+            icon: "/icon.png",
+            url: "/restaurant/orders"
+        });
+
+        await webPush.sendNotification(restaurant.pushSubscription, payload);
+        console.log("✅ Push Notification Sent to Restaurant!");
+    } catch (error) {
+        console.error("❌ Error sending push notification:", error);
+    }
+}
 
 
 
@@ -348,6 +382,10 @@ module.exports.createOrder = async (req, res) => {
         // Link the order to the user
         user.orders.push(savedOrder._id);
         await user.save();
+        for (const orderItem of orderItems) {
+            await notifyRestaurant(orderItem.item.RestaurantId, savedOrder);
+        }
+
 
         const today = new Date();
 today.setHours(0, 0, 0, 0); // Start of today

@@ -43,5 +43,10 @@ router
 router.post("/:id/toggle", isLoggedIn, wrapAsync(restaurantController.toggleStatus));
 
 router.delete("/:id/delete",isLoggedIn,isOwner, restaurantController.destroyRestaurant);
+// Web Push Notifications
+const webpush = require("web-push");
+
+router.post("/:id/subscribe", isLoggedIn, wrapAsync(restaurantController.subscribe));
+
 
 module.exports = router;

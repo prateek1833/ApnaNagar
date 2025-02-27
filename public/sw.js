@@ -52,7 +52,7 @@ importScripts("https://www.gstatic.com/firebasejs/9.6.1/firebase-messaging-compa
 
 // Firebase Configuration
 firebase.initializeApp({
-    apiKey: "AIzaSyCKRiwnq4MCYzbQhNj1E9ewfJU9oNksLFs",
+    apiKey: "jIGykfNP8oTM0a3ektrJweyQKbupfH2zE3wKxf9SdMc",
     authDomain: "apna-nagar.firebaseapp.com",
     projectId: "apna-nagar",
     storageBucket: "apna-nagar.appspot.com",
@@ -75,3 +75,11 @@ messaging.onBackgroundMessage((payload) => {
 
     self.registration.showNotification(notificationTitle, notificationOptions);
 });
+self.addEventListener("push", event => {
+    const data = event.data.json();
+    self.registration.showNotification(data.title, {
+        body: data.body,
+        icon: "/icons/icon-72x72.png", // Change to your website logo
+    });
+});
+
