@@ -299,7 +299,7 @@ async function notifyRestaurant(restaurantId, orderDetails) {
             title: "New Order Received",
             body: `You have a new order! Order ID: ${orderDetails._id}`,
             icon: "/icons/icon-72x72.png",
-            data: { url: `/restaurant/${restaurantId}/order` } // ✅ Ensure this exists
+            data: { url: `http://apnanagar.onrender.com/restaurant/${restaurantId}/order` } // ✅ Ensure this exists
         });        
 
         await webPush.sendNotification(restaurant.pushSubscription, payload);
