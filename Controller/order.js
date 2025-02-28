@@ -313,53 +313,52 @@ async function notifyRestaurant(restaurantId, orderDetails) {
 
 module.exports.createOrder = async (req, res) => {
     try {
-        const user = res.locals.currUser; // Current logged-in user
-        const orders = req.cookies.order ? JSON.parse(req.cookies.order) : []; // Orders from cookie
+        const user = res.locals.currUser;
+        let orders = req.cookies.order ? JSON.parse(req.cookies.order) : [];
 
         if (!orders || orders.length === 0) {
             req.flash("error", "No items in the cart to place an order.");
             return res.redirect("/items");
         }
 
+        // Fetch all unique restaurant IDs in one query to minimize DB calls
+        const restaurantIds = [...new Set(orders.map(order => order.RestaurantId))];
+        const restaurants = await Restaurant.find({ _id: { $in: restaurantIds }, isOpen: true }).lean();
+
+        // Convert array to Map for quick lookup
+        const openRestaurants = new Map(restaurants.map(restaurant => [restaurant._id.toString(), restaurant]));
+
         const remainingItems = [];
-        const orderItems = [];
-
-        // Consolidate items from all orders into a unified list
-        for (const orderItem of orders) {
-            const restaurantId = orderItem.RestaurantId;
-
-            // Check if the restaurant is open
-            const restaurant = await Restaurant.findById(restaurantId);
-            if (!restaurant || !restaurant.isOpen) {
-                console.log(`Restaurant is closed: ${restaurantId}`);
-                remainingItems.push(orderItem);  // Add items from closed restaurant to remaining items
-                continue;
+        const orderItems = orders.reduce((acc, orderItem) => {
+            if (openRestaurants.has(orderItem.RestaurantId)) {
+                acc.push({
+                    item: {
+                        _id: orderItem.id,
+                        title: orderItem.title,
+                        price: orderItem.detail.price,
+                        quantity: orderItem.quantity,
+                        unit: orderItem.unit,
+                        typ: orderItem.detail.typ,
+                        RestaurantId: orderItem.RestaurantId,
+                    },
+                });
+            } else {
+                remainingItems.push(orderItem);
             }
+            return acc;
+        }, []);
 
-            orderItems.push({
-                item: {
-                    _id: orderItem.id,
-                    title: orderItem.title,
-                    price: orderItem.detail.price,
-                    quantity: orderItem.quantity,
-                    unit: orderItem.unit,
-                    typ: orderItem.detail.typ,
-                    RestaurantId: restaurantId,  // Still associate the restaurant ID for reference
-                },
-            });
-        }
-
-        // If no items can be ordered (all restaurants are closed)
         if (orderItems.length === 0) {
             req.flash("error", "All restaurants are closed. Please try again later.");
             return res.redirect("/items");
         }
-        const restaurantToken = crypto.randomBytes(6).toString("hex"); 
 
-        // Create a new order with status "Pending"
-        const newOrder = new Order({
+        const restaurantToken = crypto.randomBytes(6).toString("hex");
+
+        // Use bulk insert for performance
+        const newOrder = await Order.create({
             items: orderItems,
-            db_status: "Pending",  // Set the initial status to "Pending"
+            db_status: "Pending",
             status: "Order Received",
             restaurantToken,
             author: {
@@ -377,84 +376,82 @@ module.exports.createOrder = async (req, res) => {
             createdAt: new Date(),
         });
 
-        const savedOrder = await newOrder.save();
+        // Bulk update user orders
+        await User.updateOne({ _id: user._id }, { $push: { orders: newOrder._id } });
 
-        // Link the order to the user
-        user.orders.push(savedOrder._id);
-        await user.save();
-        for (const orderItem of orderItems) {
-            await notifyRestaurant(orderItem.item.RestaurantId, savedOrder);
-        }
+        // Notify all restaurants in parallel
+        await Promise.all(orderItems.map(orderItem => notifyRestaurant(orderItem.item.RestaurantId, newOrder)));
 
-
+        // Fetch available delivery boys in a single query
         const today = new Date();
-today.setHours(0, 0, 0, 0); // Start of today
+        today.setHours(0, 0, 0, 0);
 
-const availableDeliveryBoy = await Employee.aggregate([
-    {
-        $lookup: {
-            from: "orders",
-            localField: "completed_orders",
-            foreignField: "_id",
-            as: "completedOrdersDetails",
-        },
-    },
-    {
-        $addFields: {
-            todayDeliveries: {
-                $size: {
-                    $filter: {
-                        input: "$completedOrdersDetails",
-                        as: "order",
-                        cond: {
-                            $gte: ["$$order.completedAt", today],
+        const availableDeliveryBoy = await Employee.aggregate([
+            {
+                $lookup: {
+                    from: "orders",
+                    localField: "completed_orders",
+                    foreignField: "_id",
+                    as: "completedOrdersDetails",
+                },
+            },
+            {
+                $addFields: {
+                    todayDeliveries: {
+                        $size: {
+                            $filter: {
+                                input: "$completedOrdersDetails",
+                                as: "order",
+                                cond: {
+                                    $gte: ["$$order.completedAt", today],
+                                },
+                            },
                         },
                     },
                 },
             },
-        },
-    },
-    {
-        $match: {
-            status: "Free",
-            isAvailable: true,
-        },
-    },
-    {
-        $sort: { todayDeliveries: 1 }, // Add additional sorting if needed
-    },
-    
-]);
-const selectedDeliveryBoy = availableDeliveryBoy.length > 0 ? availableDeliveryBoy[0] : null;
+            { $match: { status: "Free", isAvailable: true } },
+            { $sort: { todayDeliveries: 1 } }, // Prioritize lowest deliveries
+            { $limit: 1 } // Fetch only one delivery boy
+        ]);
 
-if (selectedDeliveryBoy) {
-    const updatedDeliveryBoy = await Employee.findOneAndUpdate(
-        { _id: selectedDeliveryBoy._id, status: "Free" }, // Ensure it's still free
-        {
-            $set: { status: "Busy", active_order: savedOrder._id },
-        },
-        { new: true }
-    );
+        if (availableDeliveryBoy.length > 0) {
+            const selectedDeliveryBoy = availableDeliveryBoy[0];
 
-    if (updatedDeliveryBoy) { // Check if the update was successful
-        const deliveryBoyToken = crypto.randomBytes(6).toString("hex");
-        savedOrder.db_status = "Assigned";
-        savedOrder.deliveryBoy = {
-            _id: updatedDeliveryBoy._id,
-            name: updatedDeliveryBoy.username,
-            mobile: updatedDeliveryBoy.mobile,
-        };
-        savedOrder.deliveryBoyToken = deliveryBoyToken; 
-        await savedOrder.save();
-        req.flash("success", "Your order has been assigned to a delivery boy.");
-    } else {
-        req.flash("success", "Your order is in the queue and will be assigned once available.");
-    }
-} else {
-    req.flash("success", "Your order is in the queue and will be assigned to a delivery boy once available.");
-}
+            // Update the delivery boy status and assign the order
+            const updatedDeliveryBoy = await Employee.findOneAndUpdate(
+                { _id: selectedDeliveryBoy._id, status: "Free" },
+                { $set: { status: "Busy", active_order: newOrder._id } },
+                { new: true }
+            );
 
-        // Update the order cookie with items from closed restaurants
+            if (updatedDeliveryBoy) {
+                const deliveryBoyToken = crypto.randomBytes(6).toString("hex");
+
+                await Order.updateOne(
+                    { _id: newOrder._id },
+                    {
+                        $set: {
+                            db_status: "Assigned",
+                            deliveryBoy: {
+                                _id: updatedDeliveryBoy._id,
+                                name: updatedDeliveryBoy.username,
+                                mobile: updatedDeliveryBoy.mobile,
+                            },
+                            deliveryBoyToken: deliveryBoyToken,
+                        },
+                    }
+                );
+
+                req.flash("success", "Your order has been assigned to a delivery boy.");
+            } else {
+                req.flash("success", "Your order is in the queue and will be assigned once available.");
+            }
+        } else {
+            req.flash("success", "Your order is in the queue and will be assigned to a delivery boy once available.");
+        }
+
+        // Optimize order cookie handling
         if (remainingItems.length > 0) {
             res.cookie("order", JSON.stringify(remainingItems), { httpOnly: true });
         } else {
@@ -462,7 +459,6 @@ if (selectedDeliveryBoy) {
         }
 
         res.redirect("/items");
-
     } catch (error) {
         console.error(error);
         req.flash("error", `Error placing your order: ${error.message}`);
