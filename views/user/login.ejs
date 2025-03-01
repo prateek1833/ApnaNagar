@@ -11,17 +11,19 @@
                 <div class="tab-pane fade show active" id="customer" role="tabpanel" aria-labelledby="customer-tab">
                     <form action="/login" method="POST" class="needs-validation" novalidate>
                         <div class="mb-3">
-                            <label for="customer-username" class="form-label">username</label>
-                            <input type="text" name="username" id="customer-username" placeholder="Enter your username"
-                                class="form-control" required>
+                          <label for="login-identifier" class="form-label">Username or Mobile</label>
+                          <input type="text" name="identifier" id="login-identifier"
+                            placeholder="Enter your username or +91 mobile number"
+                            class="form-control" required>
                         </div>
                         <div class="mb-3">
-                            <label for="customer-password" class="form-label">Password</label>
-                            <input type="password" name="password" id="customer-password"
-                                placeholder="Enter your password" class="form-control" required>
+                          <label for="customer-password" class="form-label">Password</label>
+                          <input type="password" name="password" id="customer-password"
+                            placeholder="Enter your password" class="form-control" required>
                         </div>
-                        <button class="btn light-btn w-100">Log In as Customer</button>
-                    </form>
+                        <button class="btn light-btn w-100">Log In</button>
+                      </form>
+                      
                     <% if (error) { %>
                         <div class="text-center" style="color: red;">
                             <%= error %>

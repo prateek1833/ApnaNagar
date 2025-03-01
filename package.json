@@ -14,6 +14,7 @@
   "dependencies": {
     "@mapbox/mapbox-sdk": "^0.16.0",
     "axios": "^1.7.9",
+    "bcrypt": "^5.1.1",
     "body-parser": "^1.20.3",
     "connect": "^3.7.0",
     "connect-flash": "^0.1.1",

@@ -92,8 +92,30 @@ app.use(passport.initialize());
 app.use(passport.session());
 
 // User Strategy
-passport.use(new LocalStrategy(User.authenticate())); // Default "local" strategy
-// Restaurant Strategy
+passport.use(
+    new LocalStrategy({ usernameField: "identifier" }, async (identifier, password, done) => {
+      try {
+        // Find user by username OR mobile number
+        const user = await User.findOne({
+          $or: [{ username: identifier }, { mobile: identifier }],
+        });
+  
+        if (!user) {
+          return done(null, false, { message: "Invalid credentials. Please try again." });
+        }
+  
+        const isValidPassword = await user.authenticate(password); // Provided by passport-local-mongoose
+        if (!isValidPassword) {
+          return done(null, false, { message: "Invalid credentials. Please try again." });
+        }
+  
+        return done(null, user);
+      } catch (err) {
+        return done(err);
+      }
+    })
+  );
+  // Restaurant Strategy
 passport.use("restaurant-local", new LocalStrategy(Restaurant.authenticate()));
 
 passport.use("employee-local", new LocalStrategy(Employee.authenticate()));
