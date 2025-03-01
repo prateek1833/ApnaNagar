@@ -258,6 +258,11 @@ io.on("connection", (socket) => {
         res.status(500).json({ message: "Error subscribing restaurant", error });
     }
 });
+app.post('/check-mobile', async (req, res) => {
+    const { mobile } = req.body;
+    const existingUser = await User.findOne({ mobile });
+    res.json({ exists: !!existingUser });
+});
 
 app.all("*", (req, res, next) => {
     next(new ExpressError(404, "Page Not Found!"));

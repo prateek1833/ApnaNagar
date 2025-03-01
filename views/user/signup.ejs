@@ -129,4 +129,83 @@
                 document.getElementById("customer-confirm-password").classList.remove("is-invalid");
             }
         });
+        document.addEventListener("DOMContentLoaded", function () {
+        const usernameInput = document.getElementById("customer-username");
+        const passwordInput = document.getElementById("customer-password");
+        const confirmPasswordInput = document.getElementById("customer-confirm-password");
+        const signupButton = document.getElementById("signup-button");
+
+        function validateUsername() {
+            const username = usernameInput.value.trim();
+            if (username.length >= 4 && username.length <= 20) {
+                usernameInput.classList.remove("is-invalid");
+                usernameInput.classList.add("is-valid");
+            } else {
+                usernameInput.classList.remove("is-valid");
+                usernameInput.classList.add("is-invalid");
+            }
+        }
+
+        function validatePassword() {
+            const password = passwordInput.value.trim();
+            if (password.length >= 8 && password.length <= 20) {
+                passwordInput.classList.remove("is-invalid");
+                passwordInput.classList.add("is-valid");
+            } else {
+                passwordInput.classList.remove("is-valid");
+                passwordInput.classList.add("is-invalid");
+            }
+        }
+
+        function checkPasswordMatch() {
+            if (passwordInput.value === confirmPasswordInput.value && passwordInput.value.length >= 8) {
+                confirmPasswordInput.classList.remove("is-invalid");
+                confirmPasswordInput.classList.add("is-valid");
+                signupButton.classList.remove("d-none");
+            } else {
+                confirmPasswordInput.classList.remove("is-valid");
+                confirmPasswordInput.classList.add("is-invalid");
+                signupButton.classList.add("d-none");
+            }
+        }
+
+        usernameInput.addEventListener("input", validateUsername);
+        passwordInput.addEventListener("input", validatePassword);
+        confirmPasswordInput.addEventListener("input", checkPasswordMatch);
+        });
+        document.addEventListener("DOMContentLoaded", function () {
+            const mobileInput = document.getElementById("customer-mobile");
+            const getOtpButton = document.getElementById("get-otp");
+
+            function checkMobileUnique() {
+                const mobile = mobileInput.value.trim();
+                
+                if (!/^\+91\d{10}$/.test(mobile)) {
+                    mobileInput.classList.add("is-invalid");
+                    return;
+                }
+                
+                fetch('/check-mobile', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ mobile })
+                })
+                .then(response => response.json())
+                .then(data => {
+                    if (data.exists) {
+                        mobileInput.classList.add("is-invalid");
+                        mobileInput.nextElementSibling.textContent = "Mobile number already registered!";
+                        getOtpButton.setAttribute("disabled", "true");
+                    } else {
+                        mobileInput.classList.remove("is-invalid");
+                        mobileInput.classList.add("is-valid");
+                        getOtpButton.removeAttribute("disabled");
+                    }
+                })
+                .catch(error => console.error("Error checking mobile:", error));
+            }
+
+            mobileInput.addEventListener("input", checkMobileUnique);
+        });
+
     </script>

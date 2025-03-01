@@ -77,14 +77,13 @@ module.exports.logout = async (req, res, next) => {
 
 module.exports.login = async (req, res) => {
     if (!req.user) {
-        req.flash("error", "Invalid credentials. Please try again.");
-        return res.redirect("/login");
+        return res.render("login", { incorrect: "Invalid credentials. Please try again." });
     }
 
     let redirectUrl = res.locals.redirectUrl || "/items";
-    req.flash("success", "Welcome back!");
     res.redirect(redirectUrl);
 };
+
 
 
 module.exports.statistics = async (req, res, next) => {

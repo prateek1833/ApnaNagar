@@ -5,8 +5,7 @@
             <img id="tripleTapHeading" src="https://res.cloudinary.com/dzrxswqur/image/upload/v1739196654/icon-512x512_iqnv9i.png"
                 height="180px" style="border-radius: 50%; box-shadow: 5px 5px 10px rgba(0, 0, 0, 0.3);">
         </div>
-        <div class="col-12 col-md-6 offset-md-3 mt-4">
-        
+        <div class="col-12 col-md-6 offset-md-3 mt-4"> 
             <div class="tab-content mt-3" id="loginTabContent">
                 <!-- Customer Login -->
                 <div class="tab-pane fade show active" id="customer" role="tabpanel" aria-labelledby="customer-tab">
@@ -23,9 +22,16 @@
                         </div>
                         <button class="btn light-btn w-100">Log In as Customer</button>
                     </form>
-                    <p class="text-center mt-3">Don't have an account? <a href="/signup"><b>Sign Up</b></a></p>
-                </div>
-             
+                    <% if (error) { %>
+                        <div class="text-center" style="color: red;">
+                            <%= error %>
+                        </div>
+                        <% } %>
+                            <div class="text-center">
+                                <p class="mt-3">Don't have an account? <a href="/signup"><b>Sign Up</b></a></p>
+                                <p><a class="mt-3" style="text-decoration: none;"><b>Forget Password</b></a></p>
+                            </div>
+                </div>               
             </div>
         </div>
     </div>
