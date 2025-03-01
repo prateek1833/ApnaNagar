@@ -100,6 +100,14 @@ const sortedCategories = Array.from(groupedOrders.keys()).sort((a, b) => {
                 </tr>
             </tbody>
         </table>
+        <% if(order.deliveryBoy){ %>
+        <div>
+            <p><strong>Delivery Boy : </strong><%=order.deliveryBoy.name%>
+            <a style="text-decoration: none;"
+                href="tel:<%=order.deliveryBoy.name%>"><%=order.deliveryBoy.mobile%></a>
+                <br></p>
+        </div>
+        <% } %>
 
         <div class="d-grid gap-2 col-12 mx-auto">
             <form method="POST" action="/restaurant/<%= order._id %>/status">

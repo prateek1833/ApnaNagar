@@ -142,13 +142,6 @@ const sortedCategories = Array.from(groupedOrders.keys()).sort((a, b) => {
                     <td><b><%= (user.distance > 3 ? (user.distance * 2).toFixed(2) : "0.00").toLocaleString("en-IN") %></b></td>
                 </tr>
                 <tr>
-                    <td><b>Balance Due</b></td>
-                    <td></td>
-                    <td></td>
-                    <td></td>
-                    <td><b><%= user.balance_due.toLocaleString("en-IN") %></b></td>
-                </tr>
-                <tr>
                     <td><b>Total</b></td>
                     <td></td>
                     <td></td>
@@ -157,6 +150,14 @@ const sortedCategories = Array.from(groupedOrders.keys()).sort((a, b) => {
                 </tr>
             </tbody>
         </table>
+        <% if(order.deliveryBoy.name && currUser && currUser.type && (currUser.type==="Owner")){ %>
+            <div>
+                <p><strong>Delivery Boy : </strong><%=order.deliveryBoy.name%>
+                <a style="text-decoration: none;"
+                    href="tel:<%=order.deliveryBoy.name%>"><%=order.deliveryBoy.mobile%></a>
+                    <br></p>
+            </div>
+            <% } %>
 
         <div class="d-grid gap-2 col-12 mx-auto">
             <form method="POST" action="/owner/<%= order._id %>/status">
