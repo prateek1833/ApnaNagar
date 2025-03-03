@@ -281,8 +281,9 @@ io.on("connection", (socket) => {
     }
 });
 app.post('/check-mobile', async (req, res) => {
-    const { mobile } = req.body;
+    let { mobile } = req.body;
     const existingUser = await User.findOne({ mobile });
+    mobile = mobile.replace(/^\+91/, "");
     res.json({ exists: !!existingUser });
 });
 

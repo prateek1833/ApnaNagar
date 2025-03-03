@@ -25,6 +25,7 @@ module.exports.signup = async (req, res) => {
     try {
         const owner = "6638779c9bfc94fc81a42508";
         let { username, mobile, password } = req.body;
+        mobile = mobile.replace(/^\+91/, "");
 
         // Provide default values for the required fields
         const pincode = "000000";
