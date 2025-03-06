@@ -8,16 +8,16 @@
         <div>
             <form action="/signup" method="POST">
                 <div class="mb-3">
-                    <label for="customer-username" class="form-label">Name/Username</label>
+                    <label for="customer-username" class="form-label">Name or Username</label>
                     <input type="text" name="username" id="customer-username" placeholder="Enter catchy username"
                         class="form-control" required>
-                    <div class="valid-feedback">Looks good</div>
+                    <div class="invalid-feedback"></div>
                 </div>
                 <div class="mb-3">
                     <label for="customer-mobile" class="form-label">Mobile No.</label>
                     <input type="tel" name="mobile" id="customer-mobile" placeholder="+91XXXXXXXXXX"
                         class="form-control" pattern="^\+91\d{10}$" required value="+91">
-                    <div class="invalid-feedback">Please enter a valid mobile number in +91XXXXXXXXXX format.</div>
+                    <div class="invalid-feedback"></div>
 
                 </div>
                 <button type="button" class="btn btn-primary w-100 no-spinner" id="get-otp">Get OTP</button>
@@ -35,6 +35,7 @@
                     <label for="customer-password" class="form-label">Password</label>
                     <input type="password" name="password" id="customer-password" placeholder="Enter strong password"
                         class="form-control" required>
+                    <div class="invalid-feedback">Enter a password of length between 8 to 20 characters</div>
 
                     <label for="customer-confirm-password" class="form-label mt-2">Confirm Password</label>
                     <input type="password" name="confirm-password" id="customer-confirm-password"
@@ -44,6 +45,11 @@
 
                 <button type="submit" class="btn btn-success w-100 d-none" id="signup-button">Sign Up as
                     Customer</button>
+                    <% if (error) { %>
+                        <div class="text-center" style="color: red;">
+                            <%= error %>
+                        </div>
+                        <% } %>
             </form>
         </div>
     </div>
@@ -142,6 +148,7 @@
                 usernameInput.classList.add("is-valid");
             } else {
                 usernameInput.classList.remove("is-valid");
+                usernameInput.nextElementSibling.textContent = "Username must be 4 to 20 characters long.";
                 usernameInput.classList.add("is-invalid");
             }
         }
@@ -154,6 +161,7 @@
             } else {
                 passwordInput.classList.remove("is-valid");
                 passwordInput.classList.add("is-invalid");
+                signupButton.classList.add("disabled");
             }
         }
 
@@ -161,11 +169,11 @@
             if (passwordInput.value === confirmPasswordInput.value && passwordInput.value.length >= 8) {
                 confirmPasswordInput.classList.remove("is-invalid");
                 confirmPasswordInput.classList.add("is-valid");
-                signupButton.classList.remove("d-none");
+                signupButton.classList.remove("disabled");
             } else {
                 confirmPasswordInput.classList.remove("is-valid");
                 confirmPasswordInput.classList.add("is-invalid");
-                signupButton.classList.add("d-none");
+                signupButton.classList.add("disabled");
             }
         }
 
@@ -182,6 +190,7 @@
                 
                 if (!/^\+91\d{10}$/.test(mobile)) {
                     mobileInput.classList.add("is-invalid");
+                    mobileInput.nextElementSibling.textContent = "Enter a mobile number in format +91XXXXXXXXXX";
                     return;
                 }
                 
@@ -198,6 +207,7 @@
                         getOtpButton.setAttribute("disabled", "true");
                     } else {
                         mobileInput.classList.remove("is-invalid");
+                        mobileInput.nextElementSibling.textContent = "";
                         mobileInput.classList.add("is-valid");
                         getOtpButton.removeAttribute("disabled");
                     }
@@ -206,6 +216,32 @@
             }
 
             mobileInput.addEventListener("input", checkMobileUnique);
+        });
+        document.addEventListener("DOMContentLoaded", function () {
+            const usernameInput = document.getElementById("customer-username");
+            const getOtpButton = document.getElementById("get-otp");
+
+            function checkUsernameUnique() {
+                const username = usernameInput.value.trim();
+                
+                
+                fetch('/check-username', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ username })
+                })
+                .then(response => response.json())
+                .then(data => {
+                    if (data.exists) {
+                        usernameInput.classList.add("is-invalid");
+                        usernameInput.nextElementSibling.textContent = "This username is already taken!";
+                        getOtpButton.setAttribute("disabled", "true");
+                    } 
+                })
+                .catch(error => console.error("Error checking username:", error));
+            }
+
+            usernameInput.addEventListener("input", checkUsernameUnique);
         });
 
     </script>

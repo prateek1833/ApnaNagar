@@ -25,8 +25,11 @@ module.exports.signup = async (req, res) => {
     try {
         const owner = "6638779c9bfc94fc81a42508";
         let { username, mobile, password } = req.body;
-        mobile = mobile.replace(/^\+91/, "");
-
+        const existingUser = await User.findOne({ $or: [{ username }, { mobile }] });
+        if (existingUser) {
+            req.flash("error", "Username or mobile number already exists.");
+            return res.redirect("/signup" ,{ incorrect: "Username or mobile number already exists." });
+        }
         // Provide default values for the required fields
         const pincode = "000000";
         const state = "Unknown";
@@ -42,14 +45,15 @@ module.exports.signup = async (req, res) => {
 
         // Save the updated user document
         await registerUser.save();
-
         req.login(registerUser, (err) => {
             if (err) {
+                console.error("Login failed:", err);
                 return next(err);
             }
             res.redirect("/items");
         });
     } catch (e) {
+        console.error("Signup Error:", e);
         req.flash("error", e.message);
         res.redirect("/signup");
     }

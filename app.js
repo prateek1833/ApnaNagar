@@ -281,11 +281,34 @@ io.on("connection", (socket) => {
     }
 });
 app.post('/check-mobile', async (req, res) => {
-    let { mobile } = req.body;
-    const existingUser = await User.findOne({ mobile });
-    mobile = mobile.replace(/^\+91/, "");
-    res.json({ exists: !!existingUser });
+    try {
+        let { mobile } = req.body;
+
+        if (!mobile) {
+            return res.status(400).json({ error: "Mobile number is required" });
+        }
+
+        const normalizedMobile = mobile.replace(/^\+91/, "");
+        const existingUser = await User.findOne({ 
+            $or: [{ mobile }, { mobile: normalizedMobile }] 
+        });
+
+        res.json({ exists: !!existingUser });
+    } catch (error) {
+        console.error("Error checking mobile:", error);
+        res.status(500).json({ error: "Internal server error" }); 
+    }
 });
+app.post('/check-username', async (req, res) => {
+    const { username } = req.body;
+    const userExists = await User.findOne({ username });
+    
+    if (userExists) {
+        return res.json({ exists: true });
+    }
+    return res.json({ exists: false });
+});
+
 
 app.all("*", (req, res, next) => {
     next(new ExpressError(404, "Page Not Found!"));
