@@ -70,7 +70,7 @@
             this.textContent = "Sending OTP...";
 
             try {
-                let response = await fetch("http://localhost:8080/send-otp", {
+                let response = await fetch("http://apnanagar.onrender.com/send-otp", {
                     method: "POST",
                     headers: { "Content-Type": "application/json" },
                     body: JSON.stringify({ mobile: mobileValue })
@@ -102,7 +102,7 @@
             this.textContent = "Verifying...";
 
             try {
-                let response = await fetch("http://localhost:8080/verify-otp", {
+                let response = await fetch("http://apnanagar.onrender.com/verify-otp", {
                     method: "POST",
                     headers: { "Content-Type": "application/json" },
                     body: JSON.stringify({ mobile: mobileValue, otp: otpValue })
