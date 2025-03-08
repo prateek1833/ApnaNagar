@@ -40,18 +40,20 @@
                             <%= new Date(employee.active_order.createdAt).toLocaleString("en-IN", {
                                 timeZone: "Asia/Kolkata" }) %>
                         </p>
-                        <p><strong>ID:</strong>
-                            <%= employee.active_order._id %>
-                        </p>
                         <p><strong>Name:</strong>
                             <%= employee.active_order.author.name %>
                         </p>
                         <p><strong>Mobile:</strong>
                             <%= employee.active_order.author.mobile %>
                         </p>
-                        <p><strong>Distance</strong>
+                        <p><strong>Distance:</strong>
                             <%= employee.active_order.author.distance %> km
                         </p>
+                        <p><strong>Locality:</strong>
+                            <%= employee.active_order.author.locality %>
+                        </p>
+                        <p><strong>Address:</strong>
+                            <%= employee.active_order.author.area%>, <%=employee.active_order.author.district%>, <%=employee.active_order.author.state%> 
                         <table>
                             <thead>
                                 <tr>
@@ -91,11 +93,17 @@
                                                     <%= deliveryCost %> Rs
                                                 </td>
                                             </tr>
+                                            <tr>
+                                                <td colspan="3" class="text-start"><strong>Tips</strong></td>
+                                                <td>
+                                                    <%= employee.active_order.tip %> Rs
+                                                </td>
+                                            </tr>
 
                                             <!-- Total Price Row -->
                                             <% const itemTotalPrice=employee.active_order.items.reduce((total, item)=>
                                                 total + item.item.price * item.item.quantity, 0);
-                                                const totalPrice = itemTotalPrice + deliveryCost;
+                                                const totalPrice = itemTotalPrice + deliveryCost+employee.active_order.tip;
                                                 %>
                                                 <tr>
                                                     <td colspan="3" class="text-start"><strong>Total Price</strong></td>
@@ -188,17 +196,14 @@
                                     <div
                                         class="list-group-item d-flex justify-content-between align-items-center shadow-sm mb-2 rounded">
                                         <div>
-                                            <p><strong>Order ID:</strong>
-                                                <%= order._id %>
-                                            </p>
-                                            <p><strong>Customer Name:</strong>
+                                            <p><strong>Name:</strong>
                                                 <%= order.author.name %>
                                             </p>
                                             <p><strong>Items:</strong></p>
                                             <ul>
                                                 <% order.items.forEach(item=> { %>
                                                     <li>
-                                                        <%= item.item.title %> - <%= item.quantity %>
+                                                        <%= item.item.title %> - <%= item.item.quantity %>
                                                                 <%= item.item.unit %>
                                                     </li>
                                                     <% }) %>
