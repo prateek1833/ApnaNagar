@@ -40,6 +40,7 @@ const orderSchema = new Schema({
         mobile: Number,
         distance:Number,
         balance_due:Number,
+        locality:String,
         coordinates: {
             type: [Number],
             required: true
@@ -60,6 +61,7 @@ const orderSchema = new Schema({
     },
     restaurantToken: String,  // FCM Token for Restaurant
     deliveryBoyToken: String, // FCM Token for Delivery Boy
+    tip:Number,
 });
 
 const Order = mongoose.model('Order', orderSchema);

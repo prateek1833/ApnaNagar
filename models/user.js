@@ -24,6 +24,9 @@ const userSchema=new Schema({
         required: true,
         maxlength: 6,
     },
+    locality: {
+        type: String,
+    },
     orders: [{
         type: Schema.Types.ObjectId,
         ref: "Order",

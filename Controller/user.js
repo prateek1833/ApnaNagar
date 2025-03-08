@@ -32,12 +32,13 @@ module.exports.signup = async (req, res) => {
         }
         // Provide default values for the required fields
         const pincode = "000000";
+        const locality= "";
         const state = "Unknown";
         const district = "Unknown";
         const area = "Unknown";
         const type="User";
 
-        const newUser = new User({ mobile, username, owner, pincode, state, district, area, type });
+        const newUser = new User({ mobile, username, owner, pincode, locality, state, district, area, type });
         const registerUser = await User.register(newUser, password);
 
         // Update the user's balance_due field

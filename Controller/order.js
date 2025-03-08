@@ -320,6 +320,8 @@ module.exports.createOrder = async (req, res) => {
             req.flash("error", "No items in the cart to place an order.");
             return res.redirect("/items");
         }
+        let {locality,tip}=req.body;
+        tip = tip ? parseFloat(tip) || 0 : 0;
 
         // Fetch all unique restaurant IDs in one query to minimize DB calls
         const restaurantIds = [...new Set(orders.map(order => order.RestaurantId))];
@@ -372,13 +374,21 @@ module.exports.createOrder = async (req, res) => {
                 mobile: user.mobile,
                 distance: user.distance,
                 balance_due: user.balance_due,
+                locality:locality,
             },
+            tip:tip,
             createdAt: new Date(),
         });
 
         // Bulk update user orders
-        await User.updateOne({ _id: user._id }, { $push: { orders: newOrder._id } });
-
+        await User.updateOne(
+            { _id: user._id }, 
+            { 
+                $push: { orders: newOrder._id },  // Push new order into orders array
+                $set: { locality: locality }      // Set locality as a string
+            }
+        );
+        
         // Notify all restaurants in parallel
         await Promise.all(orderItems.map(orderItem => notifyRestaurant(orderItem.item.RestaurantId, newOrder)));
 

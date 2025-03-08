@@ -1,7 +1,55 @@
 <% layout('../layout/boilerplateLocation') -%>
 
+<style>
+    .tip-group {
+        display: flex;
+        gap: 10px;
+    }
+
+    .tip-group input {
+        display: none;
+    }
+
+    .tip-group label {
+        padding: 10px 5px;
+        border: 2px solid #6A0DAD;
+        color: #6A0DAD;
+        border-radius: 5px;
+        cursor: pointer;
+        transition: all 0.3s ease;
+        text-align: center;
+        flex: 1;
+    }
+
+    .tip-group input:checked + label {
+        background-color: #6A0DAD;
+        color: white;
+    }
+</style>
 <% user = currUser %>
 <% let deliveryCost = user.distance > 3 ? Math.round(user.distance * 4) : 0; %>
+
+<div class="mb-3">
+    <label for="locality" class="form-label">House no./ College/ School/ Locality</label>
+    <input type="text" name="locality" value="<%=user.locality%>" id="locality" placeholder="Optional" class="form-control" required>
+</div>
+
+<div class="mb-3">
+    <label class="form-label">Add a Tip (Optional)</label>
+    <div class="tip-group">
+        <input type="radio" name="tip" id="tip1" value="0" checked>
+        <label for="tip1">₹0</label>
+
+        <input type="radio" name="tip" id="tip2" value="10">
+        <label for="tip2">₹10</label>
+
+        <input type="radio" name="tip" id="tip3" value="50">
+        <label for="tip3">₹50</label>
+
+        <input type="radio" name="tip" id="tip4" value="100">
+        <label for="tip4">₹100</label>
+    </div>
+</div>
 
 <% if (user.distance > 50) { %>
     <h1 style="color: gray;">Sorry, we are not here yet!</h1>
@@ -28,7 +76,8 @@
                     style="padding: 0px!important; height:0; margin:5px; background-color: #f8f9fa; border-radius: 5px; transition: background-color 0.3s ease;">
                     <% if (order && order.length > 0) { %>
                         <div class="d-flex flex-row align-items-center justify-content-between w-100">
-                            <form method="POST" action="/order/checkout" class="mb-0">
+                            <form method="POST" action="/order/checkout" class="mb-0" id="orderForm">
+                                
                                 <button class="show-spinner btn add-btn " 
                                     style="border-radius: 5px;" 
                                     id="placeOrderButton"
@@ -107,4 +156,27 @@
             showSpinner();
         });
     }
+    document.getElementById("placeOrderButton").addEventListener("click", function(event) {
+        event.preventDefault(); // Prevent immediate submission
+        
+        let form = document.getElementById("orderForm");
+
+        // Move locality input inside the form before submission
+        let localityInput = document.getElementById("locality");
+        let clonedLocality = localityInput.cloneNode(true);
+        clonedLocality.style.display = "none"; // Hide cloned input
+        form.appendChild(clonedLocality);
+
+        // Move selected tip inside the form before submission
+        let selectedTip = document.querySelector('input[name="tip"]:checked');
+        if (selectedTip) {
+            let hiddenTip = document.createElement("input");
+            hiddenTip.type = "hidden";
+            hiddenTip.name = "tip";
+            hiddenTip.value = selectedTip.value;
+            form.appendChild(hiddenTip);
+        }
+
+        form.submit(); // Now submit the form with the cloned inputs
+    });
 </script>
