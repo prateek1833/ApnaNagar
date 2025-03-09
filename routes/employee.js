@@ -37,4 +37,7 @@ router.get("/:id/order", isLoggedIn,isEmployee, wrapAsync(employeeController.Ord
 
 router.post("/:id/delivered", isLoggedIn,isEmployee, wrapAsync(employeeController.DeliveredStatus)); 
 
+router.post("/:id/subscribe", isLoggedIn, wrapAsync(employeeController.subscribe));
+
+
 module.exports = router;

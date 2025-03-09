@@ -40,6 +40,17 @@ if ("serviceWorker" in navigator && "PushManager" in window) {
 
                 console.log("✅ Push Subscription sent to server");
             }
+            if (currUser && currUser.type === "Delivery Boy") {
+                const deliveryId = currUser._id;
+
+                await fetch(`/employee/${deliveryId}/subscribe`, {
+                    method: "POST",
+                    body: JSON.stringify({ subscription }),
+                    headers: { "Content-Type": "application/json" },
+                });
+
+                console.log("✅ Push Subscription sent to server");
+            }
 
             // Listen for messages from service worker to play a sound
             navigator.serviceWorker.addEventListener("message", (event) => {

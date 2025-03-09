@@ -285,6 +285,36 @@ webPush.setVapidDetails(
     publicVapidKey,
     privateVapidKey
 );
+async function notifyDeliveryBoys(orderDetails) {
+    try {
+        // Fetch all free and available delivery boys
+        const freeDeliveryBoys = await Employee.find({ status: "Free", isAvailable: true });
+
+        if (!freeDeliveryBoys.length) {
+            console.log("❌ No available delivery boys to notify.");
+            return;
+        }
+
+        const payload = JSON.stringify({
+            title: "New Order Available",
+            body: `A new order is available for delivery! Order ID: ${orderDetails._id}`,
+            icon: "/icons/icon-72x72.png",
+            data: { url: `http://apnanagar.onrender.com/delivery/orders` } // ✅ Ensure this URL exists
+        });
+
+        // Send notifications in parallel
+        await Promise.all(
+            freeDeliveryBoys.map(deliveryBoy =>
+                webPush.sendNotification(deliveryBoy.pushSubscription, payload)
+            )
+        );
+
+        console.log("✅ Push Notification Sent to Available Delivery Boys!");
+    } catch (error) {
+        console.error("❌ Error sending delivery boy notification:", error);
+    }
+}
+
 
 // Function to Notify Restaurant
 async function notifyRestaurant(restaurantId, orderDetails) {
@@ -300,7 +330,7 @@ async function notifyRestaurant(restaurantId, orderDetails) {
             body: `You have a new order! Order ID: ${orderDetails._id}`,
             icon: "/icons/icon-72x72.png",
             data: { url: `http://apnanagar.onrender.com/restaurant/${restaurantId}/order` } // ✅ Ensure this exists
-        });        
+        });      
 
         await webPush.sendNotification(restaurant.pushSubscription, payload);
         console.log("✅ Push Notification Sent to Restaurant!");
@@ -391,6 +421,7 @@ module.exports.createOrder = async (req, res) => {
         
         // Notify all restaurants in parallel
         await Promise.all(orderItems.map(orderItem => notifyRestaurant(orderItem.item.RestaurantId, newOrder)));
+        await notifyDeliveryBoys(newOrder);
 
         // Fetch available delivery boys in a single query
         const today = new Date();

@@ -76,6 +76,13 @@ const employeeSchema = new Schema({
         required: true,
     },
     type: String,
+    pushSubscription: {
+        endpoint: String,
+        keys: {
+            p256dh: String,
+            auth: String,
+        },
+    },
 
 });
 

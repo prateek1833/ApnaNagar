@@ -452,3 +452,29 @@ module.exports.DeliveredStatus = async (req, res) => {
         return res.redirect("/orders");
     }
 };
+module.exports.subscribe = async (req, res) => {
+    try {
+        const { id } = req.params; // Employee ID from URL
+        const { subscription } = req.body; // Subscription object
+
+        if (!subscription || !subscription.endpoint) {
+            return res.status(400).json({ error: "Invalid subscription object" });
+        }
+
+        const employee = await Employee.findById(id);
+        if (!employee) {
+            return res.status(404).json({ error: "Employee not found" });
+        }
+
+        employee.pushSubscription = subscription;
+        await employee.save();
+
+        console.log("✅ Subscription saved for employee:", employee._id);
+
+        res.status(200).json({ message: "Subscription successful" });
+    } catch (error) {
+        console.error("❌ Error subscribing to notifications:", error);
+        res.status(500).json({ error: "Internal server error" });
+    }
+};
+

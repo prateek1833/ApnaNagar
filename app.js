@@ -264,8 +264,30 @@ io.on("connection", (socket) => {
     };
   
     try {
-      await admin.messaging().send(message);
-      console.log("Push notification sent successfully!");
+      // Send notification to the restaurant (if they have a token)
+      if (orderData.restaurantToken) {
+        await admin.messaging().send({ ...message, token: orderData.restaurantToken });
+        console.log("✅ Push notification sent to restaurant!");
+    } else {
+        console.warn("❌ Warning: No FCM token for the restaurant.");
+    }
+
+    // Find free delivery boys who have a pushSubscription
+    const freeDeliveryBoys = await Employee.find({ status: "Free", isAvailable: true, pushSubscription: { $ne: null } });
+
+    if (freeDeliveryBoys.length > 0) {
+        // Send notifications to all available delivery boys
+        freeDeliveryBoys.forEach(async (deliveryBoy) => {
+            try {
+                await admin.messaging().send({ ...message, token: deliveryBoy.pushSubscription.token });
+                console.log(`✅ Push notification sent to delivery boy: ${deliveryBoy.username}`);
+            } catch (error) {
+                console.error(`❌ Error sending push notification to ${deliveryBoy.username}:`, error);
+            }
+        });
+    } else {
+        console.warn("❌ No free delivery boys available with push subscription.");
+    }
     } catch (error) {
       console.error("Error sending push notification:", error);
     }
@@ -278,6 +300,16 @@ io.on("connection", (socket) => {
         res.status(201).json({ message: "Restaurant subscribed successfully!" });
     } catch (error) {
         res.status(500).json({ message: "Error subscribing restaurant", error });
+    }
+});
+app.post("/delivery/subscribe", async (req, res) => {
+    const { deliveryBoyId, subscription } = req.body;
+
+    try {
+        await Employee.findByIdAndUpdate(deliveryBoyId, { pushSubscription: subscription });
+        res.status(201).json({ message: "Delivery boy subscribed successfully!" });
+    } catch (error) {
+        res.status(500).json({ message: "Error subscribing delivery boy", error });
     }
 });
 app.post('/check-mobile', async (req, res) => {
