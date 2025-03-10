@@ -120,52 +120,62 @@ module.exports.addToCart = async (req, res) => {
     try {
         const item = await Item.findById(req.body.item);
 
-        // Extract the selected type and quantity from the request body
-        const selectedTypeIndex = req.body.selectedType;
-        const quantity = req.body.quantity;
-        const title = item.title;
-        const category = item.category;
-        const unit = item.unit;
-        const id = item._id;
-        const RestaurantId = item.RestaurantId;
-
         // Check if the item exists
         if (!item) {
-            // Handle the case where the item is not found
             return res.status(404).send("Item not found");
         }
 
-        // Get the selected type from the item's detail array
+        // Extract the selected type and quantity from the request body
+        const selectedTypeIndex = req.body.selectedType;
+        const quantity = parseInt(req.body.quantity, 10); // Ensure quantity is an integer
         const selectedType = item.detail[selectedTypeIndex];
 
         // Check if the selected type exists
         if (!selectedType) {
-            // Handle the case where the selected type is not found
             return res.status(404).send("Selected type not found");
         }
 
-        // Create the new order with the selected type and quantity
-        const newOrder = { title: title, category: category, unit: unit, detail: selectedType, quantity: quantity, id: id, RestaurantId: RestaurantId };
+        // Construct the new order object
+        const newOrder = {
+            title: item.title,
+            category: item.category,
+            unit: item.unit,
+            detail: selectedType,
+            quantity: quantity,
+            id: item._id.toString(),
+            RestaurantId: item.RestaurantId
+        };
 
-        // Get the current order array from the cookie, or initialize it as an empty array if it doesn't exist
+        // Get the current order array from the cookie or initialize it
         let orders = req.cookies.order ? JSON.parse(req.cookies.order) : [];
 
-        // Add the new order to the array
-        orders.push(newOrder);
+        // Find if an order with the same id and selectedType.typ already exists
+        let existingOrder = orders.find(order => 
+            order.id === newOrder.id && order.detail.typ === selectedType.typ
+        );
 
-        // Set the cookie with the updated order array
+        if (existingOrder) {
+            // If the item exists, increase the quantity
+            existingOrder.quantity += quantity;
+        } else {
+            // If the item is not found, add it as a new order
+            orders.push(newOrder);
+        }
+
+        // Update the cookie with the modified order array
         res.cookie("order", JSON.stringify(orders));
 
-        // Render the cart view
+        // Flash success message and redirect
         req.flash("success", `${selectedType.typ} ${item.title} has been added to cart`);
         res.redirect("/items");
 
     } catch (error) {
-        // Handle any errors that occur during the process
         console.error(error);
         res.status(500).send("Internal Server Error");
     }
 };
+
+
 
 module.exports.buy = async (req, res) => {
     try {
