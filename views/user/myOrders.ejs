@@ -77,7 +77,14 @@
                                                                 <% sum +=orderItem.item.quantity * orderItem.item.price;
                                                                     %>
                                                                     <% weight +=parseInt(orderItem.item.quantity); %>
-                                                                        <% } %>
+                                                                    <% } %>
+                                                                    <tr>
+                                                                        <td><strong>Tip</strong></td>
+                                                                        <td></td>
+                                                                        <td></td>
+                                                                        <td></td>
+                                                                        <td><strong id="tipAmount"><%=order.tip%></strong></td>
+                                                                    </tr>
                                                                             <% let deliveryCost=user.distance> 3 ?
                                                                                 Math.ceil(user.distance * 4) : 0; %>
                                                                                 <tr>
@@ -96,7 +103,7 @@
                                                                                     <td></td>
                                                                                     <td>
                                                                                         <b>₹<%= Math.ceil(sum +
-                                                                                                deliveryCost).toLocaleString("en-IN")
+                                                                                                deliveryCost+order.tip).toLocaleString("en-IN")
                                                                                                 %></b>
                                                                                     </td>
                                                                                 </tr>

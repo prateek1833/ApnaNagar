@@ -27,7 +27,7 @@
     }
 </style>
 <% user = currUser %>
-<% let deliveryCost = user.distance > 3 ? Math.round(user.distance * 4) : 0; %>
+<% let deliveryCost = user.distance > 3 ? Math.ceil(user.distance * 4) : 0; %>
 
 <% let estimatedTime = Math.ceil(15 + (user.distance) * 3) ; %>
 
@@ -173,28 +173,44 @@
         });
     }
     document.getElementById("placeOrderButton").addEventListener("click", function(event) {
-        event.preventDefault(); // Prevent immediate submission
-        
-        let form = document.getElementById("orderForm");
+    event.preventDefault(); // Prevent immediate submission
 
-        // Move locality input inside the form before submission
-        let localityInput = document.getElementById("locality");
-        let clonedLocality = localityInput.cloneNode(true);
-        clonedLocality.style.display = "none"; // Hide cloned input
-        form.appendChild(clonedLocality);
+    let form = document.getElementById("orderForm");
 
-        // Move selected tip inside the form before submission
-        let selectedTip = document.querySelector('input[name="tip"]:checked');
-        if (selectedTip) {
-            let hiddenTip = document.createElement("input");
-            hiddenTip.type = "hidden";
-            hiddenTip.name = "tip";
-            hiddenTip.value = selectedTip.value;
-            form.appendChild(hiddenTip);
+    // Move locality input inside the form before submission
+    let localityInput = document.getElementById("locality");
+    let clonedLocality = localityInput.cloneNode(true);
+    clonedLocality.style.display = "none"; // Hide cloned input
+    form.appendChild(clonedLocality);
+
+    // Remove any existing hidden tip input before appending a new one
+    let existingTipInput = document.querySelector('input[name="tip"]');
+    if (existingTipInput) {
+        existingTipInput.remove();
+    }
+
+    // Handle tip selection and custom tip input
+    let selectedTip = document.querySelector('input[name="tip"]:checked');
+    let tipValue = selectedTip ? selectedTip.value : "0";
+
+    // If "Other" is selected, get the custom tip value
+    if (tipValue === "custom") {
+        let customTipInput = document.getElementById("customTip");
+        if (customTipInput) {
+            tipValue = customTipInput.value || "0"; // Use entered custom tip value
         }
+    }
 
-        form.submit(); // Now submit the form with the cloned inputs
-    });
+    // Add hidden input with correct tip value
+    let hiddenTip = document.createElement("input");
+    hiddenTip.type = "hidden";
+    hiddenTip.name = "tip";
+    hiddenTip.value = tipValue;
+    form.appendChild(hiddenTip);
+
+    form.submit(); // Now submit the form with the correct tip value
+});
+
     document.addEventListener("DOMContentLoaded", function () {
         function updateTotal() {
     let baseTotal = 0;
@@ -212,7 +228,7 @@
         let customTipValue = parseFloat(document.getElementById("customTip").value) || 0;
 
         // Set min/max limits for custom tip
-        let maxTip = baseTotal * 0.5; // Example: 50% of order amount
+        let maxTip = 999; // Example: 50% of order amount
         let minTip = 0;
 
         if (customTipValue < minTip) {
