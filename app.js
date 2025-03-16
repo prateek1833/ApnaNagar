@@ -179,6 +179,7 @@ app.use("/owner", ownerRouter);
 app.use("/items", itemRouter);
 app.use("/items/:id/reviews", reviewsRouter);
 app.use("/restaurant/:id/reviews", reviewsRouter);
+app.use("/employee/:id/reviews", reviewsRouter);
 app.use("/", userRouter);
 app.use("/order", orderRouter);
 app.use("/restaurant", restaurantRouter);

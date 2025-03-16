@@ -11,6 +11,26 @@ module.exports.renderLogin = (req, res) => {
     res.render("employee/login.ejs");
 }
 
+module.exports.profile = async (req, res) => {
+    try {
+        let employee = await Employee.findById(req.params.id)
+        .populate({
+            path: "reviews",
+            populate: {
+                path: "author",
+            },
+        })
+        .populate("owner");;
+        if (!employee) {
+            return res.status(404).send("Employee not found");
+        }
+        res.render("employee/profile.ejs", { employee });
+    } catch (error) {
+        res.status(500).send("Server Error");
+    }
+};
+
+
 module.exports.login = async (req, res) => {
     try {
         if (!req.user) {
@@ -74,11 +94,22 @@ module.exports.signup = async (req, res, next) => {
         // Provide default values for the required fields if not provided
         const owner = "6638779c9bfc94fc81a42508";  // Set as required
         const coordinates = [latitude, longitude]; // Latitude and longitude
+        let url, filename;
+
+        // Validate image upload
+        if (req.file) {
+            url = req.file.path;
+            filename = req.file.filename;
+        } else {
+            req.flash("error", "Image upload is required");
+            return res.redirect("/user/signup.ejs");
+        }
 
         // Create a new Employee instance with the provided data
         const newEmployee = new Employee({
             mobile,
             username,
+            image: { url, filename },
             owner,
             area,
             district,
@@ -88,7 +119,7 @@ module.exports.signup = async (req, res, next) => {
             status: "Free",
             total_earnings: 0,
             total_deliveries: 0,
-            rating: 5,
+            avgRating: 0,
             balance_due: 0,
             active_order: null,
             completed_orders: [],

@@ -16,9 +16,15 @@
               <h3 class="offcanvas-title">
                   <%= currUser.username %>
                 </h3>
-                  <p class="text-muted fs-8">
-                    <a href="/owner/<%= currUser._id %>/edit" style="text-decoration: none;">Edit Profile</a>
-                </p>
+                  <% if(currUser.type=='User'){ %>
+                    <p class="text-muted fs-8">
+                        <a href="/owner/<%= currUser._id %>/edit" style="text-decoration: none;">Edit Profile</a>
+                    </p>
+                    <% }else{ %>
+                        <p class="text-muted fs-8">
+                            <a href="/employee/<%= currUser._id %>/profile" style="text-decoration: none;">Profile</a>
+                        </p>
+                        <% } %>
               <div class="accordion" id="accordionExample">
                   <!-- Accordion Sections -->
                   <div class="accordion-item">

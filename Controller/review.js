@@ -1,6 +1,8 @@
 const Review = require("../models/review.js");
 const Item = require("../models/item.js");
-const Restaurant=require("../models/restaurant.js")
+const Restaurant=require("../models/restaurant.js");
+const Employee = require("../models/employee");
+
 module.exports.createReview=async(req,res)=>{
     let item=await Item.findById(req.params.id);
     let newReview=new Review(req.body.review);
@@ -22,6 +24,17 @@ module.exports.createRestaurantReview=async(req,res)=>{
     await restaurant.save();
     req.flash("success","New Review added");    
     res.redirect(`/restaurant/${restaurant._id}/show`);
+}
+module.exports.createEmployeeReview=async(req,res)=>{
+    let employee=await Employee.findById(req.params.id);
+    let newReview=new Review(req.body.review);
+    newReview.author=req.user._id;
+    employee.avgRating=parseFloat(((employee.avgRating*employee.reviews.length+newReview.rating)/(employee.reviews.length+1)).toFixed(1));
+    employee.reviews.push(newReview);
+    await newReview.save();
+    await employee.save();
+    req.flash("success","New Review added");    
+    res.redirect(`/employee/${employee._id}/profile`);
 }
 
 module.exports.destroyReview = async (req, res) => {
@@ -115,5 +128,51 @@ module.exports.destroyRestaurantReview = async (req, res) => {
         console.error(err);
         req.flash('error', 'Something went wrong');
         res.redirect('/restaurants');
+    }
+};
+module.exports.destroyEmployeeReview = async (req, res) => {
+    try {
+        const { id, rid } = req.params;
+
+        // Find the restaurant and remove the review reference
+        const employee = await Employee.findByIdAndUpdate(
+            id,
+            { $pull: { reviews: rid } },
+            { new: true } // Return the updated document
+        ).populate('reviews'); // Ensure we get the reviews for recalculating avgRating
+
+        if (!employee) {
+            req.flash('error', 'employee not found');
+            return res.redirect(`/employee/${id}/profile`);
+        }
+
+        // Find the review to get its rating
+        const review = await Review.findById(rid);
+        if (!review) {
+            req.flash('error', 'Review not found');
+            return res.redirect(`/employee/${id}/profile`);
+        }
+
+        // Recalculate average rating
+        const totalReviews = employee.reviews.length;
+        if (totalReviews === 0) {
+            employee.avgRating = 0; // No reviews left
+        } else {
+            const totalRating = employee.avgRating * (totalReviews + 1) - review.rating;
+            employee.avgRating = parseFloat((totalRating / totalReviews).toFixed(1));
+        }
+
+        // Save the updated restaurant
+        await employee.save();
+
+        // Delete the review
+        await Review.findByIdAndDelete(rid);
+
+        req.flash('success', 'Review deleted successfully');
+        res.redirect(`/employee/${id}/profile`);
+    } catch (err) {
+        console.error(err);
+        req.flash('error', 'Something went wrong');
+        res.redirect(`/employee/${id}/profile`);
     }
 };

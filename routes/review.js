@@ -12,9 +12,11 @@ const reviewController=require("../Controller/review.js")
 
 router.post("/",isLoggedIn, validateReview, wrapAsync(reviewController.createReview));
 router.post("/restaurant",isLoggedIn, validateReview, wrapAsync(reviewController.createRestaurantReview));
+router.post("/employee",isLoggedIn, validateReview, wrapAsync(reviewController.createEmployeeReview));
 
 router.delete("/:rid",isLoggedIn,reviewAuthor, wrapAsync(reviewController.destroyReview));
 router.delete("/:rid/restaurant",isLoggedIn,reviewAuthor, wrapAsync(reviewController.destroyRestaurantReview));
+router.delete("/:rid/employee",isLoggedIn,reviewAuthor, wrapAsync(reviewController.destroyEmployeeReview));
 
 
 module.exports=router;

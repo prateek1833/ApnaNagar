@@ -7,6 +7,9 @@ const {isLoggedIn,validateItem,isEmployee}=require("../middleware.js");
 
 const router = express.Router();
 const employeeController=require("../Controller/employee");
+const multer = require("multer");
+const { storage } = require("../cloudConfig.js");
+const upload = multer({ storage });
 
 
 router
@@ -17,7 +20,7 @@ router
 router
 .route("/signup")
 .get( employeeController.renderSignUp)
-.post( wrapAsync(employeeController.signup))
+.post(upload.single("image"), wrapAsync(employeeController.signup))
 
 router
 .route("/:id/dashboard")
@@ -38,6 +41,8 @@ router.get("/:id/order", isLoggedIn,isEmployee, wrapAsync(employeeController.Ord
 router.post("/:id/delivered", isLoggedIn,isEmployee, wrapAsync(employeeController.DeliveredStatus)); 
 
 router.post("/:id/subscribe", isLoggedIn, wrapAsync(employeeController.subscribe));
+
+router.get("/:id/profile", isLoggedIn, wrapAsync(employeeController.profile));
 
 
 module.exports = router;

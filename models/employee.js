@@ -52,9 +52,9 @@ const employeeSchema = new Schema({
         type: Number,
         default: 0
     },
-    rating: {
+    avgRating: {
         type: Number,
-        default: 5,
+        default: 0,
         min: 0,
         max: 5
     },
@@ -83,7 +83,14 @@ const employeeSchema = new Schema({
             auth: String,
         },
     },
-
+    image: {
+        url: String,
+        filename: String,
+    },
+    reviews: [{
+        type: Schema.Types.ObjectId,
+        ref: "Review",
+    }],
 });
 
 employeeSchema.plugin(passportLocalMongoose);

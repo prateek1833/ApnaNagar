@@ -1,5 +1,5 @@
 <% layout('../layout/boilerplate') -%>
-<br>
+    <br>
 
     <% if (allOrder.length===0) { %>
         <h2 style="opacity: 0.5;">You haven't made any orders yet.</h2>
@@ -77,14 +77,16 @@
                                                                 <% sum +=orderItem.item.quantity * orderItem.item.price;
                                                                     %>
                                                                     <% weight +=parseInt(orderItem.item.quantity); %>
-                                                                    <% } %>
-                                                                    <tr>
-                                                                        <td><strong>Tip</strong></td>
-                                                                        <td></td>
-                                                                        <td></td>
-                                                                        <td></td>
-                                                                        <td><strong id="tipAmount"><%=order.tip%></strong></td>
-                                                                    </tr>
+                                                                        <% } %>
+                                                                            <tr>
+                                                                                <td><strong>Tip</strong></td>
+                                                                                <td></td>
+                                                                                <td></td>
+                                                                                <td></td>
+                                                                                <td><strong id="tipAmount">
+                                                                                        <%=order.tip%>
+                                                                                    </strong></td>
+                                                                            </tr>
                                                                             <% let deliveryCost=user.distance> 3 ?
                                                                                 Math.ceil(user.distance * 4) : 0; %>
                                                                                 <tr>
@@ -95,7 +97,7 @@
                                                                                     <td><b>₹<%= deliveryCost.toLocaleString("en-IN")
                                                                                                 %></b></td>
                                                                                 </tr>
-                                                                               
+
                                                                                 <tr>
                                                                                     <td><b>Total</b></td>
                                                                                     <td></td>
@@ -110,41 +112,102 @@
                                             </tbody>
                                         </table>
                                         <!-- Delivery Boy and Restaurant Contact Info -->
-                                        <div class="contact-info">
-                                            <% if (order.deliveryBoy.name) { %>
-                                                        <button class="btn light-btn"><i class="fa-solid fa-phone"> <a
-                                                            style="text-decoration: none;color: white;"
-                                                            href="tel:<%=order.deliveryBoy.mobile %>">Call Delivery Boy</a></i>
-                                                        <br></button>
-                                                </p>
-                                                <% } %>
-                                        </div>
-                                        <!-- Progress Bar Section -->
-                                        <div class="progress" role="progressbar" aria-valuenow="25" aria-valuemin="0"
-                                            aria-valuemax="100">
-                                            <% let progress=0; %>
-                                                <% if (order.status==="Order Received" ) progress=25; %>
-                                                    <% if (order.status==="Preparing" ) progress=50; %>
-                                                        <% if (order.status==="Out for Delivery" ) progress=75; %>
-                                                            <% if (order.status==="Delivered" ) progress=100; %>
-                                                                <div class="progress-bar bg-info"
-                                                                    style="width: <%= progress %>%"></div>
-                                        </div>
+                                        <% if(order.status!='Delivered'){ %>
+                                            <div class="contact-info">
+                                                <% if (order.deliveryBoy.name) { %>
+                                                    <button class="btn btn-success"
+                                                        style="margin: 0 10px;border-radius: 25px;">
+                                                        <a style="text-decoration: none; color: white;"
+                                                            href="tel:<%=order.deliveryBoy.mobile %>">
+                                                            <i class="fa-solid fa-phone fs-1"></i>
+                                                            <i class="fa-solid fa-motorcycle fs-8"></i>
+                                                        </a>
+                                                    </button>
+                                                    <a href="/employee/<%= order.deliveryBoy._id %>/profile"
+                                                        style="color: blue; text-decoration: underline; font-weight: bold;">
+                                                        <%= order.deliveryBoy.name %>
+                                                    </a>
+                                                    </p>
+                                                    <% } %>
+                                            </div>
+                                            <% }else if(order.deliveryBoy){ %>
+                                                <form action="/employee/<%=order.deliveryBoy._id %>/reviews/employee"
+                                                    method="POST" class="needs-validation" novalidate>
+                                                    <div
+                                                        class="no-spinner d-flex justify-content-center align-item-center flex-column">
+                                                        <p for="rating" class="form-label fs-8 mb-0">Rate the
+                                                            delivery Boy</p>
+                                                        <fieldset class="starability-growRotate" id="rating-fieldset">
+                                                            <input type="radio" id="no-rate" class="input-no-rate"
+                                                                name="review[rating]" value="3" checked
+                                                                aria-label="No rating." />
+                                                            <input type="radio" id="first-rate1" name="review[rating]"
+                                                                value="1" onclick="showCommentSection()" />
+                                                            <label for="first-rate1" title="Terrible"></label>
+                                                            <input type="radio" id="first-rate2" name="review[rating]"
+                                                                value="2" onclick="showCommentSection()" />
+                                                            <label for="first-rate2" title="Not good"></label>
+                                                            <input type="radio" id="first-rate3" name="review[rating]"
+                                                                value="3" onclick="showCommentSection()" />
+                                                            <label for="first-rate3" title="Average"></label>
+                                                            <input type="radio" id="first-rate4" name="review[rating]"
+                                                                value="4" onclick="showCommentSection()" />
+                                                            <label for="first-rate4" title="Very good"></label>
+                                                            <input type="radio" id="first-rate5" name="review[rating]"
+                                                                value="5" onclick="showCommentSection()" />
+                                                            <label for="first-rate5" title="Amazing"></label>
+                                                        </fieldset>
+                                                    </div>
 
-                                        <!-- Order Progress Steps -->
-                                        <div class="order-progress">
-                                            <div
-                                                class="step <%= order.status === 'Order Received' || order.status === 'Preparing' || order.status === 'Out for Delivery' || order.status === 'Delivered' ? 'completed' : '' %>">
-                                                Ordered</div>
-                                            <div
-                                                class="step <%= order.status === 'Preparing' || order.status === 'Out for Delivery' || order.status === 'Delivered' ? 'completed' : '' %>">
-                                                Preparing</div>
-                                            <div
-                                                class="step <%= order.status === 'Out for Delivery' || order.status === 'Delivered' ? 'completed' : '' %>">
-                                                Out for Delivery</div>
-                                            <div class="step <%= order.status === 'Delivered' ? 'completed' : '' %>">
-                                                Delivered</div>
-                                        </div>
+                                                    <!-- Comment Section - Initially Hidden -->
+                                                    <div class="d-flex align-items-center mb-2 gap-2"
+                                                        id="comment-section" style="margin-top: -20px;">
+                                                        <!-- Comment Box -->
+                                                        <input name="review[comment]" id="comment"
+                                                            placeholder="Write something..." class="form-control w-75"
+                                                            required>
+                                                        <div class="invalid-feedback">Please write a comment</div>
+
+                                                        <!-- Submit Button -->
+                                                        <button class="btn btn-dark add-btn"
+                                                            id="submit-btn">Submit</button>
+                                                    </div>
+
+                                                </form>
+
+
+
+
+                                                <% } %>
+                                                    <!-- Progress Bar Section -->
+                                                    <div class="progress" role="progressbar" aria-valuenow="25"
+                                                        aria-valuemin="0" aria-valuemax="100">
+                                                        <% let progress=0; %>
+                                                            <% if (order.status==="Order Received" ) progress=25; %>
+                                                                <% if (order.status==="Preparing" ) progress=50; %>
+                                                                    <% if (order.status==="Out for Delivery" )
+                                                                        progress=75; %>
+                                                                        <% if (order.status==="Delivered" )
+                                                                            progress=100; %>
+                                                                            <div class="progress-bar bg-info"
+                                                                                style="width: <%= progress %>%"></div>
+                                                    </div>
+
+                                                    <!-- Order Progress Steps -->
+                                                    <div class="order-progress">
+                                                        <div
+                                                            class="step <%= order.status === 'Order Received' || order.status === 'Preparing' || order.status === 'Out for Delivery' || order.status === 'Delivered' ? 'completed' : '' %>">
+                                                            Ordered</div>
+                                                        <div
+                                                            class="step <%= order.status === 'Preparing' || order.status === 'Out for Delivery' || order.status === 'Delivered' ? 'completed' : '' %>">
+                                                            Preparing</div>
+                                                        <div
+                                                            class="step <%= order.status === 'Out for Delivery' || order.status === 'Delivered' ? 'completed' : '' %>">
+                                                            Out for Delivery</div>
+                                                        <div
+                                                            class="step <%= order.status === 'Delivered' ? 'completed' : '' %>">
+                                                            Delivered</div>
+                                                    </div>
                                     </div>
                                 </div>
                             </div>
@@ -209,3 +272,5 @@
                                         align-items: center;
                                     }
                                 </style>
+                                <script>
+                                </script>
