@@ -33,6 +33,15 @@ module.exports.index = async (req, res) => {
             const isOpen = isRestaurantOpen(restaurant);
             return { ...item.toObject(), isOpen };
         });
+        // Sort items:
+        updatedItems.sort((a, b) => {
+            // Prioritize open restaurants over closed ones
+            if (a.isOpen !== b.isOpen) return b.isOpen - a.isOpen;
+            // Within each group (open/closed), sort by rating in descending order
+            return b.avgRating - a.avgRating;
+        });
+        // Sort restaurants by rating (assuming rating exists)
+        allRestaurant.sort((a, b) => b.avgRating - a.avgRating); // Descending order
 
         // Render the items view
         res.render("items/index.ejs", { allItem: updatedItems, allRestaurant });
@@ -59,6 +68,13 @@ module.exports.restaurantItem = async (req, res) => {
             ...item.toObject(),
             isOpen,
         }));
+        // Sort items:
+        updatedItems.sort((a, b) => {
+            // Prioritize open restaurants over closed ones
+            if (a.isOpen !== b.isOpen) return b.isOpen - a.isOpen;
+            // Within each group (open/closed), sort by rating in descending order
+            return b.avgRating - a.avgRating;
+        });
 
         res.render("items/index.ejs", { allItem: updatedItems });
     } catch (err) {
@@ -144,6 +160,13 @@ module.exports.search = async (req, res) => {
             const isOpen = isRestaurantOpen(restaurant);
             return { ...item.toObject(), isOpen };
         });
+        // Sort items:
+        updatedItems.sort((a, b) => {
+            // Prioritize open restaurants over closed ones
+            if (a.isOpen !== b.isOpen) return b.isOpen - a.isOpen;
+            // Within each group (open/closed), sort by rating in descending order
+            return b.avgRating - a.avgRating;
+        });
 
         // Render the page with updated items
         res.render("items/index.ejs", { allItem: updatedItems, allRestaurant: {} });
@@ -225,7 +248,8 @@ module.exports.createItem = async (req, res) => {
             key: key.split(" "),
             image: { url, filename },
             detail: detail,
-            RestaurantId:req.user._id
+            RestaurantId:req.user._id,
+            isAvailable:true,
         });
 
         await newItem.save();
