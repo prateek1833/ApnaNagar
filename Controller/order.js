@@ -11,10 +11,30 @@ const webpush = require("web-push");
 
 
 
-const calculateWalkingDistance = async (userCoordinates) => {
+const calculateWalkingDistance = async (userCoordinates,order) => {
     try {
-        const startCoordinates = [82.6785652247138, 26.72607612402932]; // Static starting coordinate
+
+        if (order.length === 0) {
+            throw new Error("No orders found in cookies.");
+        }
+
+        // Get the restaurant ID from the first order item
+        const restaurantId = order[0].RestaurantId;
+
+        if (!restaurantId) {
+            throw new Error("Restaurant ID not found in the order.");
+        }
+
+        // Fetch restaurant details from MongoDB using the restaurant ID
+        const restaurant = await Restaurant.findById(restaurantId);
+
+        if (!restaurant || !restaurant.coordinates || restaurant.coordinates.length !== 2) {
+            throw new Error("Invalid restaurant coordinates.");
+        }
+        const startCoordinates = restaurant.coordinates; // Example: [longitude, latitude]
+        // Static starting coordinate
         const endCoordinates = userCoordinates;
+        console.log(startCoordinates);
 
         // Replace with your Mapbox access token
         const mapboxToken = process.env.MAP_TOKEN;
@@ -96,7 +116,8 @@ module.exports.updateAddress = async (req, res) => {
 
         // Calculate the distance and update the user object
         try {
-            const distance = await calculateWalkingDistance(coordinates);
+            const order = req.cookies.order ? JSON.parse(req.cookies.order) : [];
+            const distance = await calculateWalkingDistance(coordinates,order);
             user.distance = distance;
             console.log(`Calculated Distance: ${distance} km`);
         } catch (distanceError) {
