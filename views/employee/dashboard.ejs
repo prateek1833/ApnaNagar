@@ -53,130 +53,141 @@
                             <%= employee.active_order.author.locality %>
                         </p>
                         <p><strong>Address:</strong>
-                            <%= employee.active_order.author.area%>, <%=employee.active_order.author.district%>, <%=employee.active_order.author.state%> 
-                        <table>
-                            <thead>
-                                <tr>
-                                    <th>Title</th>
-                                    <th>Q</th>
-                                    <th>Price</th>
-                                    <th>Restaurant</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                <% employee.active_order.items.forEach(item=> { %>
-                                    <tr>
-                                        <td>
-                                            <%= item.item.typ %>
-                                                <%= item.item.title %>
-                                        </td>
-                                        <td>
-                                            <%= item.item.quantity %>
-                                                <%= item.item.unit %>
-                                        </td>
-                                        <td>
-                                            <%= item.item.price %>
-                                        </td>
-                                        <td>
-                                            <%= restaurantNames[item.item._id] || 'No Restaurant' %>
-                                        </td> <!-- Fetch restaurant name -->
-                                    </tr>
-                                    <% }) %>
-
-                                        <!-- Delivery Cost Row -->
-                                        <% const distance=employee.active_order.author.distance; const
-                                            deliveryCost=distance> 3 ? Math.round(distance * 4) : 0;
-                                            %>
-                                            <tr>
-                                                <td colspan="3" class="text-start"><strong>Delivery Cost</strong></td>
-                                                <td>
-                                                    <%= deliveryCost %> Rs
-                                                </td>
-                                            </tr>
-                                            <tr>
-                                                <td colspan="3" class="text-start"><strong>Tips</strong></td>
-                                                <td>
-                                                    <%= employee.active_order.tip %> Rs
-                                                </td>
-                                            </tr>
-
-                                            <!-- Total Price Row -->
-                                            <% const itemTotalPrice=employee.active_order.items.reduce((total, item)=>
-                                                total + item.item.price * item.item.quantity, 0);
-                                                const totalPrice = itemTotalPrice + deliveryCost+employee.active_order.tip;
-                                                %>
+                            <%= employee.active_order.author.area%>, <%=employee.active_order.author.district%>,
+                                    <%=employee.active_order.author.state%>
+                                        <table>
+                                            <thead>
                                                 <tr>
-                                                    <td colspan="3" class="text-start"><strong>Total Price</strong></td>
-                                                    <td>
-                                                        <%= totalPrice %> Rs
-                                                    </td>
+                                                    <th>Title</th>
+                                                    <th>Q</th>
+                                                    <th>Price</th>
+                                                    <th>Restaurant</th>
                                                 </tr>
-                            </tbody>
-                        </table>
+                                            </thead>
+                                            <tbody>
+                                                <% employee.active_order.items.forEach(item=> { %>
+                                                    <tr>
+                                                        <td>
+                                                            <%= item.item.typ %>
+                                                                <%= item.item.title %>
+                                                        </td>
+                                                        <td>
+                                                            <%= item.item.quantity %>
+                                                                <%= item.item.unit %>
+                                                        </td>
+                                                        <td>
+                                                            <%= item.item.price %>
+                                                        </td>
+                                                        <td>
+                                                            <%= restaurantNames[item.item._id] || 'No Restaurant' %>
+                                                        </td> <!-- Fetch restaurant name -->
+                                                    </tr>
+                                                    <% }) %>
+
+                                                        <!-- Delivery Cost Row -->
+                                                        <% const distance=employee.active_order.author.distance; const
+                                                            deliveryCost=distance> 3 ? Math.round(distance * 4) : 0;
+                                                            %>
+                                                            <tr>
+                                                                <td colspan="3" class="text-start"><strong>Delivery
+                                                                        Cost</strong></td>
+                                                                <td>
+                                                                    <%= deliveryCost %> Rs
+                                                                </td>
+                                                            </tr>
+                                                            <tr>
+                                                                <td colspan="3" class="text-start"><strong>Tips</strong>
+                                                                </td>
+                                                                <td>
+                                                                    <%= employee.active_order.tip %> Rs
+                                                                </td>
+                                                            </tr>
+
+                                                            <!-- Total Price Row -->
+                                                            <% const
+                                                                itemTotalPrice=employee.active_order.items.reduce((total,
+                                                                item)=>
+                                                                total + item.item.price * item.item.quantity, 0);
+                                                                const totalPrice = itemTotalPrice +
+                                                                deliveryCost+employee.active_order.tip;
+                                                                %>
+                                                                <tr>
+                                                                    <td colspan="3" class="text-start"><strong>Total
+                                                                            Price</strong></td>
+                                                                    <td>
+                                                                        <%= totalPrice %> Rs
+                                                                    </td>
+                                                                </tr>
+                                            </tbody>
+                                        </table>
 
 
-                        <hr>
-                        <table class="table table-bordered">
-                            <thead>
-                                <tr>
-                                    <th>Restaurant</th>
-                                    <th>Total Payable Price</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                <% let restaurantWisePrice={}; employee.active_order.items.forEach(item=> {
-                                    let restaurant = restaurantNames[item.item._id] || 'No Restaurant';
-                                    let pricePerItem = item.item.price * item.item.quantity;
+                                        <hr>
+                                        <table class="table table-bordered">
+                                            <thead>
+                                                <tr>
+                                                    <th>Restaurant</th>
+                                                    <th>Total Payable Price</th>
+                                                </tr>
+                                            </thead>
+                                            <tbody>
+                                                <% let restaurantWisePrice={};
+                                                    employee.active_order.items.forEach(item=> {
+                                                    let restaurant = restaurantNames[item.item._id] || 'No Restaurant';
+                                                    let pricePerItem = item.item.price * item.item.quantity;
 
-                                    if (item.item.price > 50) {
-                                    pricePerItem *= 0.9; // 90% if price is greater than ₹50
-                                    } else {
-                                    pricePerItem *= 0.8; // 80% if price is ₹50 or less
-                                    }
+                                                    if (item.item.price > 50) {
+                                                    pricePerItem *= 0.9; // 90% if price is greater than ₹50
+                                                    } else {
+                                                    pricePerItem *= 0.8; // 80% if price is ₹50 or less
+                                                    }
 
-                                    if (restaurantWisePrice[restaurant]) {
-                                    restaurantWisePrice[restaurant] += pricePerItem;
-                                    } else {
-                                    restaurantWisePrice[restaurant] = pricePerItem;
-                                    }
-                                    });
-                                    %>
+                                                    if (restaurantWisePrice[restaurant]) {
+                                                    restaurantWisePrice[restaurant] += pricePerItem;
+                                                    } else {
+                                                    restaurantWisePrice[restaurant] = pricePerItem;
+                                                    }
+                                                    });
+                                                    %>
 
-                                    <% for (let restaurant in restaurantWisePrice) { %>
-                                        <tr>
-                                            <td>
-                                                <%= restaurant %>
-                                            </td>
-                                            <td>
-                                                <%= Math.floor(restaurantWisePrice[restaurant]) %> Rs
-                                            </td>
-                                        </tr>
-                                        <% } %>
-                            </tbody>
-                        </table>
+                                                    <% for (let restaurant in restaurantWisePrice) { %>
+                                                        <tr>
+                                                            <td>
+                                                                <%= restaurant %>
+                                                            </td>
+                                                            <td>
+                                                                <%= Math.floor(restaurantWisePrice[restaurant]) %> Rs
+                                                            </td>
+                                                        </tr>
+                                                        <% } %>
+                                            </tbody>
+                                        </table>
 
-                        <p><strong>Status:</strong> <span class="badge bg-warning text-dark">
-                                <%= employee.active_order.db_status %>
-                            </span></p>
+                                        <p><strong>Status:</strong> <span class="badge bg-warning text-dark">
+                                                <%= employee.active_order.db_status %>
+                                            </span></p>
 
-                        <!-- Mark Order as Completed -->
-                        <span>
-                            <div class="d-flex justify-content-center gap-2 mb-2">
-                                <%if(employee.active_order.status!='Delivered'){%>
-                                    <form action="/employee/<%=  employee.id  %>/delivered" method="POST">
-                                        <button type="submit" class="btn btn-success">Delivered</button>
-                                    </form>
-                                <% } %>
-                            </div>
-                            <div class="d-flex justify-content-center gap-2">
-                                <form action="/employee/<%=  employee.id  %>/completeAndNext" method="POST">
-                                    <button type="submit" class="btn add-btn">Complete & take next</button>
-                                </form>
-                                <form action="/employee/<%= employee.id %>/complete" method="POST">
-                                    <button type="submit" class="btn light-btn">Just Complete</button>
-                                </form>
-                            </div>
-                        </span>
+                                        <!-- Mark Order as Completed -->
+                                        <span>
+                                            <div class="d-flex justify-content-center gap-2 mb-2">
+                                                <%if(employee.active_order.status!='Delivered'){%>
+                                                    <form action="/employee/<%=  employee.id  %>/delivered"
+                                                        method="POST">
+                                                        <button type="submit" class="btn btn-success">Delivered</button>
+                                                    </form>
+                                                    <% } %>
+                                            </div>
+                                            <div class="d-flex justify-content-center gap-2">
+                                                <form action="/employee/<%=  employee.id  %>/completeAndNext"
+                                                    method="POST">
+                                                    <button type="submit" class="btn add-btn">Complete & take
+                                                        next</button>
+                                                </form>
+                                                <form action="/employee/<%= employee.id %>/complete" method="POST">
+                                                    <button type="submit" class="btn light-btn">Just Complete</button>
+                                                </form>
+                                            </div>
+                                        </span>
 
                     </div>
                 </div>
@@ -190,27 +201,104 @@
 
                         <!-- Pending Orders -->
                         <h4 class="mt-4 text-secondary">Pending Orders</h4>
-                        <div class="list-group">
+                        <div class="accordion" id="orderAccordion">
                             <% if (pendingOrders.length> 0) { %>
                                 <% pendingOrders.forEach(order=> { %>
-                                    <div
-                                        class="list-group-item d-flex justify-content-between align-items-center shadow-sm mb-2 rounded">
-                                        <div>
-                                            <p><strong>Name:</strong>
-                                                <%= order.author.name %>
-                                            </p>
-                                            <p><strong>Items:</strong></p>
-                                            <ul>
-                                                <% order.items.forEach(item=> { %>
-                                                    <li>
-                                                        <%= item.item.title %> - <%= item.item.quantity %>
-                                                                <%= item.item.unit %>
-                                                    </li>
-                                                    <% }) %>
-                                            </ul>
+                                    <div class="accordion-item">
+                                        <h2 class="accordion-header" id="heading<%= order._id %>">
+                                            <button class="accordion-button collapsed d-flex flex-column justify-content-start" type="button"
+                                                data-bs-toggle="collapse" data-bs-target="#collapse<%= order._id %>"
+                                                aria-expanded="false" aria-controls="collapse<%= order._id %>">
+                                                
+                                                    <div>
+                                                        <!-- Order Details -->
+                                                        <div class="d-flex justify-content-between">
+                                                            <span><%= order.author.name %></span>
+                                                            <span><%= order.author.distance %> km</span>
+                                                        </div>                                                        
+                                                        <div style="font-size: 0.85rem; color: gray;">Created on: <%= new
+                                                                Date(order.createdAt).toLocaleString("en-IN", {
+                                                                timeZone: "Asia/Kolkata" }) %>
+                                                        </div>
+            
+                                                        <!-- Order Items (small font) -->
+                                                        <div style="font-size: 0.75rem; color: #6c757d;">
+                                                            <%= employee.active_order.author.locality%>, <%= employee.active_order.author.area%>, <%=employee.active_order.author.district%>,
+                                                        <%=employee.active_order.author.state%>
+                                                        </div>
+                                                    </div>
+                                            </button>
+                                        </h2>
+                                        <div id="collapse<%= order._id %>" class="accordion-collapse collapse"
+                                            aria-labelledby="heading<%= order._id %>" data-bs-parent="#orderAccordion">
+                                            <div class="accordion-body p-0">
+                                                <table class="table table-primary">
+                                                    <thead class="thead-primary">
+                                                        <tr>
+                                                            <th>Title</th>
+                                                            <th>Q</th>
+                                                            <th>Price</th>
+                                                            <th>Restaurant</th>
+                                                        </tr>
+                                                    </thead>
+                                                    <tbody>
+                                                        <% order.items.forEach(item=> { %>
+                                                            <tr>
+                                                                <td>
+                                                                    <%= item.item.typ %>
+                                                                        <%= item.item.title %>
+                                                                </td>
+                                                                <td>
+                                                                    <%= item.item.quantity %>
+                                                                        <%= item.item.unit %>
+                                                                </td>
+                                                                <td>
+                                                                    <%= item.item.price %>
+                                                                </td>
+                                                                <td>
+                                                                    <%= pendingRestaurantNames[item.item._id]
+                                                                        || 'No Restaurant' %>
+                                                                </td>
+                                                            </tr>
+                                                            <% }) %>
+
+                                                                <% const distance=order.author.distance; const
+                                                                    deliveryCost=distance> 3 ? Math.round(distance * 4)
+                                                                    : 0;
+                                                                    %>
+                                                                    <tr>
+                                                                        <td colspan="3" class="text-start">
+                                                                            <strong>Delivery Cost</strong></td>
+                                                                        <td>
+                                                                            <%= deliveryCost %> Rs
+                                                                        </td>
+                                                                    </tr>
+                                                                    <tr>
+                                                                        <td colspan="3" class="text-start">
+                                                                            <strong>Tips</strong></td>
+                                                                        <td>
+                                                                            <%= order.tip %> Rs
+                                                                        </td>
+                                                                    </tr>
+                                                                    <% const itemTotalPrice=order.items.reduce((total,
+                                                                        item)=> total + item.item.price *
+                                                                        item.item.quantity, 0);
+                                                                        const totalPrice = itemTotalPrice + deliveryCost
+                                                                        + order.tip;
+                                                                        %>
+                                                                        <tr>
+                                                                            <td colspan="3" class="text-start">
+                                                                                <strong>Total Price</strong></td>
+                                                                            <td>
+                                                                                <%= totalPrice %> Rs
+                                                                            </td>
+                                                                        </tr>
+                                                    </tbody>
+                                                </table>
+                                            </div>
                                         </div>
-                                        <span class="badge bg-secondary text-white py-2 px-3">Pending</span>
                                     </div>
+                                    <hr>
                                     <% }) %>
                                         <% } else { %>
                                             <p class="text-muted">No pending orders.</p>

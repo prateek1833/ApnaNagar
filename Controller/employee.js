@@ -59,8 +59,9 @@ module.exports.renderDashboard = async (req, res) => {
             .populate('active_order')
             .populate('completed_orders');
 
-        // Fetch pending orders
-        const pendingOrders = await Order.find({ db_status: 'Pending' }).populate('author');
+        // Fetch pending orders and populate items so that we can access item.RestaurantId
+        const pendingOrders = await Order.find({ db_status: 'Pending' })
+            .populate('author')
 
         // Fetch restaurant names for each item in the active order
         let restaurantNames = {};
@@ -73,11 +74,23 @@ module.exports.renderDashboard = async (req, res) => {
             }
         }
 
-        // Render the dashboard view and pass necessary data
-        res.render(`employee/dashboard`, {
+        // Fetch restaurant names for each item in all pending orders
+        let pendingRestaurantNames = {};
+        for (const order of pendingOrders) {
+            for (const item of order.items) {
+                if (item.item.RestaurantId) {
+                    const restaurant = await Restaurant.findById(item.item.RestaurantId);
+                    pendingRestaurantNames[item.item._id] = restaurant ? restaurant.username : 'No Restaurant';
+                }
+            }
+        }
+
+        // Render the dashboard view and pass necessary data to the frontend
+        res.render('employee/dashboard', {
             employee,
             pendingOrders,
-            restaurantNames // Send restaurant names to the frontend
+            restaurantNames,         // for active order items
+            pendingRestaurantNames   // for pending order items
         });
     } catch (error) {
         console.error(error);
@@ -85,6 +98,7 @@ module.exports.renderDashboard = async (req, res) => {
         res.redirect('/some-error-page');
     }
 };
+
 
 
 module.exports.signup = async (req, res, next) => {
