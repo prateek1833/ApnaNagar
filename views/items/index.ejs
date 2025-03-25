@@ -119,12 +119,12 @@
     <hr>
 
     <% if(allRestaurant.length>0){ %>
+        <div class="d-flex flex-row">
+            <p style=" margin: 0;padding: 0;color: grey;">Order from your favorite restaurants</p>
+        </div>
         <div class="row row-cols-lg-3 row-cols-md-3 row-cols-sm-2 row-cols-1 g-1 d-flex justify-content-between">
-            <div class="d-flex flex-row">
-                <p style=" margin: 0;padding: 0;color: grey;">Order from your favorite restaurants</p>
-            </div>
             <% for (let restaurant of allRestaurant) { %>
-                <div class="card border-0 shadow-lg rounded" style="width: 43vw; padding: 0;margin: 0;">
+                <div class="card border-0 shadow-lg rounded" style="width: 41vw; padding: 0;margin: 0;">
                     <a href="/restaurant/<%= restaurant._id %>/show" class="text-decoration-none text-dark">
                         <div class="position-relative">
                             <img src="<%= restaurant.image.url %>" class="card-img-top rounded-top"
@@ -181,8 +181,8 @@
                     </a>
                 </div>
                 <% } else { %>
+                    <p style=" margin: 0;padding: 0;color: grey;">Order the items you are craving for!</p>
                     <div class="row row-cols-lg-4 row-cols-md-3 row-cols-sm-2 g-1">
-                        <p style=" margin: 0;padding: 0;color: grey;">Order the items you are craving for!</p>
                         <% for (let item of allItem) { %>
                             <div class="card shadow-sm h-100" style="width: 22rem; border: none;">
                                 <a href="/items/<%= item._id %>/show.ejs"

@@ -56,7 +56,7 @@
 
                     <div class="mb-3">
                         <label for="image" class="form-label">Upload New Image</label>
-                        <input type="file" name="image" id="restaurant-image" class="form-control" id="image">
+                        <input type="file" name="image" id="image" class="form-control" id="image">
                         <small class="text-danger" id="image-error"></small>
                     </div>
                     
@@ -164,9 +164,9 @@
                         <div class="valid-feedback">Looks good</div>
                     </div>
                     <div class="mb-3">
-                        <label for="restaurant-image" class="form-label">Upload Restaurant Image</label>
-                        <input type="file" name="image" id="restaurant-image" class="form-control" accept="image/*" required>
-                        <div class="valid-feedback">Looks good</div>
+                        <label for="restaurant-image" class="form-label">Upload New Image</label>
+                        <input type="file" name="image" class="form-control" id="restaurant-image">
+                        <small class="text-danger" id="restaurant-image-error"></small>
                     </div>
                     <div class="mb-3">
                         <label for="restaurant-password" class="form-label">Password</label>
@@ -202,18 +202,17 @@
 
     // Image size validation
     document.getElementById('restaurant-image').addEventListener('change', function (event) {
-        const file = event.target.files[0]; // Get the selected file
-        if (file) {
-            const maxSize = 500 * 1024; // 500 KB in bytes
-            const errorElement = document.getElementById('image-error');
-            if (file.size > maxSize) {
-                errorElement.textContent = "Image size must not exceed 500 KB.";
-                event.target.value = ""; // Reset the file input
-            } else {
-                errorElement.textContent = "";
-            }
-        }
-    });
+                const file = event.target.files[0]; // Get the selected file
+                if (file) {
+                    const maxSize = 500 * 1024; // 500 KB in bytes
+                    if (file.size > maxSize) {
+                        document.getElementById('restaurant-image-error').textContent = "Image size must not exceed 500 KB.";
+                        event.target.value = ""; // Reset the file input
+                    } else {
+                        document.getElementById('restaurant-image-error').textContent = "";
+                    }
+                }
+            });
 });
 
 

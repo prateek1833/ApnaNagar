@@ -345,3 +345,11 @@ function addRoadToMap(road) {
 map.on('load', () => {
     roads.forEach(addRoadToMap);
 });
+
+const bastiBounds = [
+    [82.3, 26.6], // Southwest corner (Longitude, Latitude)
+    [83.0, 27.0]  // Northeast corner (Longitude, Latitude)
+];
+
+// Set the bounds to limit map interaction to Basti district
+map.setMaxBounds(bastiBounds);

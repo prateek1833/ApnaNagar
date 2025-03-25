@@ -31,47 +31,47 @@
 
 <% let estimatedTime = Math.ceil(15 + (user.distance) * 3) ; %>
 
-<div class="mb-3">
-    <div class="alert alert-info text-center" style=" font-weight: bold;">
-        ⏳ Your order will arrive in under <%= estimatedTime %> minutes.
-    </div>
-</div>
-<div class="mb-3">
-    <label for="locality" class="form-label">House/ College/ School Name (Locality)</label>
-    <input type="text" name="locality" value="<%=user.locality%>" id="locality" placeholder="E.g. Near Mukesh Hardware Store" class="form-control" required>
-</div>
-
-<div class="mb-3">
-    <label class="form-label">Add a Tip (Optional)</label>
-    <div class="tip-group">
-        <input type="radio" name="tip" id="tip1" value="0" checked>
-        <label for="tip1">₹0</label>
-
-        <input type="radio" name="tip" id="tip2" value="10">
-        <label for="tip2">₹10</label>
-
-        <input type="radio" name="tip" id="tip3" value="50">
-        <label for="tip3">₹50</label>
-
-        <input type="radio" name="tip" id="tip5" value="custom">
-        <label for="tip5">Other</label>
-        <input type="number" id="customTip" min="0" max="1000" step="10" name="customTip" class="form-control mt-2" 
-               placeholder="Enter custom amount" style="display: none;">
-    </div>
-</div>
 
 <% if (user.distance > 50) { %>
     <h1 style="color: gray;">Sorry, we are not here yet!</h1>
     <p style="color: gray;">This app is not available at this location at the moment. Please try a different location.</p>
-<% } else { %>
-    <% let sum = 0; %>
-    <% if (order && order.length > 0) { %>
-        <% order.forEach(orderItem => { %>
-            <% sum += orderItem.quantity * orderItem.detail.price; %>
-        <% }); %>
-    <% } %>
-    <% let totalPrice = sum + deliveryCost; %>
-    <% let minOrderAmount = user.distance * 30; %>
+    <% } else { %>
+        <% let sum = 0; %>
+        <% if (order && order.length > 0) { %>
+            <% order.forEach(orderItem => { %>
+                <% sum += orderItem.quantity * orderItem.detail.price; %>
+                <% }); %>
+                <% } %>
+                <% let totalPrice = sum + deliveryCost; %>
+                <% let minOrderAmount = user.distance * 30; %>
+                <div class="mb-3">
+                    <div class="alert alert-info text-center" style=" font-weight: bold;">
+                        ⏳ Your order will arrive in under <%= estimatedTime %> minutes.
+                    </div>
+                </div>
+                <div class="mb-3">
+                    <label for="locality" class="form-label">House/ College/ School Name (Locality)</label>
+                    <input type="text" name="locality" value="<%=user.locality%>" id="locality" placeholder="E.g. Near Mukesh Hardware Store" class="form-control" required>
+                </div>
+                
+                <div class="mb-3">
+                    <label class="form-label">Add a Tip (Optional)</label>
+                    <div class="tip-group">
+                        <input type="radio" name="tip" id="tip1" value="0" checked>
+                        <label for="tip1">₹0</label>
+                
+                        <input type="radio" name="tip" id="tip2" value="10">
+                        <label for="tip2">₹10</label>
+                
+                        <input type="radio" name="tip" id="tip3" value="50">
+                        <label for="tip3">₹50</label>
+                
+                        <input type="radio" name="tip" id="tip5" value="custom">
+                        <label for="tip5">Other</label>
+                        <input type="number" id="customTip" min="0" max="1000" step="10" name="customTip" class="form-control mt-2" 
+                               placeholder="Enter custom amount" style="display: none;">
+                    </div>
+                </div>
     <div class="accordion" id="accordionExample" >
         <div class="accordion-item" style="padding: 10px;">
             <h2 class="accordion-header">
