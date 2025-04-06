@@ -3,22 +3,40 @@
 <h1>Delivery Boys</h1>
 <div class="">
     <% Employees.forEach(employee => { %>
-        <div class="card">
+        <div class="card text-align">
             <h2><%= employee.username %></h2>
+            <img src="<%= employee.image?.url %>" alt="Profile Image" style="width: 150px; height: 150px; object-fit: cover; border-radius: 10px;">
+            
             <p><strong>Mobile:</strong> <%= employee.mobile %></p>
             <p><strong>Area:</strong> <%= employee.area %></p>
             <p><strong>District:</strong> <%= employee.district %></p>
             <p><strong>State:</strong> <%= employee.state %></p>
             <p><strong>Pincode:</strong> <%= employee.pincode %></p>
+
             <p><strong>Status:</strong> 
                 <span class="status <%= employee.status === 'Active' ? 'active' : 'inactive' %>">
                     <%= employee.status %>
                 </span>
             </p>
-            <p><strong>Deliveries:</strong> <%= employee.total_deliveries %></p>
-            <p><strong>Rating:</strong> 
-                <span class="rating">⭐ <%= employee.rating %>/5</span>
+
+            <p><strong>Availability:</strong> <%= employee.isAvailable ? 'Available' : 'Not Available' %></p>
+
+            <p><strong>Total Deliveries:</strong> <%= employee.total_deliveries %></p>
+
+            <p><strong>Average Rating:</strong> 
+                <span class="rating">⭐ <%= employee.avgRating || 'N/A' %>/5</span>
             </p>
+
+            <p><strong>Total Earnings:</strong> ₹<%= employee.total_earnings %></p>
+
+            <p><strong>Balance Due:</strong> ₹<%= employee.balance_due %></p>
+
+            
+            <p><strong>Completed Orders:</strong> <%= employee.completed_orders.length %></p>
+            
+            <p><strong>Active_Order:</strong> <%= employee.active_order ? employee.active_order.toString() : 'None' %></p>
+            
+            <p><strong>Account Created At:</strong> <%= new Date(employee.created_at).toLocaleString() %></p>
         </div>
     <% }); %>
 </div>
@@ -80,10 +98,4 @@ h1 {
     color: white;
 }
 
-/* Rating Styling */
-.rating {
-    font-weight: bold;
-    color: #f4b400;
-    font-size: 1em;
-}
 </style>
