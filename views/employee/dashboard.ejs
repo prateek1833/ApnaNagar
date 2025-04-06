@@ -7,6 +7,9 @@
                     %>
             </button>
         </form>
+        <div class="toggle-container">
+            <button id="toggleRefresh" class="toggle-btn btn btn-danger"><i class="fa-solid fa-arrows-rotate"></i></button>
+          </div>
     </span>
     <% if (!employee.isAvailable) { %>
         <style>
@@ -345,3 +348,47 @@
                                 background-color: #f2f2f2;
                             }
                         </style>
+                        <script>
+                            const REFRESH_INTERVAL = 5 * 1000; // 2 minutes
+                            const toggleBtn = document.getElementById('toggleRefresh');
+                            const refreshIcon = toggleBtn.querySelector('i');
+                          
+                            let refreshTimer;
+                          
+                            // Load saved state
+                            let isAutoRefreshOn = localStorage.getItem('autoRefresh') !== 'off';
+                          
+                            function updateToggleUI() {
+                              // Change color based on state
+                              toggleBtn.classList.toggle('btn-success', isAutoRefreshOn);
+                              toggleBtn.classList.toggle('btn-danger', !isAutoRefreshOn);
+                          
+                              // Update tooltip
+                              toggleBtn.title = `Auto Refresh: ${isAutoRefreshOn ? 'ON' : 'OFF'}`;
+                          
+                              // Optional: Add rotate animation (CSS class) when ON
+                              refreshIcon.classList.toggle('fa-spin', isAutoRefreshOn);
+                            }
+                          
+                            function startAutoRefresh() {
+                              refreshTimer = setInterval(() => {
+                                location.reload();
+                              }, REFRESH_INTERVAL);
+                            }
+                          
+                            function stopAutoRefresh() {
+                              clearInterval(refreshTimer);
+                            }
+                          
+                            toggleBtn.addEventListener('click', () => {
+                              isAutoRefreshOn = !isAutoRefreshOn;
+                              localStorage.setItem('autoRefresh', isAutoRefreshOn ? 'on' : 'off');
+                              updateToggleUI();
+                              isAutoRefreshOn ? startAutoRefresh() : stopAutoRefresh();
+                            });
+                          
+                            // Initial setup
+                            updateToggleUI();
+                            if (isAutoRefreshOn) startAutoRefresh();
+                          </script>
+                          
