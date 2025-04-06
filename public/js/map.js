@@ -347,8 +347,8 @@ map.on('load', () => {
 });
 
 const bastiBounds = [
-    [82.3, 26.6], // Southwest corner (Longitude, Latitude)
-    [83.0, 27.0]  // Northeast corner (Longitude, Latitude)
+    [82.6265, 26.6379], // Southwest corner (Longitude, Latitude)
+    [82.7467, 26.7836]  // Northeast corner (Longitude, Latitude)
 ];
 
 // Set the bounds to limit map interaction to Basti district
