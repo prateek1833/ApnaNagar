@@ -37,6 +37,8 @@
             <p><strong>Active_Order:</strong> <%= employee.active_order ? employee.active_order.toString() : 'None' %></p>
             
             <p><strong>Account Created At:</strong> <%= new Date(employee.created_at).toLocaleString() %></p>
+
+            <p><strong>Aadhar Card Number</strong> <%= employee.aadhar %></p>
         </div>
     <% }); %>
 </div>

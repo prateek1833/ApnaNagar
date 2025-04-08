@@ -41,7 +41,7 @@ module.exports.index = async (req, res) => {
             return b.avgRating - a.avgRating;
         });
         // Sort restaurants by rating (assuming rating exists)
-        allRestaurant.sort((a, b) => b.avgRating - a.avgRating); // Descending order
+        allRestaurant.sort((a, b) => b.avgRating - a.avgRating).slice(0, 6); // Descending order
 
         // Render the items view
         res.render("items/index.ejs", { allItem: updatedItems, allRestaurant });

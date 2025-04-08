@@ -103,7 +103,7 @@ module.exports.renderDashboard = async (req, res) => {
 
 module.exports.signup = async (req, res, next) => {
     try {
-        const { username, mobile, password, area, district, state, pincode, latitude, longitude } = req.body;
+        const { username, mobile, password, area, district, state, pincode, latitude, longitude,aadhar } = req.body;
 
         // Provide default values for the required fields if not provided
         const owner = "6638779c9bfc94fc81a42508";  // Set as required
@@ -139,6 +139,7 @@ module.exports.signup = async (req, res, next) => {
             completed_orders: [],
             type: "Delivery Boy",
             isAvailable: false,
+            aadhar
         });
 
         // Register the employee using passport-local-mongoose

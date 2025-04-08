@@ -91,6 +91,12 @@ const employeeSchema = new Schema({
         type: Schema.Types.ObjectId,
         ref: "Review",
     }],
+    aadhar: {
+        type: String,
+        required: true,
+        unique: true,
+        match: /^[0-9]{12}$/ // Optional: basic validation for 12-digit Aadhar
+    }
 });
 
 employeeSchema.plugin(passportLocalMongoose);
