@@ -168,6 +168,8 @@ app.get("/", (req, res) => {
         return res.redirect("/items"); // Redirect User
     } else if (req.user instanceof Restaurant) {
         return res.redirect(`/restaurant/${req.user.id}/show`); // Redirect Restaurant
+    } else if (req.user instanceof Employee) {
+        return res.redirect(`/employee/${req.user.id}/dashboard`); // Redirect Employee
     }
 });
 
