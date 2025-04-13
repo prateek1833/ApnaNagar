@@ -553,8 +553,12 @@
 
                                                     // Start the smooth cart update loop
                                                     updateCartSmoothly();
-
-
+                                                    window.addEventListener("load", function () {
+                                                        const isDesktop = window.innerWidth > 768;
+                                                        if (isDesktop) {
+                                                            alert("This site is more suitable in mobile view. Please switch to a mobile device for the best experience.");
+                                                        }
+                                                    });
                                                 </script>
 
                                                 <script

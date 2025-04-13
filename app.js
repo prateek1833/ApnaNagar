@@ -161,17 +161,23 @@ app.use((req, res, next) => {
 });
 
 app.get("/", (req, res) => {
-    if (!req.isAuthenticated()) {
-        return res.redirect("/login"); // Render the login page if not authenticated
-    }
-    if (req.user instanceof User) {
         return res.redirect("/items"); // Redirect User
-    } else if (req.user instanceof Restaurant) {
-        return res.redirect(`/restaurant/${req.user.id}/show`); // Redirect Restaurant
-    } else if (req.user instanceof Employee) {
-        return res.redirect(`/employee/${req.user.id}/dashboard`); // Redirect Employee
-    }
 });
+
+// app.get("/", (req, res) => {
+//     if (!req.isAuthenticated()) {
+//         return res.redirect("/login"); // Render the login page if not authenticated
+//     }
+//     if (req.user instanceof User) {
+//         return res.redirect("/items"); // Redirect User
+//     } else if (req.user instanceof Restaurant) {
+//         return res.redirect(`/restaurant/${req.user.id}/show`); // Redirect Restaurant
+//     } else if (req.user instanceof Employee) {
+//         return res.redirect(`/employee/${req.user.id}/dashboard`); // Redirect Employee
+//     } else {
+//         return res.redirect("/items");
+//     }
+// });
 
 app.get("/restaurant/", (req, res) => {
     res.redirect(`/restaurant/${req.user.id}/show`);
