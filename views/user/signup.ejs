@@ -1,6 +1,6 @@
-<% layout('../layout/boilerplateLocation') -%>
+ <% layout('../layout/boilerplateLocation') -%>
 
-    <div class="row">
+<!-- <div class="row">
         <div class="text-center">
             <img src="https://res.cloudinary.com/dzrxswqur/image/upload/v1739196654/icon-512x512_iqnv9i.png"
                 height="180px" style="border-radius: 50%; box-shadow: 5px 5px 10px rgba(0, 0, 0, 0.3);">
@@ -244,4 +244,165 @@
             usernameInput.addEventListener("input", checkUsernameUnique);
         });
 
-    </script>
+    </script> -->
+
+<div class="row">
+    <div class="text-center">
+        <img src="https://res.cloudinary.com/dzrxswqur/image/upload/v1739196654/icon-512x512_iqnv9i.png"
+            height="180px" style="border-radius: 50%; box-shadow: 5px 5px 10px rgba(0, 0, 0, 0.3);">
+    </div>
+    <div>
+        <form action="/signup" method="POST">
+            <div class="mb-3">
+                <label for="customer-username" class="form-label">Name or Username</label>
+                <input type="text" name="username" id="customer-username" placeholder="Enter catchy username"
+                    class="form-control" required>
+                <div class="invalid-feedback"></div>
+            </div>
+            <div class="mb-3">
+                <label for="customer-mobile" class="form-label">Mobile No.</label>
+                <input type="tel" name="mobile" id="customer-mobile" placeholder="+91XXXXXXXXXX"
+                    class="form-control" pattern="^\+91\d{10}$" required value="+91">
+                <div class="invalid-feedback"></div>
+            </div>
+
+            <div class="mb-3 mt-3" id="password-section">
+                <label for="customer-password" class="form-label">Password</label>
+                <input type="password" name="password" id="customer-password" placeholder="Enter strong password"
+                    class="form-control" required>
+                <div class="invalid-feedback">Enter a password of length between 8 to 20 characters</div>
+
+                <label for="customer-confirm-password" class="form-label mt-2">Confirm Password</label>
+                <input type="password" name="confirm-password" id="customer-confirm-password"
+                    placeholder="Re-enter password" class="form-control" required>
+                <div class="invalid-feedback">Passwords do not match.</div>
+            </div>
+
+            <button type="submit" class="btn btn-success w-100" id="signup-button">Sign Up as Customer</button>
+
+            <% if (error) { %>
+            <div class="text-center" style="color: red;">
+                <%= error %>
+            </div>
+            <% } %>
+        </form>
+    </div>
+</div>
+<br>
+
+<script>
+    document.addEventListener("DOMContentLoaded", function () {
+        const usernameInput = document.getElementById("customer-username");
+        const passwordInput = document.getElementById("customer-password");
+        const confirmPasswordInput = document.getElementById("customer-confirm-password");
+        const mobileInput = document.getElementById("customer-mobile");
+        const signupButton = document.getElementById("signup-button");
+
+        // Username validation
+        function validateUsername() {
+            const username = usernameInput.value.trim();
+            if (username.length >= 4 && username.length <= 20) {
+                usernameInput.classList.remove("is-invalid");
+                usernameInput.classList.add("is-valid");
+            } else {
+                usernameInput.classList.remove("is-valid");
+                usernameInput.nextElementSibling.textContent = "Username must be 4 to 20 characters long.";
+                usernameInput.classList.add("is-invalid");
+            }
+        }
+
+        // Password validation
+        function validatePassword() {
+            const password = passwordInput.value.trim();
+            if (password.length >= 8 && password.length <= 20) {
+                passwordInput.classList.remove("is-invalid");
+                passwordInput.classList.add("is-valid");
+            } else {
+                passwordInput.classList.remove("is-valid");
+                passwordInput.classList.add("is-invalid");
+                signupButton.classList.add("disabled");
+            }
+        }
+
+        // Confirm password check
+        function checkPasswordMatch() {
+            if (passwordInput.value === confirmPasswordInput.value && passwordInput.value.length >= 8) {
+                confirmPasswordInput.classList.remove("is-invalid");
+                confirmPasswordInput.classList.add("is-valid");
+                signupButton.classList.remove("disabled");
+            } else {
+                confirmPasswordInput.classList.remove("is-valid");
+                confirmPasswordInput.classList.add("is-invalid");
+                signupButton.classList.add("disabled");
+            }
+        }
+
+        // Mobile uniqueness check
+        function checkMobileUnique() {
+            const mobile = mobileInput.value.trim();
+
+            if (!/^\+91\d{10}$/.test(mobile)) {
+                mobileInput.classList.add("is-invalid");
+                mobileInput.nextElementSibling.textContent = "Enter a mobile number in format +91XXXXXXXXXX";
+                return;
+            }
+
+            fetch('/check-mobile', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ mobile })
+            })
+                .then(response => response.json())
+                .then(data => {
+                    if (data.exists) {
+                        mobileInput.classList.add("is-invalid");
+                        mobileInput.nextElementSibling.textContent = "Mobile number already registered!";
+                        signupButton.setAttribute("disabled", "true");
+                    } else {
+                        mobileInput.classList.remove("is-invalid");
+                        mobileInput.nextElementSibling.textContent = "";
+                        mobileInput.classList.add("is-valid");
+                        signupButton.removeAttribute("disabled");
+                    }
+                })
+                .catch(error => console.error("Error checking mobile:", error));
+        }
+
+        // Username uniqueness check
+        function checkUsernameUnique() {
+            const username = usernameInput.value.trim();
+
+            fetch('/check-username', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ username })
+            })
+                .then(response => response.json())
+                .then(data => {
+                    if (data.exists) {
+                        usernameInput.classList.add("is-invalid");
+                        usernameInput.nextElementSibling.textContent = "This username is already taken!";
+                        signupButton.setAttribute("disabled", "true");
+                    }
+                })
+                .catch(error => console.error("Error checking username:", error));
+        }
+
+        // Final password match check before submission
+        signupButton.addEventListener("click", function (e) {
+            if (passwordInput.value !== confirmPasswordInput.value) {
+                confirmPasswordInput.classList.add("is-invalid");
+                e.preventDefault();
+            } else {
+                confirmPasswordInput.classList.remove("is-invalid");
+            }
+        });
+
+        // Attach listeners
+        usernameInput.addEventListener("input", validateUsername);
+        usernameInput.addEventListener("input", checkUsernameUnique);
+        passwordInput.addEventListener("input", validatePassword);
+        confirmPasswordInput.addEventListener("input", checkPasswordMatch);
+        mobileInput.addEventListener("input", checkMobileUnique);
+    });
+</script>
