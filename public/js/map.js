@@ -341,6 +341,56 @@ function addRoadToMap(road) {
 
 }
 
+// Array of restaurants with their coordinates and names
+const restaurants = [
+    {
+        name: "Pizza House",
+        coordinates: [82.679379, 26.727917]
+    }
+    // Add more restaurants as needed
+];
+
+function createRestaurantMarker(iconUrl) {
+    const markerDiv = document.createElement('div');
+    markerDiv.style.width = '50px';
+    markerDiv.style.height = '35px';
+    markerDiv.style.backgroundImage = `url('${iconUrl}')`; // Custom restaurant marker image
+    markerDiv.style.backgroundSize = 'contain';
+    markerDiv.style.backgroundRepeat = 'no-repeat';
+    markerDiv.style.cursor = 'pointer';
+    markerDiv.style.zIndex = '1000';
+    return markerDiv;
+}
+// Add markers for each restaurant
+restaurants.forEach(restaurant => {
+    const restaurantMarker = createRestaurantMarker('https://res.cloudinary.com/dzrxswqur/image/upload/v1745666967/restaurant-location_ouma9s.png'); // Example restaurant icon
+
+    // Add marker to the map
+    new mapboxgl.Marker({ element: restaurantMarker })
+        .setLngLat(restaurant.coordinates)
+        .addTo(map);
+
+    // Add a label near the marker
+    const labelDiv = document.createElement('div');
+    labelDiv.style.position = 'absolute';
+    labelDiv.style.transform = 'translate(-50%, -50%)';
+    labelDiv.style.backgroundColor = 'rgba(255, 255, 255, 0.8)';
+    labelDiv.style.padding = '4px 8px';
+    labelDiv.style.borderRadius = '4px';
+    labelDiv.style.boxShadow = '0 2px 4px rgba(0, 0, 0, 0.2)';
+    labelDiv.style.fontFamily = 'Arial, sans-serif';
+    labelDiv.style.fontSize = '10px';
+    labelDiv.style.color = 'red';
+    labelDiv.textContent = restaurant.name;
+
+    const overlay = new mapboxgl.Marker({
+        element: labelDiv,
+        anchor: 'bottom',
+        offset: [-10, -10]
+    }).setLngLat(restaurant.coordinates).addTo(map);
+});
+
+
 // Add all roads to the map on load
 map.on('load', () => {
     roads.forEach(addRoadToMap);
