@@ -524,3 +524,34 @@ module.exports.subscribe = async (req, res) => {
     }
 };
 
+module.exports.deleteOrder = async (req, res) => {
+    const { id } = req.params;
+    try {
+        // Find employee
+        const employee = await Employee.findById(id);
+        if (!employee) {
+            req.flash('error', 'Employee not found');
+            return res.redirect(`/employee/${id}/dashboard`);
+        }
+
+        // Check if employee has an active order
+        if (!employee.active_order) {
+            req.flash('error', 'No active order found for this employee');
+            return res.redirect(`/employee/${id}/dashboard`);
+        }
+
+        // Find and delete the active order
+        await Order.findByIdAndDelete(employee.active_order);
+
+        // Set active_order to null
+        employee.active_order = null;
+        await employee.save();
+
+        req.flash('success', 'Active order deleted successfully');
+        res.redirect(`/employee/${id}/dashboard`);
+    } catch (error) {
+        console.error('Error deleting active order:', error);
+        req.flash('error', 'Something went wrong while deleting the order');
+        res.redirect(`/employee/${id}/dashboard`);
+    }
+};
