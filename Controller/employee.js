@@ -116,7 +116,8 @@ module.exports.signup = async (req, res, next) => {
             filename = req.file.filename;
         } else {
             req.flash("error", "Image upload is required");
-            return res.redirect("/user/signup.ejs");
+            console.log(req.file);
+            return res.redirect("/employee/signup");
         }
 
         // Create a new Employee instance with the provided data
@@ -158,6 +159,7 @@ module.exports.signup = async (req, res, next) => {
         });
     } catch (e) {
         req.flash("error", e.message);
+        console.log(e.message);
         res.redirect("/employee/signup");  // Redirect back to the sign-up page if there's an error
     }
 };

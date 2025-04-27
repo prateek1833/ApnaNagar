@@ -44,12 +44,7 @@ router.post("/:id/subscribe", isLoggedIn, wrapAsync(employeeController.subscribe
 
 router.get("/:id/profile", isLoggedIn, wrapAsync(employeeController.profile));
 
-router.delete("/:id/deleteOrder", isLoggedIn,
-    (req, res, next) => {
-        console.log("hello");
-        next();
-    },
-    wrapAsync(employeeController.deleteOrder));
+router.delete("/:id/deleteOrder", isLoggedIn, wrapAsync(employeeController.deleteOrder));
 
 
 module.exports = router;
