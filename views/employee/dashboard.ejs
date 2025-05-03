@@ -43,7 +43,9 @@
                             <%= new Date(employee.active_order.createdAt).toLocaleString("en-IN", { timeZone: "Asia/Kolkata" }) %>
                         </p>
                         <p><strong>Name:</strong> <%= employee.active_order.author.name %></p>
-                        <p><strong>Mobile:</strong> <%= employee.active_order.author.mobile %></p>
+                        <p><strong>Mobile:</strong>
+                            <a style="text-decoration: none;"
+                            href="tel:<%=employee.active_order.author.mobile%>"><%=employee.active_order.author.mobile%></a></p>
                         <p><strong>Distance:</strong> <%= employee.active_order.author.distance %> km</p>
                         <p><strong>Locality:</strong> <%= employee.active_order.author.locality %></p>
                         <p><strong>Address:</strong>
