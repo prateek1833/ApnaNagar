@@ -35,6 +35,56 @@
             border-radius: 0 0 15px 15px;
             position: relative;
         }
+        .share-section {
+            text-align: center;
+            padding: 10px;
+            background-color: #f9f9f9;
+            border-radius: 12px;
+            margin: 0 -24px 0 -24px;
+            max-width: 500px;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+        }
+
+        .share-section h2 {
+            margin-bottom: 20px;
+            font-size: 1.5rem;
+        }
+
+        .share-buttons {
+            display: flex;
+            justify-content: center;
+            gap: 15px;
+        }
+
+        .share-btn {
+            width: 45px;
+            height: 45px;
+            font-size: 20px;
+            color: white;
+            border: none;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            text-decoration: none;
+            transition: transform 0.2s;
+        }
+
+        .share-btn:hover {
+            transform: scale(1.1);
+        }
+
+        .facebook { background-color: #3b5998; }
+        .twitter { background-color: #1da1f2; }
+        .whatsapp { background-color: #25d366; }
+        .copy { background-color: #6c757d; }
+
+        #copy-message {
+            margin-top: 15px;
+            color: green;
+            font-weight: bold;
+        }
     </style>
 
 
@@ -116,6 +166,25 @@
             <span class="visually-hidden">Next</span>
         </button>
     </div>
+    <hr>
+    <div class="share-section">
+  <h3>Share this App with your friends</h3>
+  <div class="share-buttons">
+    <a href="https://www.facebook.com/sharer/sharer.php?u=https://apnanagar.in&quote=अब हमारे नगर बाज़ार में ऑनलाइन खाने-पीने की चीज़ें भी ऑर्डर होती हैं! इस वेबसाइट पर जाओ और चेक करो: https://apnanagar.in" target="_blank" class="share-btn facebook">
+      <i class="fab fa-facebook-f"></i>
+    </a>
+    <a href="https://twitter.com/intent/tweet?text=अब हमारे नगर बाज़ार में ऑनलाइन खाने-पीने की चीज़ें भी ऑर्डर होती हैं! इस वेबसाइट पर जाओ और चेक करो: https://apnanagar.in" target="_blank" class="share-btn twitter">
+      <i class="fab fa-twitter"></i>
+    </a>
+    <a href="https://wa.me/?text=अब हमारे नगर बाज़ार में ऑनलाइन खाने-पीने की चीज़ें भी ऑर्डर होती हैं! इस वेबसाइट पर जाओ और चेक करो: https://apnanagar.in" target="_blank" class="share-btn whatsapp">
+      <i class="fab fa-whatsapp"></i>
+    </a>
+    <button onclick="copyLink()" class="share-btn copy">
+      <i class="fas fa-link"></i>
+    </button>
+  </div>
+  <p id="copy-message" style="display:none;">Link copied to clipboard!</p>
+</div>
     <hr>
 
     <% if(allRestaurant.length>0){ %>
@@ -327,7 +396,14 @@
                             }
 
                             fetchHoliday();
-
+                            function copyLink() {
+                            const text = "अब हमारे नगर बाज़ार में भाई ऑनलाइन खाने-पीने की चीज़ें भी ऑर्डर होती हैं! इस वेबसाइट पर जाओ और चेक करो: https://apnanagar.in";
+                            navigator.clipboard.writeText(text).then(() => {
+                            const msg = document.getElementById("copy-message");
+                            msg.style.display = "block";
+                            setTimeout(() => { msg.style.display = "none"; }, 2000);
+                            });
+                        }
 
                         </script>
 

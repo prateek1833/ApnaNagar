@@ -29,10 +29,10 @@
 <% user = currUser %>
 <% let deliveryCost = user.distance > 3 ? Math.ceil(user.distance * 4) : 0; %>
 
-<% let estimatedTime = Math.ceil(15 + (user.distance) * 3) ; %>
+<% let estimatedTime = Math.ceil(20 + (user.distance) * 3) ; %>
 
 
-<% if (user.distance > 50) { %>
+<% if (user.distance > 10) { %>
     <h1 style="color: gray;">Sorry, we are not here yet!</h1>
     <p style="color: gray;">This app is not available at this location at the moment. Please try a different location.</p>
     <% } else { %>
@@ -304,6 +304,26 @@
             form.submit(); // Submit the form with the updated inputs
         });
     });
+    // Function to enable/disable the Place Order button based on locality input
+    function togglePlaceOrderButton() {
+        const localityInput = document.getElementById("locality");
+        const placeOrderButton = document.getElementById("placeOrderButton");
+
+        if (localityInput && placeOrderButton) {
+            placeOrderButton.disabled = localityInput.value.trim() === "";
+        }
+    }
+
+    document.addEventListener("DOMContentLoaded", function () {
+        const localityInput = document.getElementById("locality");
+
+        // Initial check when page loads
+        togglePlaceOrderButton();
+
+        // Recheck every time the user types
+        localityInput.addEventListener("input", togglePlaceOrderButton);
+    });
+
     
 
 </script>

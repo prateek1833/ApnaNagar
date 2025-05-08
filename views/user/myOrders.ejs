@@ -75,6 +75,7 @@
                                                                     </td>
                                                                 </tr>
                                                                 <% sum +=orderItem.item.quantity * orderItem.item.price;
+                                                                    order.tip = order.tip < 0 ? 0 : order.tip;
                                                                     %>
                                                                     <% weight +=parseInt(orderItem.item.quantity); %>
                                                                         <% } %>

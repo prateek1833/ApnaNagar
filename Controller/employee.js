@@ -547,6 +547,7 @@ module.exports.deleteOrder = async (req, res) => {
 
         // Set active_order to null
         employee.active_order = null;
+        employee.status = "Free";
         await employee.save();
 
         req.flash('success', 'Active order deleted successfully');

@@ -95,9 +95,21 @@ app.use(passport.session());
 passport.use(
     new LocalStrategy({ usernameField: "identifier" }, async (identifier, password, done) => {
       try {
-        // Find user by username OR mobile number
+        // Normalize mobile number by removing +91 if present
+        let formattedMobile = identifier;
+        const mobileRegex = /^[6-9]\d{9}$/; // Indian mobile numbers start with 6-9 and have 10 digits
+  
+        if (mobileRegex.test(identifier)) {
+          formattedMobile = `+91${identifier}`;
+        }
+  
+        // Find user by username or mobile (with +91)
         const user = await User.findOne({
-          $or: [{ username: identifier }, { mobile: identifier }],
+          $or: [
+            { username: identifier },
+            { mobile: identifier },
+            { mobile: formattedMobile }
+          ],
         });
   
         if (!user) {

@@ -104,8 +104,9 @@ const sortedCategories = Array.from(groupedOrders.keys()).sort((a, b) => {
         <% if(order.deliveryBoy){ %>
         <div>
             <p><strong>Delivery Boy : </strong><%=order.deliveryBoy.name%>
-            <a style="text-decoration: none;"
-                href="tel:<%=order.deliveryBoy.name%>"><%=order.deliveryBoy.mobile%></a>
+                <a style="text-decoration: none;" href="tel:<%= order.deliveryBoy.mobile %>">
+                    <%= order.deliveryBoy.mobile.slice(-10) %>
+                  </a>                  
                 <br></p>
         </div>
         <% } %>
