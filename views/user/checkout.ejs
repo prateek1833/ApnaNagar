@@ -52,6 +52,7 @@
                 <div class="mb-3">
                     <label for="locality" class="form-label">House/ College/ School Name (Locality)</label>
                     <input type="text" name="locality" value="<%=user.locality%>" id="locality" placeholder="E.g. Near Mukesh Hardware Store" class="form-control" required>
+                    <p id="warning" class="text-danger" style="display: none;">Please enter your locality</p>
                 </div>
                 
                 <div class="mb-3">
@@ -323,6 +324,29 @@
         // Recheck every time the user types
         localityInput.addEventListener("input", togglePlaceOrderButton);
     });
+    const localityInput = document.getElementById("locality");
+  const warning = document.getElementById("warning");
+
+  // Initial check in case locality is pre-filled
+  if (localityInput.value.trim() === "") {
+    warning.style.display = "block";
+  } else {
+    warning.style.display = "none";
+  }
+
+  // Show warning on blur if empty
+  localityInput.addEventListener("blur", () => {
+    if (localityInput.value.trim() === "") {
+      warning.style.display = "block";
+    }
+  });
+
+  // Hide warning when user starts typing
+  localityInput.addEventListener("input", () => {
+    if (localityInput.value.trim() !== "") {
+      warning.style.display = "none";
+    }
+  });
 
     
 
