@@ -346,7 +346,15 @@ const restaurants = [
     {
         name: "Pizza House",
         coordinates: [82.679379, 26.727917]
-    }
+    },
+    {
+        name:"RC momos and burger",
+        coordinates: [82.67985, 26.729602]
+    },
+    {
+        name:"Anjani sweets",
+        coordinates: [82.679913, 26.729189]
+    },
     // Add more restaurants as needed
 ];
 
