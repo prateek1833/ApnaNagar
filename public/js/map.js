@@ -234,6 +234,14 @@ const places = [
         name: "पोखरनी चौराहा",
         coordinates: [82.67566911005144,26.716730614497067]
     },
+    {
+        name: "प्राथमिक स्कूल",
+        coordinates: [82.676876,26.729077]
+    },
+    {
+        name: "जूनियर स्कूल",
+        coordinates: [82.678748,26.729767]
+    }
     // Add more places as needed
 ];
 function createCustomMarker(iconUrl) {
@@ -353,7 +361,7 @@ const restaurants = [
     },
     {
         name:"Anjani sweets",
-        coordinates: [82.679913, 26.729189]
+        coordinates: [82.680089, 26.729465]
     },
     // Add more restaurants as needed
 ];
