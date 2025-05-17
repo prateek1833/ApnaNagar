@@ -241,7 +241,19 @@ const places = [
     {
         name: "जूनियर स्कूल",
         coordinates: [82.678748,26.729767]
-    }
+    },
+    {
+        name: "सूर्या इंटर कॉलेज",
+        coordinates: [82.680925,26.728152]
+    },
+    {
+        name: "जनता इंटर कॉलेज",
+        coordinates: [82.6808336,26.7289029]
+    },
+    {
+        name: "कलाम इंस्टीट्यूट",
+        coordinates: [82.681110,26.728053]
+    },
     // Add more places as needed
 ];
 function createCustomMarker(iconUrl) {
@@ -306,7 +318,7 @@ const roads = [
             [82.69285883104914,26.755396412606316],
             [82.6975327070241,26.75299781628611]
         ]
-    }
+    },
     // Add more roads here
 ];
 
@@ -361,7 +373,7 @@ const restaurants = [
     },
     {
         name:"Anjani sweets",
-        coordinates: [82.680089, 26.729465]
+        coordinates: [82.68029486780085,26.73002683916289]
     },
     // Add more restaurants as needed
 ];
