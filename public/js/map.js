@@ -254,6 +254,10 @@ const places = [
         name: "कलाम इंस्टीट्यूट",
         coordinates: [82.681110,26.728053]
     },
+    {
+        name: "नौगढ़",
+        coordinates: [82.695761,26.745761]
+    },
     // Add more places as needed
 ];
 function createCustomMarker(iconUrl) {
