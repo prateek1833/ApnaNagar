@@ -27,7 +27,7 @@
     }
 </style>
 <% user = currUser %>
-<% let deliveryCost = user.distance > 3 ? Math.ceil(user.distance * 4) : 0; %>
+<% let deliveryCost = user.distance > 2 ? Math.ceil(user.distance * 5) : 0; %>
 
 <% let estimatedTime = Math.ceil(20 + (user.distance) * 3) ; %>
 
@@ -158,7 +158,7 @@
                         </div>
                     </div>
                 </div>
-                <% if (user.distance < 3 && totalPrice < minOrderAmount) { %>
+                <% if (user.distance < 2 && totalPrice < minOrderAmount) { %>
                     <p class="text-danger text-center">Min order amount should be <strong>₹<%= Math.ceil(minOrderAmount.toLocaleString("en-IN")) %></strong> for free delivery</p>
                 <% } %>
     </div>

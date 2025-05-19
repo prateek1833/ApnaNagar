@@ -262,6 +262,10 @@ const places = [
         name: "हरनखा",
         coordinates: [82.688771,26.728781]
     },
+    {
+        name: "RP adarsh inter college",
+        coordinates: [82.695393,26.736874]
+    },
     // Add more places as needed
 ];
 function createCustomMarker(iconUrl) {

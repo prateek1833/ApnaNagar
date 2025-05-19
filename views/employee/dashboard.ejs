@@ -80,7 +80,7 @@
                                     <% 
                                         employee.active_order.tip = employee.active_order.tip < 0 ? 0 : employee.active_order.tip;
                                         const distance = employee.active_order.author.distance;
-                                        const deliveryCost = distance > 3 ? Math.round(distance * 4) : 0;
+                                        const deliveryCost = distance > 2 ? Math.round(distance * 5) : 0;
                                         const itemTotalPrice = employee.active_order.items.reduce((total, item) => 
                                             total + item.item.price * item.item.quantity, 0);
                                         const totalPrice = itemTotalPrice + deliveryCost + employee.active_order.tip;
@@ -242,7 +242,7 @@
 
                                                                 <% const distance=order.author.distance;
                                                                 order.tip = order.tip < 0 ? 0 : order.tip;
-                                                                 const deliveryCost=distance> 3 ? Math.ceil(distance * 4)
+                                                                 const deliveryCost=distance> 2 ? Math.ceil(distance * 5)
                                                                     : 0;
                                                                     %>
                                                                     <tr>
