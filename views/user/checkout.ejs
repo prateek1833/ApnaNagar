@@ -43,7 +43,7 @@
                 <% }); %>
                 <% } %>
                 <% let totalPrice = sum + deliveryCost; %>
-                <% let minOrderAmount = user.distance * 30; %>
+                <% let minOrderAmount = 75; %>
                 <div class="mb-3">
                     <div class="alert alert-info text-center" style=" font-weight: bold;">
                         ⏳ Your order will arrive in under <%= estimatedTime %> minutes.
@@ -91,7 +91,7 @@
                                 <button class="show-spinner btn add-btn " 
                                     style="border-radius: 5px;" 
                                     id="placeOrderButton"
-                                    <% if (user.distance < 3 && totalPrice < minOrderAmount) { %>disabled<% } %>>
+                                    <% if (totalPrice < minOrderAmount) { %>disabled<% } %>>
                                     Place Order
                                 </button>
                             </form>
@@ -158,196 +158,142 @@
                         </div>
                     </div>
                 </div>
-                <% if (user.distance < 2 && totalPrice < minOrderAmount) { %>
-                    <p class="text-danger text-center">Min order amount should be <strong>₹<%= Math.ceil(minOrderAmount.toLocaleString("en-IN")) %></strong> for free delivery</p>
+                <% if ( sum < 75) { %>
+                    <p class="text-danger text-center">
+                            Minimum order amount is <strong>₹75</strong>; your current total is <strong>₹<%= sum %></strong>.
+                    </p>
                 <% } %>
     </div>
     </div>
 <% } %>
 <script>
-    // Select the "Place Order" button
+document.addEventListener("DOMContentLoaded", function () {
+    const MIN_ORDER_TOTAL = 100; // Set your minimum order amount here
+    const localityInput = document.getElementById("locality");
     const placeOrderButton = document.getElementById("placeOrderButton");
+    const warning = document.getElementById("warning");
+    const customTipInput = document.getElementById("customTip");
 
+    function calculateBaseTotal() {
+        let baseTotal = 0;
+        const orderItems = document.querySelectorAll(".order-item");
+
+        orderItems.forEach(item => {
+            const price = parseFloat(item.dataset.price);
+            const quantity = parseInt(item.dataset.quantity);
+            baseTotal += price * quantity;
+        });
+
+        return baseTotal;
+    }
+
+    function updateTotal() {
+        let baseTotal = calculateBaseTotal();
+
+        let deliveryCost = <%= deliveryCost %>;
+        let selectedTip = document.querySelector('input[name="tip"]:checked');
+        let tipAmount = 0;
+
+        if (selectedTip?.value === "custom") {
+            let customTipValue = parseFloat(customTipInput.value) || 0;
+            tipAmount = Math.min(Math.max(customTipValue, 0), 999);
+        } else {
+            tipAmount = parseFloat(selectedTip?.value || 0);
+        }
+
+        let finalTotal = baseTotal + deliveryCost + tipAmount;
+
+        // Update totals
+        document.getElementById("finalTotal").innerText = `₹${finalTotal.toLocaleString("en-IN")}`;
+        let tableTotal = document.getElementById("tableFinalTotal");
+        if (tableTotal) tableTotal.innerText = `₹${finalTotal.toLocaleString("en-IN")}`;
+        let tipDisplay = document.getElementById("tipAmount");
+        if (tipDisplay) tipDisplay.innerText = `₹${tipAmount.toLocaleString("en-IN")}`;
+
+        togglePlaceOrderButton(); // Re-check after total update
+    }
+
+    function togglePlaceOrderButton() {
+        const localityEmpty = localityInput.value.trim() === "";
+        const baseTotal = calculateBaseTotal();
+        const totalValid = baseTotal >= MIN_ORDER_TOTAL;
+
+        placeOrderButton.disabled = localityEmpty || !totalValid;
+    }
+
+    // Tip selection logic
+    document.querySelectorAll('input[name="tip"]').forEach(tip => {
+        tip.addEventListener("change", function () {
+            if (this.value === "custom") {
+                customTipInput.style.display = "block";
+                customTipInput.focus();
+            } else {
+                customTipInput.style.display = "none";
+                customTipInput.value = "";
+            }
+            updateTotal();
+        });
+    });
+
+    customTipInput.addEventListener("input", updateTotal);
+
+    // Locality warning handling
+    if (localityInput.value.trim() === "") {
+        warning.style.display = "block";
+    } else {
+        warning.style.display = "none";
+    }
+
+    localityInput.addEventListener("blur", () => {
+        if (localityInput.value.trim() === "") {
+            warning.style.display = "block";
+        }
+    });
+
+    localityInput.addEventListener("input", () => {
+        if (localityInput.value.trim() !== "") {
+            warning.style.display = "none";
+        }
+        togglePlaceOrderButton();
+    });
+
+    // Form submission logic
+    document.getElementById("orderForm").addEventListener("submit", function (event) {
+        event.preventDefault();
+
+        // Clone and append locality
+        let clonedLocality = localityInput.cloneNode(true);
+        clonedLocality.style.display = "none";
+        this.appendChild(clonedLocality);
+
+        // Add tip input
+        let selectedTip = document.querySelector('input[name="tip"]:checked');
+        let tipValue = selectedTip?.value === "custom" ? customTipInput.value || 0 : selectedTip?.value || "0";
+
+        // Remove existing hidden tip input
+        const existingHidden = this.querySelector('input[name="tip"]');
+        if (existingHidden) existingHidden.remove();
+
+        let hiddenTip = document.createElement("input");
+        hiddenTip.type = "hidden";
+        hiddenTip.name = "tip";
+        hiddenTip.value = tipValue;
+        this.appendChild(hiddenTip);
+
+        this.submit();
+    });
+
+    // "Place Order" button additional spinner
     if (placeOrderButton) {
         placeOrderButton.addEventListener("click", () => {
             showSpinner();
         });
     }
-    document.getElementById("placeOrderButton").addEventListener("click", function(event) {
-    event.preventDefault(); // Prevent immediate submission
 
-    let form = document.getElementById("orderForm");
-
-    // Move locality input inside the form before submission
-    let localityInput = document.getElementById("locality");
-    let clonedLocality = localityInput.cloneNode(true);
-    clonedLocality.style.display = "none"; // Hide cloned input
-    form.appendChild(clonedLocality);
-
-    // Remove any existing hidden tip input before appending a new one
-    let existingTipInput = document.querySelector('input[name="tip"]');
-    if (existingTipInput) {
-        existingTipInput.remove();
-    }
-
-    // Handle tip selection and custom tip input
-    let selectedTip = document.querySelector('input[name="tip"]:checked');
-    let tipValue = selectedTip ? selectedTip.value : "0";
-
-    // If "Other" is selected, get the custom tip value
-    if (tipValue === "custom") {
-        let customTipInput = document.getElementById("customTip");
-        if (customTipInput) {
-            tipValue = customTipInput.value || "0"; // Use entered custom tip value
-        }
-    }
-
-    // Add hidden input with correct tip value
-    let hiddenTip = document.createElement("input");
-    hiddenTip.type = "hidden";
-    hiddenTip.name = "tip";
-    hiddenTip.value = tipValue;
-    form.appendChild(hiddenTip);
-
-    form.submit(); // Now submit the form with the correct tip value
+    // Initial calculations on page load
+    updateTotal();
+    togglePlaceOrderButton();
 });
-
-    document.addEventListener("DOMContentLoaded", function () {
-        function updateTotal() {
-    let baseTotal = 0;
-    const orderItems = document.querySelectorAll(".order-item"); // Get all order items
-
-    orderItems.forEach(item => {
-        const price = parseFloat(item.dataset.price);
-        const quantity = parseInt(item.dataset.quantity);
-        baseTotal += price * quantity;
-    });
-
-    let deliveryCost = <%= deliveryCost %>;
-    let selectedTip = document.querySelector('input[name="tip"]:checked');
-    if (selectedTip?.value === "custom") {
-        let customTipValue = parseFloat(document.getElementById("customTip").value) || 0;
-
-        // Set min/max limits for custom tip
-        let maxTip = 999; // Example: 50% of order amount
-        let minTip = 0;
-
-        if (customTipValue < minTip) {
-            customTipValue = minTip;
-        } else if (customTipValue > maxTip) {
-            customTipValue = maxTip;
-        }
-
-        tipAmount = customTipValue;
-    } else {
-        tipAmount = parseInt(selectedTip?.value || 0);
-    }
-    let finalTotal = baseTotal + deliveryCost + tipAmount;
-
-    // Update span total
-    document.getElementById("finalTotal").innerText = `₹${finalTotal.toLocaleString("en-IN")}`;
-
-    // Update table total (ensure correct selector)
-    let tableTotal = document.getElementById("tableFinalTotal");
-    if (tableTotal) {
-        tableTotal.innerText = `₹${finalTotal.toLocaleString("en-IN")}`;
-    }
-    let tip = document.getElementById("tipAmount");
-    if (tip) {
-        tip.innerText = `₹${tipAmount.toLocaleString("en-IN")}`;
-    }
-}
-
-
-        // Handle tip selection
-        document.querySelectorAll('input[name="tip"]').forEach(tip => {
-            tip.addEventListener("change", function () {
-                const customTipField = document.getElementById("customTip");
-                if (this.value === "custom") {
-                    customTipField.style.display = "block";
-                    customTipField.focus();
-                } else {
-                    customTipField.style.display = "none";
-                    customTipField.value = ""; // Reset the custom tip field when other options are selected
-                }
-                updateTotal();
-            });
-        });
-
-        // Update total when custom tip is entered
-        document.getElementById("customTip").addEventListener("input", updateTotal);
-
-        // Initial total calculation
-        updateTotal();
-
-        // Handle form submission
-        document.getElementById("orderForm").addEventListener("submit", function(event) {
-            event.preventDefault(); // Prevent immediate submission
-
-            let form = event.target;
-
-            // Move locality input inside the form before submission
-            let localityInput = document.getElementById("locality");
-            let clonedLocality = localityInput.cloneNode(true);
-            clonedLocality.style.display = "none"; // Hide cloned input
-            form.appendChild(clonedLocality);
-
-            // Move selected tip inside the form before submission
-            let selectedTip = document.querySelector('input[name="tip"]:checked');
-            if (selectedTip) {
-                let hiddenTip = document.createElement("input");
-                hiddenTip.type = "hidden";
-                hiddenTip.name = "tip";
-                hiddenTip.value = selectedTip.value === "custom" ? document.getElementById("customTip").value || 0 : selectedTip.value;
-                form.appendChild(hiddenTip);
-            }
-
-            form.submit(); // Submit the form with the updated inputs
-        });
-    });
-    // Function to enable/disable the Place Order button based on locality input
-    function togglePlaceOrderButton() {
-        const localityInput = document.getElementById("locality");
-        const placeOrderButton = document.getElementById("placeOrderButton");
-
-        if (localityInput && placeOrderButton) {
-            placeOrderButton.disabled = localityInput.value.trim() === "";
-        }
-    }
-
-    document.addEventListener("DOMContentLoaded", function () {
-        const localityInput = document.getElementById("locality");
-
-        // Initial check when page loads
-        togglePlaceOrderButton();
-
-        // Recheck every time the user types
-        localityInput.addEventListener("input", togglePlaceOrderButton);
-    });
-    const localityInput = document.getElementById("locality");
-  const warning = document.getElementById("warning");
-
-  // Initial check in case locality is pre-filled
-  if (localityInput.value.trim() === "") {
-    warning.style.display = "block";
-  } else {
-    warning.style.display = "none";
-  }
-
-  // Show warning on blur if empty
-  localityInput.addEventListener("blur", () => {
-    if (localityInput.value.trim() === "") {
-      warning.style.display = "block";
-    }
-  });
-
-  // Hide warning when user starts typing
-  localityInput.addEventListener("input", () => {
-    if (localityInput.value.trim() !== "") {
-      warning.style.display = "none";
-    }
-  });
+</script>
 
     
-
-</script>
