@@ -270,19 +270,20 @@
 
                                             <div class="card-body">
                                                 <p class="card-text p-0 m-0">
-                                                    <b
-                                                        class="card-text d-flex justify-content-between align-items-center">
-                                                        <span style="font-size: 1.2rem;">
-                                                            <%= item.title %>
-                                                        </span>
-                                                        <% if (item.avgRating !=0) { %>
-                                                            <button type="button"
-                                                                class="btn btn-success btn-sm d-flex align-items-center">
-                                                                <%= item.avgRating %><i
-                                                                        class="fa-solid fa-star ms-1"></i>
-                                                            </button>
-                                                            <% } %>
-                                                    </b>
+                                                    <div class="card-text d-flex justify-content-between align-items-center">
+                                                        <span style="font-size: 1.2rem;"><%= item.title %></span>
+
+                                                        <% if (item.avgRating !== 0) { %>
+                                                            <div class="d-flex align-items-center">
+                                                                <button type="button" class="btn btn-success btn-sm d-flex align-items-center">
+                                                                    <%= item.avgRating %>
+                                                                    <i class="fa-solid fa-star ms-1"></i>
+                                                                </button>
+                                                                <span class="ms-2">(<%= item.reviews.length %>)</span>
+                                                            </div>
+                                                        <% } %>
+                                                    </div>
+
                                                     <span class="d-block p-0">
                                                         <p style="text-decoration: line-through; display: inline; margin: 0; color: #888; margin: 0;padding: 0;"
                                                             class="me-2 ">

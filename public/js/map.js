@@ -258,6 +258,10 @@ const places = [
         name: "नौगढ़",
         coordinates: [82.695761,26.745761]
     },
+    {
+        name: "हरनखा",
+        coordinates: [82.688771,26.728781]
+    },
     // Add more places as needed
 ];
 function createCustomMarker(iconUrl) {
