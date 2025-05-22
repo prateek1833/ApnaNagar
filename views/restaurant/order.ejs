@@ -80,15 +80,15 @@ const sortedCategories = Array.from(groupedOrders.keys()).sort((a, b) => {
                 <% for (const orderItem of order.items) { %>
                     <% 
                         let originalPrice = orderItem.item.price;
-                        // let discountedPrice = originalPrice > 50 ? originalPrice * 0.9 : originalPrice * 0.8;
-                        let discountedPrice = originalPrice;
+                        let discountedPrice = originalPrice  * (9 / 11);
+                        // let discountedPrice = originalPrice;
                     %>
                     <tr>
                         <td><%= orderItem.item.title %></td>
                         <td><%= orderItem.item.typ %></td>
-                        <td><%= discountedPrice.toLocaleString("en-IN") %> &#8377;/<%= orderItem.item.unit %></td>
+                        <td><%= discountedPrice.toLocaleString("en-IN", { minimumFractionDigits: 1, maximumFractionDigits: 1 }) %> &#8377;/<%= orderItem.item.unit %></td>
                         <td><%= orderItem.item.quantity.toLocaleString("en-IN") %> <%= orderItem.item.unit %></td>
-                        <td><%= Math.floor((orderItem.item.quantity * discountedPrice)).toLocaleString("en-IN") %></td>
+                        <td><%= (orderItem.item.quantity * discountedPrice).toLocaleString("en-IN", { minimumFractionDigits: 1, maximumFractionDigits: 1 }) %></td>
                     </tr>
                     <% sum += orderItem.item.quantity * discountedPrice; %>
                 <% } %>
@@ -97,7 +97,7 @@ const sortedCategories = Array.from(groupedOrders.keys()).sort((a, b) => {
                     <td></td>
                     <td></td>
                     <td></td>
-                    <td><b><%= Math.floor(sum.toLocaleString("en-IN")) %></b></td>
+                    <td><b>≈<%= Math.floor(sum.toLocaleString("en-IN")) %></b></td>
                 </tr>
             </tbody>
         </table>

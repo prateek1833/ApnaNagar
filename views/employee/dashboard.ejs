@@ -103,7 +103,7 @@
                         </div>
                 
                         <!-- Restaurant Wise Payment Table -->
-                        <!-- <div class="table-responsive my-3">
+                        <div class="table-responsive my-3">
                             <table class="table table-bordered">
                                 <thead class="table-light">
                                     <tr>
@@ -113,19 +113,23 @@
                                 </thead>
                                 <tbody>
                                     <% 
-                                        let restaurantWisePrice = {};
-                                        employee.active_order.items.forEach(item => {
-                                            let restaurant = restaurantNames[item.item._id] || 'No Restaurant';
-                                            let pricePerItem = item.item.price * item.item.quantity;
-                
-                                            if (item.item.price > 50) {
-                                                pricePerItem *= 0.9;
-                                            } else {
-                                                pricePerItem *= 0.8;
-                                            }
-                
-                                            restaurantWisePrice[restaurant] = (restaurantWisePrice[restaurant] || 0) + pricePerItem;
-                                        });
+                                    let restaurantWisePrice = {};
+
+                                    employee.active_order.items.forEach(item => {
+                                        let restaurant = restaurantNames[item.item._id] || 'No Restaurant';
+                                        let price = item.item.price;
+                                        let quantity = item.item.quantity;
+
+                                        // Step 1: Calculate discounted price
+                                        let discountedPrice;
+                                        discountedPrice = price * (9 / 11);
+                                        // Step 2: Calculate total price for the item
+                                        let totalPrice = discountedPrice * quantity;
+
+                                        // Step 3: Accumulate the total per restaurant
+                                        restaurantWisePrice[restaurant] = (restaurantWisePrice[restaurant] || 0) + totalPrice;
+                                    });
+
                                     %>
                 
                                     <% for (let restaurant in restaurantWisePrice) { %>
@@ -136,7 +140,7 @@
                                     <% } %>
                                 </tbody>
                             </table>
-                        </div> -->
+                        </div>
                 
                         <p><strong>Status:</strong> 
                             <span class="badge bg-warning text-dark">
