@@ -43,7 +43,7 @@
                 <% }); %>
                 <% } %>
                 <% let totalPrice = sum + deliveryCost; %>
-                <% let minOrderAmount = 50; %>
+                <% let minOrderAmount = 0; %>
                 <div class="mb-3">
                     <div class="alert alert-info text-center" style=" font-weight: bold;">
                         ⏳ Your order will arrive in under <%= estimatedTime %> minutes.
@@ -158,9 +158,9 @@
                         </div>
                     </div>
                 </div>
-                <% if ( sum < 50) { %>
+                <% if ( sum < 0) { %>
                     <p class="text-danger text-center">
-                            न्यूनतम ऑर्डर राशि <strong>₹50</strong> है; आपकी वर्तमान कुल राशि <strong>₹<%= sum %></strong> है।
+                            न्यूनतम ऑर्डर राशि <strong>₹0</strong> है; आपकी वर्तमान कुल राशि <strong>₹<%= sum %></strong> है।
                             कृपया और आइटम जोड़ने के लिए "Add To Cart" बटन का उपयोग करें।
                             <br>
                         <a href="/" class="ms-2"> return to home screen
@@ -172,7 +172,7 @@
 <% } %>
 <script>
 document.addEventListener("DOMContentLoaded", function () {
-    const MIN_ORDER_TOTAL = 50; // Set your minimum order amount here
+    const MIN_ORDER_TOTAL = 0; // Set your minimum order amount here
     const localityInput = document.getElementById("locality");
     const placeOrderButton = document.getElementById("placeOrderButton");
     const warning = document.getElementById("warning");
