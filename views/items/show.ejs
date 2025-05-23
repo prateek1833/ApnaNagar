@@ -173,7 +173,7 @@
                 </div>
                 <% if(currUser && (!currUser.type || currUser.type!="Restaurant")) {%>
                 <div class="d-grid gap-2 col-6 mx-auto">
-                    <button type="submit" class="btn btn-dark add-btn">Add to Cart</button>
+                    <button type="submit" class="btn btn-dark add-btn fs-5">Add +</button>
                 </div>
                 <% } %>
                 <% if(!currUser) { %>
@@ -193,9 +193,9 @@
                         <input type="text" name="item" value="<%= item._id %>" hidden>
                         <input type="text" name="selectedType" id="selectedTypeBuyNow" value="<%= item.detail[0].typ %>" hidden>
                         <input type="number" name="quantity" id="quantityBuyNow" value="1" hidden>
-                        <div class="d-grid gap-2 col-6 mx-auto mt-2">
+                        <!-- <div class="d-grid gap-2 col-6 mx-auto mt-2">
                             <button type="submit" class="btn btn-warning light-btn"><b>Buy Now</b></button>
-                        </div>
+                        </div> -->
                     </form>
                 <% } %>
             <% } %>
