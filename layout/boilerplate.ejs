@@ -289,6 +289,23 @@
             cursor: pointer;
             font-size: 16px;
         }
+            .wip-banner {
+            color: #ff4e50;
+            font-weight: bold;
+            font-size: 1.2rem;
+            z-index: 1050;
+            width: 100%;
+        }
+
+        .large-icon {
+            font-size: 200px;
+        }
+
+        .wip-message {
+            font-size: 1.5rem;
+        }
+
+
     </style>
 </head>
 
@@ -331,7 +348,14 @@
     <%- include("../views/includes/navbar.ejs") %>
         <div class="container mt-1">
             <%- include("../views/includes/flash.ejs") %>
-                <%- body %>
+
+
+        <div class="wip-banner text-red text-center py-5">
+    <i class="fa-solid fa-triangle-exclamation large-icon mb-3"></i>
+    <div class="wip-message">Our team is working hard to bring you a better experience. Stay tuned!</div>
+</div>
+        <%- body %>
+
         </div>
         <%- include("../views/includes/cart.ejs") %>
             <% if(currUser && currUser.type && currUser.type==="Restaurant" ){%>
