@@ -117,21 +117,16 @@
 
                                     employee.active_order.items.forEach(item => {
                                         let restaurant = restaurantNames[item.item._id] || 'No Restaurant';
-                                        let price = item.item.price;
+                                        let rprice = item.item.rprice || 0;
                                         let quantity = item.item.quantity;
 
-                                        // Step 1: Calculate discounted price
-                                        let discountedPrice;
-                                        discountedPrice = price * (9 / 11);
-                                        // Step 2: Calculate total price for the item
-                                        let totalPrice = discountedPrice * quantity;
+                                        // Total payable = rprice × quantity
+                                        let totalPrice = rprice * quantity;
 
-                                        // Step 3: Accumulate the total per restaurant
                                         restaurantWisePrice[restaurant] = (restaurantWisePrice[restaurant] || 0) + totalPrice;
                                     });
-
                                     %>
-                
+
                                     <% for (let restaurant in restaurantWisePrice) { %>
                                         <tr>
                                             <td><%= restaurant %></td>
@@ -141,6 +136,7 @@
                                 </tbody>
                             </table>
                         </div>
+
                 
                         <p><strong>Status:</strong> 
                             <span class="badge bg-warning text-dark">

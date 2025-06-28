@@ -226,30 +226,39 @@ module.exports.myOrders = async (req, res, next) => {
 
 module.exports.createItem = async (req, res) => {
     let { title, description, category, unit, key } = req.body;
-    let { price, typ } = req.body;
+    let { price, typ, rprice } = req.body;
 
     let url = req.file.path;
     let filename = req.file.filename;
 
-    // Create an array of detail objects
     let detail = [];
+
+    // Normalize all to arrays
+    if (!Array.isArray(price)) price = [price];
+    if (!Array.isArray(typ)) typ = [typ];
+    if (!Array.isArray(rprice)) rprice = [rprice];
+
     for (let i = 0; i < price.length; i++) {
-        detail.push({ price: price[i], typ: typ[i] });
+        detail.push({
+            price: Number(price[i]),
+            rprice: Number(rprice[i]),
+            typ: typ[i]
+        });
     }
 
     try {
         let newItem = new Item({
-            owner: "6638779c9bfc94fc81a42508",
-            title: title,
-            description: description,
-            category: category,
-            avgRating:0,
-            unit: unit,
+            owner: "6638779c9bfc94fc81a42508", // replace with actual user id logic if dynamic
+            title,
+            description,
+            category,
+            avgRating: 0,
+            unit,
             key: key.split(" "),
             image: { url, filename },
-            detail: detail,
-            RestaurantId:req.user._id,
-            isAvailable:true,
+            detail,
+            RestaurantId: req.user._id,
+            isAvailable: true,
         });
 
         await newItem.save();
@@ -257,7 +266,7 @@ module.exports.createItem = async (req, res) => {
         req.flash("success", "New Item Created");
         res.redirect("/");
     } catch (err) {
-        console.log(err);
+        console.error(err);
         req.flash("error", "Error creating new item");
         res.redirect("/items/new");
     }
@@ -280,44 +289,45 @@ module.exports.update = async (req, res) => {
     const { id } = req.params;
     const { title, description, category, unit, detail, key } = req.body;
 
-    // Convert key from a comma-separated string to an array
     const keywords = key.split(',').map(keyword => keyword.trim());
 
-    // Find the existing item
     let item = await Item.findById(id);
 
-    // Update the item details
     item.title = title;
     item.description = description;
     item.category = category;
     item.unit = unit;
 
-    // Extract existing details and update with new details
+    // Handle detail update with rprice
     if (Array.isArray(detail)) {
         item.detail = detail.map(d => ({
             typ: d.typ,
-            price: d.price
+            price: Number(d.price),
+            rprice: Number(d.rprice)
         }));
     } else if (detail) {
-        item.detail = [{ typ: detail.typ, price: detail.price }];
+        item.detail = [{
+            typ: detail.typ,
+            price: Number(detail.price),
+            rprice: Number(detail.rprice)
+        }];
     }
 
-    // Update keywords
     item.key = keywords;
 
-    // Handle image upload
     if (req.file) {
-        let url = req.file.path;
-        let filename = req.file.filename;
-        item.image = { url, filename };
+        item.image = {
+            url: req.file.path,
+            filename: req.file.filename
+        };
     }
 
-    // Save the updated item
     await item.save();
 
     req.flash("success", "Item Updated");
     res.redirect(`/items/${id}/show.ejs`);
 };
+
 
 
 

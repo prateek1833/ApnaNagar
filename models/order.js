@@ -15,6 +15,7 @@ const orderSchema = new Schema({
                 description: String,
                 unit:String,
                 price: Number,
+                rprice: Number,
                 typ:String,
                 quantity: Number,
                 RestaurantId:String,

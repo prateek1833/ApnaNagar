@@ -1,125 +1,139 @@
 <% layout('../layout/boilerplate') -%>
 
-<div class="row">
-    <div class="col-10">     
-        <br>
-        <form method="POST" action="/items/<%= item._id %>/edit?_method=PUT" novalidate class="needs-validation" enctype="multipart/form-data" id="edit-form">
-            <div class="mb-3">
-                <label for="title" class="form-label">Title</label>
-                <input type="text" name="title" value="<%= item.title %>" class="form-control" required>
-            </div>
-            <div class="mb-3">
-                <label for="description" class="form-label">Description</label>
-                <textarea name="description" class="form-control" rows="3"><%= item.description %></textarea>
-            </div>
-            <div class="mb-3">
-                <label for="category" class="form-label">Category</label>
-                <input type="text" name="category" value="<%= item.category %>" class="form-control">
-            </div>
-            <div class="mb-3">
-                <label for="unit" class="form-label">Unit</label>
-                <input type="text" name="unit" value="<%= item.unit %>" class="form-control">
-            </div>
-            <div class="mb-3">
-                <img src="<%= item.image.url %>" alt="<%= item.image.filename %>" class="img-thumbnail">
-            </div>
-            <div class="mb-3">
-                <label for="image" class="form-label">Upload New Image (Max: 500 KB)</label>
-                <input type="file" name="image" class="form-control" id="image-upload">
-                <small class="text-danger d-none" id="image-error">Image size should not exceed 500 KB.</small>
-            </div>
-            <div class="mb-3 no-spinner" style="border: solid rgb(180, 179, 179); border-width: 1px; border-radius: 10%; padding: 5%;">
-                <label for="detail" class="form-label">Details</label>
-                <div id="detail-container">
-                    <% item.detail.forEach((detail, index) => { %>
-                        <div class="detail-item mb-2 row">
-                            <div class="col">
-                                <label for="typ-<%= index %>" class="form-label">Type</label>
-                                <input type="text" name="detail[<%= index %>][typ]" value="<%= detail.typ %>" class="form-control">
-                            </div>
-                            <div class="col">
-                                <label for="price-<%= index %>" class="form-label">Price</label>
-                                <input type="number" name="detail[<%= index %>][price]" value="<%= detail.price %>" class="form-control" required>
-                            </div>
-                            <div class="col-auto d-flex align-items-end">
-                                <button type="button" class="btn btn-danger btn-sm delete-detail">Delete</button>
-                            </div>
-                        </div>
-                    <% }) %>
+    <div class="row">
+        <div class="col-10">
+            <br>
+            <form method="POST" action="/items/<%= item._id %>/edit?_method=PUT" novalidate class="needs-validation"
+                enctype="multipart/form-data" id="edit-form">
+                <div class="mb-3">
+                    <label for="title" class="form-label">Title</label>
+                    <input type="text" name="title" value="<%= item.title %>" class="form-control" required>
                 </div>
-                <button type="button" id="add-detail" class="btn btn-secondary mt-2">Add Detail</button>
-            </div>
-            <div class="mb-3">
-                <label for="key" class="form-label">Keywords</label>
-                <input type="text" name="key" value="<%= item.key.join(', ') %>" class="form-control">
-                <small class="form-text text-muted">Separate keywords with commas</small>
-            </div>
-            <button class="btn btn-dark add-btn" id="submit-btn">Submit</button>
-        </form>
-        <br>
+                <div class="mb-3">
+                    <label for="description" class="form-label">Description</label>
+                    <textarea name="description" class="form-control" rows="3"><%= item.description %></textarea>
+                </div>
+                <div class="mb-3">
+                    <label for="category" class="form-label">Category</label>
+                    <input type="text" name="category" value="<%= item.category %>" class="form-control">
+                </div>
+                <div class="mb-3">
+                    <label for="unit" class="form-label">Unit</label>
+                    <input type="text" name="unit" value="<%= item.unit %>" class="form-control">
+                </div>
+                <div class="mb-3">
+                    <img src="<%= item.image.url %>" alt="<%= item.image.filename %>" class="img-thumbnail">
+                </div>
+                <div class="mb-3">
+                    <label for="image" class="form-label">Upload New Image (Max: 500 KB)</label>
+                    <input type="file" name="image" class="form-control" id="image-upload">
+                    <small class="text-danger d-none" id="image-error">Image size should not exceed 500 KB.</small>
+                </div>
+                <div class="mb-3 no-spinner"
+                    style="border: solid rgb(180, 179, 179); border-width: 1px; border-radius: 10%; padding: 5%;">
+                    <label for="detail" class="form-label">Details</label>
+                    <div id="detail-container">
+                        <% item.detail.forEach((detail, index)=> { %>
+                            <div class="detail-item mb-2 row">
+                                <div class="col">
+                                    <label for="typ-<%= index %>" class="form-label">Type</label>
+                                    <input type="text" name="detail[<%= index %>][typ]" value="<%= detail.typ %>"
+                                        class="form-control">
+                                </div>
+                                <div class="col">
+                                    <label for="price-<%= index %>" class="form-label">Price</label>
+                                    <input type="number" name="detail[<%= index %>][price]" value="<%= detail.price %>"
+                                        class="form-control" required>
+                                </div>
+                                <div class="col">
+                                    <label for="rprice-<%= index %>" class="form-label">RPrice</label>
+                                    <input type="number" name="detail[<%= index %>][rprice]"
+                                        value="<%= detail.rprice %>" class="form-control" required>
+                                </div>
+                                <div class="col-auto d-flex align-items-end">
+                                    <button type="button" class="btn btn-danger btn-sm delete-detail"><i class="fa-solid fa-trash"></i></button>
+                                </div>
+                            </div>
+                            <% }) %>
+                    </div>
+                    <button type="button" id="add-detail" class="btn btn-secondary mt-2">Add Detail</button>
+                </div>
+                <div class="mb-3">
+                    <label for="key" class="form-label">Keywords</label>
+                    <input type="text" name="key" value="<%= item.key.join(', ') %>" class="form-control">
+                    <small class="form-text text-muted">Separate keywords with commas</small>
+                </div>
+                <button class="btn btn-dark add-btn" id="submit-btn">Submit</button>
+            </form>
+            <br>
+        </div>
     </div>
-</div>
 
-<script>
-    document.getElementById('add-detail').addEventListener('click', function() {
-        const container = document.getElementById('detail-container');
-        const index = container.children.length;
-        const detailItem = document.createElement('div');
-        detailItem.classList.add('detail-item', 'mb-2', 'row');
-        detailItem.innerHTML = `
-            <div class="col">
-                <label for="typ-${index}" class="form-label">Type</label>
-                <input type="text" name="detail[${index}][typ]" class="form-control">
-            </div>
-            <div class="col">
-                <label for="price-${index}" class="form-label">Price</label>
-                <input type="number" name="detail[${index}][price]" class="form-control" required>
-            </div>
-            <div class="col-auto d-flex align-items-end">
-                <button type="button" class="btn btn-danger btn-sm delete-detail">Delete</button>
-            </div>
-        `;
-        container.appendChild(detailItem);
-        addDeleteEventListener(detailItem.querySelector('.delete-detail'));
-    });
+    <script>
+        document.getElementById('add-detail').addEventListener('click', function () {
+            const container = document.getElementById('detail-container');
+            const index = container.children.length;
+            const detailItem = document.createElement('div');
+            detailItem.classList.add('detail-item', 'mb-2', 'row');
+            detailItem.innerHTML = `
+                <div class="col">
+                    <label for="typ-${index}" class="form-label">Type</label>
+                    <input type="text" name="detail[${index}][typ]" class="form-control">
+                </div>
+                <div class="col">
+                    <label for="price-${index}" class="form-label">Price</label>
+                    <input type="number" name="detail[${index}][price]" class="form-control" required>
+                </div>
+                <div class="col">
+                    <label for="rprice-${index}" class="form-label">RPrice</label>
+                    <input type="number" name="detail[${index}][rprice]" class="form-control" required>
+                </div>
+                <div class="col-auto d-flex align-items-end">
+                    <button type="button" class="btn btn-danger btn-sm delete-detail">Delete</button>
+                </div>
+            `;
 
-    function addDeleteEventListener(button) {
-        button.addEventListener('click', function() {
-            button.closest('.detail-item').remove();
+            container.appendChild(detailItem);
+            addDeleteEventListener(detailItem.querySelector('.delete-detail'));
         });
-    }
 
-    document.querySelectorAll('.delete-detail').forEach(addDeleteEventListener);
+        function addDeleteEventListener(button) {
+            button.addEventListener('click', function () {
+                button.closest('.detail-item').remove();
+            });
+        }
 
-    // Image file size validation (max 500 KB)
-    document.getElementById('image-upload').addEventListener('change', function(event) {
-        const file = event.target.files[0]; // Get the selected file
-        const maxSize = 500 * 1024; // 500 KB in bytes
-        const errorElement = document.getElementById('image-error');
+        document.querySelectorAll('.delete-detail').forEach(addDeleteEventListener);
 
-        if (file) {
-            if (file.size > maxSize) {
+        // Image file size validation (max 500 KB)
+        document.getElementById('image-upload').addEventListener('change', function (event) {
+            const file = event.target.files[0]; // Get the selected file
+            const maxSize = 500 * 1024; // 500 KB in bytes
+            const errorElement = document.getElementById('image-error');
+
+            if (file) {
+                if (file.size > maxSize) {
+                    errorElement.textContent = "Image size must not exceed 500 KB.";
+                    errorElement.classList.remove('d-none');
+                    event.target.value = ""; // Reset the file input
+                } else {
+                    errorElement.textContent = "";
+                    errorElement.classList.add('d-none');
+                }
+            }
+        });
+
+        // Prevent form submission if image size exceeds 500 KB
+        document.getElementById('edit-form').addEventListener('submit', function (event) {
+            const fileInput = document.getElementById('image-upload');
+            const file = fileInput.files[0];
+            const maxSize = 500 * 1024; // 500 KB in bytes
+            const errorElement = document.getElementById('image-error');
+
+            if (file && file.size > maxSize) {
                 errorElement.textContent = "Image size must not exceed 500 KB.";
                 errorElement.classList.remove('d-none');
-                event.target.value = ""; // Reset the file input
-            } else {
-                errorElement.textContent = "";
-                errorElement.classList.add('d-none');
+                event.preventDefault(); // Prevent form submission
             }
-        }
-    });
-
-    // Prevent form submission if image size exceeds 500 KB
-    document.getElementById('edit-form').addEventListener('submit', function(event) {
-        const fileInput = document.getElementById('image-upload');
-        const file = fileInput.files[0];
-        const maxSize = 500 * 1024; // 500 KB in bytes
-        const errorElement = document.getElementById('image-error');
-
-        if (file && file.size > maxSize) {
-            errorElement.textContent = "Image size must not exceed 500 KB.";
-            errorElement.classList.remove('d-none');
-            event.preventDefault(); // Prevent form submission
-        }
-    });
-</script>
+        });
+    </script>

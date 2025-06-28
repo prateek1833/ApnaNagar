@@ -398,6 +398,7 @@ module.exports.createOrder = async (req, res) => {
                     item: {
                         _id: orderItem.id,
                         title: orderItem.title,
+                        rprice: orderItem.detail.rprice,
                         price: orderItem.detail.price,
                         quantity: orderItem.quantity,
                         unit: orderItem.unit,

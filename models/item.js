@@ -19,6 +19,7 @@ const itemSchema = new Schema({
     unit:String,
     detail:[{
         price:Number,
+        rprice:Number,
         typ:String,
     }],
     avgRating:Number,

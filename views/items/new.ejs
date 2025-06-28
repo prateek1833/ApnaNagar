@@ -51,6 +51,10 @@
                             <label for="price" class="form-label">Price</label>
                             <input type="text" name="price[]" placeholder="Enter price" class="form-control">
                         </div>
+                        <div class="mb-3">
+                            <label for="rprice" class="form-label">Restaurant Price</label>
+                            <input type="text" name="rprice[]" placeholder="Enter buying price" class="form-control">
+                        </div>
                     </div>
                     <br><br>
                     <button class="btn btn-dark add-btn">Add</button>
@@ -67,30 +71,35 @@
 
                 addDetailBtn.addEventListener('click', function () {
                     const detailTemplate = `
-                <hr>
-                <div class="mb-3">
-                    <label for="typ" class="form-label">Type</label>
-                    <input type="text" name="typ[]" placeholder="Enter type" class="form-control">
-                </div>
-                <div class="mb-3">
-                    <label for="price" class="form-label">Price</label>
-                    <input type="text" name="price[]" placeholder="Enter price" class="form-control">
-                </div>
-                `;
+            <hr>
+            <div class="mb-3">
+                <label for="typ" class="form-label">Type</label>
+                <input type="text" name="typ[]" placeholder="Enter type" class="form-control">
+            </div>
+            <div class="mb-3">
+                <label for="price" class="form-label">Price</label>
+                <input type="text" name="price[]" placeholder="Enter selling price" class="form-control">
+            </div>
+            <div class="mb-3">
+                <label for="rprice" class="form-label">Restaurant Price</label>
+                <input type="text" name="rprice[]" placeholder="Enter buying price" class="form-control">
+            </div>
+            `;
                     detailInputs.insertAdjacentHTML('beforeend', detailTemplate);
                 });
-            });
-            document.getElementById('image').addEventListener('change', function (event) {
-                const file = event.target.files[0]; // Get the selected file
-                if (file) {
-                    const maxSize = 500 * 1024; // 500 KB in bytes
-                    if (file.size > maxSize) {
-                        document.getElementById('image-error').textContent = "Image size must not exceed 500 KB.";
-                        event.target.value = ""; // Reset the file input
-                    } else {
-                        document.getElementById('image-error').textContent = "";
+
+                document.getElementById('image').addEventListener('change', function (event) {
+                    const file = event.target.files[0];
+                    if (file) {
+                        const maxSize = 500 * 1024; // 500 KB
+                        if (file.size > maxSize) {
+                            document.getElementById('image-error').textContent = "Image size must not exceed 500 KB.";
+                            event.target.value = "";
+                        } else {
+                            document.getElementById('image-error').textContent = "";
+                        }
                     }
-                }
+                });
             });
         </script>
     </body>
