@@ -2,6 +2,8 @@ const express = require("express");
 const router = express.Router();
 const User = require("../models/user");
 const Order = require("../models/order.js");
+const Employee = require("../models/employee");
+
 const wrapAsync = require("../utils/wrapAsync");
 const passport = require("passport");
 const { saveRedirectUrl } = require("../middleware");
@@ -220,19 +222,26 @@ module.exports.delete = async (req, res, next) => {
             return res.status(403).send("Cannot delete order after 2 minutes");
         }
 
+        // If a delivery boy is assigned, update their status and active_order
+        if (order.deliveryBoy && order.deliveryBoy._id) {
+            await Employee.findByIdAndUpdate(order.deliveryBoy._id, {
+                status: "free",
+                active_order: null
+            });
+        }
+
         // Delete the order
         await Order.findByIdAndDelete(id);
+
         const allOrder = await Order.find({ "author._id": res.locals.currUser._id });
-                
-                res.render("user/myOrders.ejs", { 
-                    allOrder, 
-                    User,
-                    currentTime: new Date() 
-                });
+
+        res.render("user/myOrders.ejs", { 
+            allOrder, 
+            User,
+            currentTime: new Date() 
+        });
 
     } catch (error) {
         next(error);
     }
 };
-
-
