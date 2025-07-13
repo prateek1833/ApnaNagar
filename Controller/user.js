@@ -201,3 +201,38 @@ module.exports.verifyOtp = (req, res) => {
         res.status(400).json({ error: "Invalid OTP" });
     }
 };
+
+module.exports.delete = async (req, res, next) => {
+    try {
+        const { id } = req.params;
+
+        // Find the order
+        const order = await Order.findById(id);
+        if (!order) {
+            return res.status(404).send("Order not found");
+        }
+
+        // Optional: restrict deletion if more than 2 minutes old
+        const now = new Date();
+        const createdAt = new Date(order.createdAt);
+        const diffMinutes = (now - createdAt) / (1000 * 60);
+        if (diffMinutes > 2) {
+            return res.status(403).send("Cannot delete order after 2 minutes");
+        }
+
+        // Delete the order
+        await Order.findByIdAndDelete(id);
+        const allOrder = await Order.find({ "author._id": res.locals.currUser._id });
+                
+                res.render("user/myOrders.ejs", { 
+                    allOrder, 
+                    User,
+                    currentTime: new Date() 
+                });
+
+    } catch (error) {
+        next(error);
+    }
+};
+
+

@@ -23,9 +23,9 @@ module.exports.renderQuantity = async (req, res) => {
     res.render("owner/quantity.ejs", { order });
 }
 
-module.exports.renderEmployee= async (req,res)=>{
-    const Employees=await Employee.find({});
-    res.render("owner/employee.ejs",{Employees});
+module.exports.renderEmployee = async (req, res) => {
+    const Employees = await Employee.find({});
+    res.render("owner/employee.ejs", { Employees });
 }
 
 module.exports.quantity = async (req, res) => {
@@ -105,7 +105,7 @@ module.exports.status = async (req, res) => {
 
 module.exports.update = async (req, res) => {
     const { id } = req.params;
-    let { area, district, state, pincode, balance_due, mobile,dob } = req.body;
+    let { area, district, state, pincode, balance_due, mobile, dob } = req.body;
 
     try {
         let user = await User.findByIdAndUpdate(id, {
@@ -141,8 +141,8 @@ module.exports.statistics = async (req, res, next) => {
             "January", "February", "March", "April", "May", "June",
             "July", "August", "September", "October", "November", "December"
         ];
-        
-        const previousMonthName = monthNames[firstDayOfLastMonth.getMonth()]; 
+
+        const previousMonthName = monthNames[firstDayOfLastMonth.getMonth()];
 
         // Fetch orders from the previous month
         const orders = await Orders.find({
@@ -155,9 +155,9 @@ module.exports.statistics = async (req, res, next) => {
         let totalOrders = 0;
         let peakOrderTimes = {};
         let itemSales = {};
-        let restaurantSales = {}; 
+        let restaurantSales = {};
         let customerPurchases = {};
-        let restaurantCache = {}; 
+        let restaurantCache = {};
 
         for (let orderData of orders) {
             const order = await Orders.findById(orderData._id).lean();
@@ -185,7 +185,7 @@ module.exports.statistics = async (req, res, next) => {
                         const restaurant = await Restaurant.findById(item.RestaurantId).select("username").lean();
                         if (restaurant) {
                             restaurantName = restaurant.username;
-                            restaurantCache[item.RestaurantId] = restaurant.username; 
+                            restaurantCache[item.RestaurantId] = restaurant.username;
                         }
                     }
                 }
@@ -200,15 +200,15 @@ module.exports.statistics = async (req, res, next) => {
             if (order.author) {
                 const customer = await User.findById(order.author._id).select("username").lean();
                 const customerName = customer ? customer.username : "Unknown";
-                const userID = order.author._id.toString(); 
+                const userID = order.author._id.toString();
 
                 if (!customerPurchases[userID]) {
-                    customerPurchases[userID] = { 
-                        userID, 
-                        name: customerName, 
-                        totalSpent: 0, 
-                        orders: 0, 
-                        totalItems: 0 
+                    customerPurchases[userID] = {
+                        userID,
+                        name: customerName,
+                        totalSpent: 0,
+                        orders: 0,
+                        totalItems: 0
                     };
                 }
 
@@ -265,27 +265,38 @@ module.exports.statistics = async (req, res, next) => {
                 let earnings = 0;
                 let platformCharges = 0;
                 let deliveries = 0;
+
                 orders.forEach(order => {
+                    const distance = order.author.distance || 0;
+
+                    // Calculate delivery charge using Option 2
+                    const deliveryCharge = 5 + (3 * distance);
+
+                    // Platform charge logic based on price - rprice
+                    let platformChargeForOrder = 0;
+
+                    order.items.forEach(({ item }) => {
+                        if (item && item.price !== undefined && item.rprice !== undefined && item.quantity !== undefined) {
+                            const priceDiff = item.price - item.rprice;
+                            platformChargeForOrder += priceDiff * item.quantity;
+                        }
+                    });
+
+                    platformCharges += Math.round(platformChargeForOrder + deliveryCharge);
+
+                    // Calculate earnings (same as before)
                     let totalPrice = order.items.reduce((sum, item) => sum + (item.item.price * item.item.quantity), 0);
                     let orderEarnings = 1;
-                    if (totalPrice > 100) {
-                        orderEarnings += Math.round(totalPrice * 0.01);
-                    }
-                    orderEarnings += Math.round(order.author.distance);
+                    if (totalPrice > 100) orderEarnings += Math.round(totalPrice * 0.01);
+                    orderEarnings += Math.round(distance);
                     earnings += orderEarnings;
 
-                    let charge = order.items.reduce((sum, item) => {
-                        return sum + ((item.item.price > 50 ? 0.1 : 0.2) * item.item.price * item.item.quantity);
-                    }, 0);
-
-                    platformCharges += Math.round(charge);
-                    if (order.author.distance > 3) {
-                        platformCharges += Math.round(order.author.distance * 4);
-                    }
                     deliveries++;
                 });
+
                 return { earnings, platformCharges, deliveries };
             };
+
 
             // Calculate stats for each day
             const todayStats = calculateStats(todayOrders);

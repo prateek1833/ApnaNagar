@@ -65,4 +65,7 @@ router.post("/send-otp", userController.sendOtp);
 router.post("/verify-otp", userController.verifyOtp);
 
 
+router.delete("/:id/delete", isLoggedIn, wrapAsync(userController.delete));
+
+
 module.exports = router;
