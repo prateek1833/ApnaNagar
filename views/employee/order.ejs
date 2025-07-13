@@ -57,7 +57,7 @@
                                 <% }); %>
                                 
                                 <!-- Delivery Charges -->
-                                <% let deliveryCost = user.distance > 2 ? Math.ceil(user.distance * 5) : 0; %>
+                                <% let deliveryCost = user.distance <= 1 ? 5 : 5 + Math.round((user.distance - 1) * 3); %>
                                 <tr>
                                     <td><b>Delivery</b></td>
                                     <td></td>

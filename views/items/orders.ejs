@@ -132,21 +132,14 @@ const sortedCategories = Array.from(groupedOrders.keys()).sort((a, b) => {
                     <td></td>
                     <td></td>
                     <td></td>
-                    <td><b><%= (user.distance > 3 ? (user.distance * 2).toFixed(2) : "0.00").toLocaleString("en-IN") %></b></td>
-                </tr>
-                <tr>
-                    <td><b>Bike</b></td>
-                    <td></td>
-                    <td></td>
-                    <td></td>
-                    <td><b><%= (user.distance > 3 ? (user.distance * 2).toFixed(2) : "0.00").toLocaleString("en-IN") %></b></td>
+                    <td><b><%= user.distance <= 1 ? 5 : 5 + Math.round((user.distance - 1) * 3); %></b></td>
                 </tr>
                 <tr>
                     <td><b>Total</b></td>
                     <td></td>
                     <td></td>
                     <td></td>
-                    <td><b><%= (Math.floor(sum + user.balance_due + (user.distance > 3 ? (user.distance * 4) : 0))).toLocaleString("en-IN") %></b></td>
+                    <td><b><%= (Math.floor(sum + user.balance_due + (user.distance <= 1 ? 5 : 5 + Math.round((user.distance - 1) * 3)))).toLocaleString("en-IN") %></b></td>
                 </tr>
             </tbody>
         </table>
