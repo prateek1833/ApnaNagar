@@ -17,7 +17,20 @@
                                             <!-- Order Details -->
                                             <div>
                                                 <%= order.status %>
+                                                <% if(order.status !== 'Delivered') { 
+                                                    let etaMinutes = 20 + Math.ceil(user.distance * 3);
+                                                    etaMinutes = Math.max(etaMinutes, 3);
+                                                    const createdAt = new Date(order.createdAt).getTime();
+                                                    const etaTimestamp = createdAt + etaMinutes * 60000;
+                                                %>
+                                                <div style="font-size: 0.8rem; color: orange;">
+                                                    Your Order will arrive under 
+                                                    <span class="eta-timer" data-eta="<%= etaTimestamp %>" id="eta-<%= order._id %>">Loading...</span>
+                                                    
+                                                </div>
+                                                <% } %>
                                             </div>
+
                                             <div style="font-size: 0.85rem; color: gray;">Created on: <%= new
                                                     Date(order.createdAt).toLocaleString("en-IN", {
                                                     timeZone: "Asia/Kolkata" }) %>
@@ -273,4 +286,25 @@
                                     }
                                 </style>
                                 <script>
+                                    function updateTimers() {
+                                        const elements = document.querySelectorAll('.eta-timer');
+                                        const now = Date.now();
+
+                                        elements.forEach(el => {
+                                            const eta = parseInt(el.getAttribute('data-eta'));
+                                            let timeLeftMs = eta - now;
+
+                                            // Keep at least 3 minutes displayed
+                                            const minDisplayMs = 3 * 60 * 1000;
+                                            if (timeLeftMs < minDisplayMs) timeLeftMs = minDisplayMs;
+
+                                            const minutes = Math.ceil(timeLeftMs / 60000);
+
+                                            el.textContent = `${minutes} minutes`;
+                                        });
+                                    }
+
+                                    // Initial run + update every 60 seconds
+                                    updateTimers();
+                                    setInterval(updateTimers, 60000);
                                 </script>

@@ -42,6 +42,16 @@
                         <p><strong>Created at:</strong>
                             <%= new Date(employee.active_order.createdAt).toLocaleString("en-IN", { timeZone: "Asia/Kolkata" }) %>
                         </p>
+                        <% 
+                        let etaMinutes = 20 + Math.ceil(employee.active_order.author.distance * 3);
+                        etaMinutes = Math.max(etaMinutes, 3);
+                        const createdAt = new Date(employee.active_order.createdAt).getTime();
+                        const etaTimestamp = createdAt + etaMinutes * 60 * 1000;
+                    %>
+                    <p><strong>ETA:</strong> 
+                        <span class="delivery-timer" data-eta="<%= etaTimestamp %>">Calculating...</span>
+                    </p>
+
                         <p><strong>Name:</strong> <%= employee.active_order.author.name %></p>
                        <p><strong>Mobile:</strong>
                           <a style="text-decoration: none;"
@@ -365,5 +375,35 @@
                             // Initial setup
                             updateToggleUI();
                             if (isAutoRefreshOn) startAutoRefresh();
-                          </script>
-                          
+                            function updateDeliveryTimer() {
+                            const el = document.querySelector('.delivery-timer');
+                            if (!el) return;
+
+                            const eta = parseInt(el.getAttribute('data-eta'));
+                            const now = Date.now();
+
+                            let timeLeftMs = eta - now;
+
+                            const minMs = 0.5 * 60 * 1000;
+
+                            if (timeLeftMs < minMs) {
+                                el.textContent = 'Late Delivery';
+                                el.style.color = 'red';
+                                el.style.fontWeight = 'bold';
+                            } else {
+                                const totalSeconds = Math.floor(timeLeftMs / 1000);
+                                const minutes = Math.floor(totalSeconds / 60);
+                                const seconds = totalSeconds % 60;
+
+                                el.textContent = `${String(minutes).padStart(2, '0')} min ${String(seconds).padStart(2, '0')} sec`;
+                                el.style.color = '';
+                                el.style.fontWeight = '';
+                            }
+                        }
+
+                        // Initial run
+                        updateDeliveryTimer();
+                        // Update every second
+                        setInterval(updateDeliveryTimer, 1000);
+                                                </script>
+                                                
