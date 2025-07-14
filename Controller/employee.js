@@ -14,13 +14,13 @@ module.exports.renderLogin = (req, res) => {
 module.exports.profile = async (req, res) => {
     try {
         let employee = await Employee.findById(req.params.id)
-        .populate({
-            path: "reviews",
-            populate: {
-                path: "author",
-            },
-        })
-        .populate("owner");;
+            .populate({
+                path: "reviews",
+                populate: {
+                    path: "author",
+                },
+            })
+            .populate("owner");;
         if (!employee) {
             return res.status(404).send("Employee not found");
         }
@@ -103,7 +103,7 @@ module.exports.renderDashboard = async (req, res) => {
 
 module.exports.signup = async (req, res, next) => {
     try {
-        const { username, mobile, password, area, district, state, pincode, latitude, longitude,aadhar } = req.body;
+        const { username, mobile, password, area, district, state, pincode, latitude, longitude, aadhar } = req.body;
 
         // Provide default values for the required fields if not provided
         const owner = "6638779c9bfc94fc81a42508";  // Set as required
@@ -389,29 +389,40 @@ module.exports.Statistics = async (req, res) => {
 
         // Calculate earnings and platform charges for each day
         const calculateStats = (orders) => {
-            let totalEarnings = 0;
-            let totalPlatformCharges = 0;
-            orders.forEach(order => {
-                let totalPrice = order.items.reduce((sum, item) => sum + (item.item.price * item.item.quantity), 0);
-                let earnings = 1;
-                if (totalPrice > 100) {
-                    earnings += Math.round(totalPrice * 0.01);
-                }
-                earnings += Math.round(order.author.distance);
-                totalEarnings += earnings;
+    let totalSells = 0;
+    let totalPlatformCharges = 0;
 
-                let platformCharge = order.items.reduce((sum, item) => {
-                    return sum + ((item.item.price > 50 ? 0.1 : 0.2) * item.item.price * item.item.quantity);
-                }, 0);
-                let distance = order.author.distance;
-                totalPlatformCharges += Math.round(platformCharge);
-                if (distance > 3) {
-                    totalPlatformCharges += Math.round(distance * 4);
-                }
-            });
+    orders.forEach(order => {
+        const distance = order.author.distance || 0;
 
-            return { totalEarnings, totalPlatformCharges, totalDeliveries: orders.length };
-        };
+        // Delivery charge: 5 base + 3 × distance
+        const deliveryCharge = 5 + (3 * distance);
+
+        // Total Sell = sum of item.price × quantity
+        const orderSell = order.items.reduce((sum, item) => {
+            return sum + (item.item.price * item.item.quantity);
+        }, 0);
+
+        totalSells += orderSell;
+
+        // Platform charge = sum of (price - rprice) × quantity + delivery charge
+        let platformCharge = 0;
+        order.items.forEach(item => {
+            if (item.item && item.item.price !== undefined && item.item.rprice !== undefined) {
+                platformCharge += (item.item.price - item.item.rprice) * item.item.quantity;
+            }
+        });
+
+        totalPlatformCharges += Math.round(platformCharge + deliveryCharge);
+    });
+
+    return {
+        totalEarnings: totalSells,
+        totalPlatformCharges,
+        totalDeliveries: orders.length
+    };
+};
+
 
         const todayStats = calculateStats(todayOrders);
         const yesterdayStats = calculateStats(yesterdayOrders);
