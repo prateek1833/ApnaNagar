@@ -8,7 +8,7 @@ const Restaurant = require("../models/restaurant");
 module.exports.index = async (req, res) => {
     try {
         const allItem = await Item.find({ isAvailable: true });
-        const allRestaurant = await Restaurant.find({});
+        let allRestaurant = await Restaurant.find({});
         
         // Fetch all unique restaurant IDs
         const restaurantIds = [...new Set(allItem.map(item => item.RestaurantId))];
@@ -41,7 +41,8 @@ module.exports.index = async (req, res) => {
             return b.avgRating - a.avgRating;
         });
         // Sort restaurants by rating (assuming rating exists)
-        allRestaurant.sort((a, b) => b.avgRating - a.avgRating).slice(0, 6); // Descending order
+        allRestaurant = allRestaurant.sort((a, b) => b.avgRating - a.avgRating).slice(0, 6);
+
 
         // Render the items view
         res.render("items/index.ejs", { allItem: updatedItems, allRestaurant });
@@ -216,7 +217,12 @@ module.exports.myOrders = async (req, res, next) => {
     try {
         let { id } = req.params;
         const allOrder = await Orders.find({ "author._id": id });
-        res.render("user/myOrders.ejs", { allOrder, User });
+        
+        res.render("user/myOrders.ejs", { 
+            allOrder, 
+            User,
+            currentTime: new Date() 
+        });
     } catch (error) {
         next(error); 
     }
