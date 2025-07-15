@@ -388,25 +388,21 @@ module.exports.Statistics = async (req, res) => {
         const dayBeforeYesterdayOrders = filterOrdersByDate(dayBeforeYesterdayStr);
 
         // Calculate earnings and platform charges for each day
-        const calculateStats = (orders) => {
+const calculateStats = (orders) => {
     let totalSells = 0;
     let totalPlatformCharges = 0;
-    let deliveryCharge=0;
+    let totalDeliveryCharge = 0;
 
     orders.forEach(order => {
-        const distance = order.author.distance || 0;
+        const distance = order.author?.distance || 0;
+        const deliveryCharge = distance <= 1 ? 5 : 5 + Math.ceil((distance - 1) * 3);
+        totalDeliveryCharge += deliveryCharge;
 
-        // Delivery charge: 5 base + 3 × distance
-        deliveryCharge = distance <= 1 ? 5 : 5 + Math.floor((distance - 1) * 3);
-
-        // Total Sell = sum of item.price × quantity
         const orderSell = order.items.reduce((sum, item) => {
             return sum + (item.item.price * item.item.quantity);
         }, 0);
-
         totalSells += orderSell;
 
-        // Platform charge = sum of (price - rprice) × quantity + delivery charge
         let platformCharge = 0;
         order.items.forEach(item => {
             if (item.item && item.item.price !== undefined && item.item.rprice !== undefined) {
@@ -420,9 +416,10 @@ module.exports.Statistics = async (req, res) => {
     return {
         totalEarnings: totalSells,
         totalPlatformCharges,
-        totalDeliveries: deliveryCharge
+        totalDeliveries: totalDeliveryCharge
     };
 };
+
 
 
         const todayStats = calculateStats(todayOrders);

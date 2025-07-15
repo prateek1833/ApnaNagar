@@ -77,6 +77,13 @@
         <canvas id="employeeDeliveriesChartYester" class="mt-4"></canvas>
         <canvas id="employeePlatformChargesChartYester" class="mt-4"></canvas>
     </div>
+    <div class="mt-5">
+        <h3>Employee Performance Day Before Yesterday</h3>
+        <canvas id="employeeEarningsChartDBY"></canvas>
+        <canvas id="employeeDeliveriesChartDBY" class="mt-4"></canvas>
+        <canvas id="employeePlatformChargesChartDBY" class="mt-4"></canvas>
+    </div>
+
 </div>
 
 <script>
@@ -164,14 +171,19 @@ new Chart(restaurantSalesCtx, {
    const employeeStats = <%- JSON.stringify(employeeStats) %>;
 
 const employeeNames = employeeStats.map(emp => emp.username);
-const earnings = employeeStats.map(emp => emp.todayEarnings);
-const deliveries = employeeStats.map(emp => emp.todayDeliveries);
+const earnings = employeeStats.map(emp => emp.todaySells);
+const deliveries = employeeStats.map(emp => emp.todayDeliveryCharges);
 const platformCharges = employeeStats.map(emp => emp.todayPlatformCharges);
 
 const employeeNamesYester = employeeStats.map(emp => emp.username);
-const earningsYester = employeeStats.map(emp => emp.yesterdayEarnings);
-const deliveriesYester = employeeStats.map(emp => emp.yesterdayDeliveries);
+const earningsYester = employeeStats.map(emp => emp.yesterdaySells);
+const deliveriesYester = employeeStats.map(emp => emp.yesterdayDeliveryCharges);
 const platformChargesYester = employeeStats.map(emp => emp.yesterdayPlatformCharges);
+
+const earningsDBY = employeeStats.map(emp => emp.dayBeforeYesterdaySells);
+const deliveriesDBY = employeeStats.map(emp => emp.dayBeforeYesterdayDeliveryCharges);
+const platformChargesDBY = employeeStats.map(emp => emp.dayBeforeYesterdayPlatformCharges);
+
 
 
     function createBarChart(ctxId, label, data, color) {
@@ -194,11 +206,16 @@ const platformChargesYester = employeeStats.map(emp => emp.yesterdayPlatformChar
         });
     }
 
-    createBarChart('employeeEarningsChart', 'Earnings (₹)', earnings, 'rgba(54, 162, 235, 0.7)');
-    createBarChart('employeeDeliveriesChart', 'Deliveries', deliveries, 'rgba(255, 99, 132, 0.7)');
+    createBarChart('employeeEarningsChart', 'TotalSell (₹)', earnings, 'rgba(54, 162, 235, 0.7)');
+    createBarChart('employeeDeliveriesChart', 'Delivery Charge', deliveries, 'rgba(255, 99, 132, 0.7)');
     createBarChart('employeePlatformChargesChart', 'Platform Charges (₹)', platformCharges, 'rgba(75, 192, 192, 0.7)');
     
-    createBarChart('employeeEarningsChartYester', 'Earnings (₹)', earningsYester, 'rgba(54, 162, 235, 0.7)');
-    createBarChart('employeeDeliveriesChartYester', 'Deliveries', deliveriesYester, 'rgba(255, 99, 132, 0.7)');
+    createBarChart('employeeEarningsChartYester', 'TotalSell (₹)', earningsYester, 'rgba(54, 162, 235, 0.7)');
+    createBarChart('employeeDeliveriesChartYester', 'Delivery Charge', deliveriesYester, 'rgba(255, 99, 132, 0.7)');
     createBarChart('employeePlatformChargesChartYester', 'Platform Charges (₹)', platformChargesYester, 'rgba(75, 192, 192, 0.7)');
+
+    createBarChart('employeeEarningsChartDBY', 'Total Sells (₹)', earningsDBY, 'rgba(54, 162, 235, 0.7)');
+    createBarChart('employeeDeliveriesChartDBY', 'Delivery Charges (₹)', deliveriesDBY, 'rgba(255, 99, 132, 0.7)');
+    createBarChart('employeePlatformChargesChartDBY', 'Platform Charges (₹)', platformChargesDBY, 'rgba(75, 192, 192, 0.7)');
+
 </script>

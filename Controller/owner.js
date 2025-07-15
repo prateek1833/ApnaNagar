@@ -144,7 +144,6 @@ module.exports.statistics = async (req, res, next) => {
 
         const previousMonthName = monthNames[firstDayOfLastMonth.getMonth()];
 
-        // Fetch orders from the previous month
         const orders = await Orders.find({
             createdAt: { $gte: firstDayOfLastMonth, $lte: lastDayOfLastMonth }
         }).lean();
@@ -219,6 +218,7 @@ module.exports.statistics = async (req, res, next) => {
                 customerPurchases[userID].totalItems += order.items.length;
             }
         }
+
         const getDateString = (date) => date.toISOString().split('T')[0];
         const today = new Date();
         const yesterday = new Date(today);
@@ -231,120 +231,101 @@ module.exports.statistics = async (req, res, next) => {
         const yesterdayStr = getDateString(yesterday);
         const dayBeforeYesterdayStr = getDateString(dayBeforeYesterday);
 
-        // 2. Initialize stats for Today, Yesterday, and Day Before Yesterday
-        let employeeStats = {};
-
-        // Fetch all employees
+        const employeeStats = {};
         const employees = await Employee.find().lean();
 
-        // 3. Loop through each employee and calculate earnings for the last three days
         for (let employee of employees) {
-            let totalEarningsEmployee = 0;
-            let totalDeliveriesEmployee = 0;
+            let totalSellsEmployee = 0;
             let totalPlatformChargesEmployee = 0;
-            let todayEarnings = 0;
-            let yesterdayEarnings = 0;
-            let dayBeforeYesterdayEarnings = 0;
-            let todayDeliveries = 0;
-            let yesterdayDeliveries = 0;
-            let dayBeforeYesterdayDeliveries = 0;
-            let todayPlatformCharges = 0;
-            let yesterdayPlatformCharges = 0;
-            let dayBeforeYesterdayPlatformCharges = 0;
+            let totalDeliveryChargesEmployee = 0;
 
-            // Fetch completed orders for the employee
+            let todaySells = 0, yesterdaySells = 0, dayBeforeYesterdaySells = 0;
+            let todayPlatformCharges = 0, yesterdayPlatformCharges = 0, dayBeforeYesterdayPlatformCharges = 0;
+            let todayDeliveryCharges = 0, yesterdayDeliveryCharges = 0, dayBeforeYesterdayDeliveryCharges = 0;
+
             const completedOrders = await Orders.find({ '_id': { $in: employee.completed_orders } }).lean();
 
-            // Filter orders for today, yesterday, and the day before yesterday
-            const todayOrders = completedOrders.filter(order => getDateString(new Date(order.createdAt)) === todayStr);
-            const yesterdayOrders = completedOrders.filter(order => getDateString(new Date(order.createdAt)) === yesterdayStr);
-            const dayBeforeYesterdayOrders = completedOrders.filter(order => getDateString(new Date(order.createdAt)) === dayBeforeYesterdayStr);
+            // Filter orders for each day
+        const filterOrdersByDate = (dateStr) => completedOrders.filter(order => {
+            return order.createdAt && getDateString(new Date(order.createdAt)) === dateStr;
+        });
 
-            // Function to calculate earnings and platform charges for each day
+        const todayOrders = filterOrdersByDate(todayStr);
+        const yesterdayOrders = filterOrdersByDate(yesterdayStr);
+        const dayBeforeYesterdayOrders = filterOrdersByDate(dayBeforeYesterdayStr);
+
             const calculateStats = (orders) => {
-                let earnings = 0;
-                let platformCharges = 0;
-                let deliveries = 0;
+                let totalSells = 0;
+                let totalPlatformCharges = 0;
+                let totalDeliveryCharges = 0;
 
                 orders.forEach(order => {
-                    const distance = order.author.distance || 0;
+        const distance = order.author?.distance || 0;
+        const deliveryCharge = distance <= 1 ? 5 : 5 + Math.ceil((distance - 1) * 3);
+        totalDeliveryCharges += deliveryCharge;
 
-                    // Calculate delivery charge using Option 2
-                    const deliveryCharge = 5 + (3 * distance);
+        const orderSell = order.items.reduce((sum, item) => {
+            return sum + (item.item.price * item.item.quantity);
+        }, 0);
+        totalSells += orderSell;
 
-                    // Platform charge logic based on price - rprice
-                    let platformChargeForOrder = 0;
+        let platformCharge = 0;
+        order.items.forEach(item => {
+            if (item.item && item.item.price !== undefined && item.item.rprice !== undefined) {
+                platformCharge += (item.item.price - item.item.rprice) * item.item.quantity;
+            }
+        });
 
-                    order.items.forEach(({ item }) => {
-                        if (item && item.price !== undefined && item.rprice !== undefined && item.quantity !== undefined) {
-                            const priceDiff = item.price - item.rprice;
-                            platformChargeForOrder += priceDiff * item.quantity;
-                        }
-                    });
+        totalPlatformCharges += Math.round(platformCharge);
+    });
 
-                    platformCharges += Math.round(platformChargeForOrder + deliveryCharge);
-
-                    // Calculate earnings (same as before)
-                    let totalPrice = order.items.reduce((sum, item) => sum + (item.item.price * item.item.quantity), 0);
-                    let orderEarnings = 1;
-                    if (totalPrice > 100) orderEarnings += Math.round(totalPrice * 0.01);
-                    orderEarnings += Math.round(distance);
-                    earnings += orderEarnings;
-
-                    deliveries++;
-                });
-
-                return { earnings, platformCharges, deliveries };
+                return { totalSells, totalPlatformCharges, totalDeliveryCharges };
             };
 
-
-            // Calculate stats for each day
             const todayStats = calculateStats(todayOrders);
             const yesterdayStats = calculateStats(yesterdayOrders);
             const dayBeforeYesterdayStats = calculateStats(dayBeforeYesterdayOrders);
 
-            // Aggregate employee stats
-            totalEarningsEmployee = todayStats.earnings + yesterdayStats.earnings + dayBeforeYesterdayStats.earnings;
-            totalDeliveriesEmployee = todayStats.deliveries + yesterdayStats.deliveries + dayBeforeYesterdayStats.deliveries;
-            totalPlatformChargesEmployee = todayStats.platformCharges + yesterdayStats.platformCharges + dayBeforeYesterdayStats.platformCharges;
+            // Aggregate
+            totalSellsEmployee = todayStats.totalSells + yesterdayStats.totalSells + dayBeforeYesterdayStats.totalSells;
+            totalPlatformChargesEmployee = todayStats.totalPlatformCharges + yesterdayStats.totalPlatformCharges + dayBeforeYesterdayStats.totalPlatformCharges;
+            totalDeliveryChargesEmployee = todayStats.totalDeliveryCharges + yesterdayStats.totalDeliveryCharges + dayBeforeYesterdayStats.totalDeliveryCharges;
 
-            todayEarnings = todayStats.earnings;
-            yesterdayEarnings = yesterdayStats.earnings;
-            dayBeforeYesterdayEarnings = dayBeforeYesterdayStats.earnings;
+            // Daily
+            todaySells = todayStats.totalSells;
+            yesterdaySells = yesterdayStats.totalSells;
+            dayBeforeYesterdaySells = dayBeforeYesterdayStats.totalSells;
 
-            todayDeliveries = todayStats.deliveries;
-            yesterdayDeliveries = yesterdayStats.deliveries;
-            dayBeforeYesterdayDeliveries = dayBeforeYesterdayStats.deliveries;
+            todayPlatformCharges = todayStats.totalPlatformCharges;
+            yesterdayPlatformCharges = yesterdayStats.totalPlatformCharges;
+            dayBeforeYesterdayPlatformCharges = dayBeforeYesterdayStats.totalPlatformCharges;
 
-            todayPlatformCharges = todayStats.platformCharges;
-            yesterdayPlatformCharges = yesterdayStats.platformCharges;
-            dayBeforeYesterdayPlatformCharges = dayBeforeYesterdayStats.platformCharges;
+            todayDeliveryCharges = todayStats.totalDeliveryCharges;
+            yesterdayDeliveryCharges = yesterdayStats.totalDeliveryCharges;
+            dayBeforeYesterdayDeliveryCharges = dayBeforeYesterdayStats.totalDeliveryCharges;
 
-            // Store the stats for this employee
             employeeStats[employee._id] = {
                 username: employee.username,
-                totalEarnings: totalEarningsEmployee,
-                totalDeliveries: totalDeliveriesEmployee,
+                totalSells: totalSellsEmployee,
                 totalPlatformCharges: totalPlatformChargesEmployee,
-                todayEarnings,
-                yesterdayEarnings,
-                dayBeforeYesterdayEarnings,
-                todayDeliveries,
-                yesterdayDeliveries,
-                dayBeforeYesterdayDeliveries,
+                totalDeliveries: totalDeliveryChargesEmployee,
+                todaySells,
+                yesterdaySells,
+                dayBeforeYesterdaySells,
                 todayPlatformCharges,
                 yesterdayPlatformCharges,
-                dayBeforeYesterdayPlatformCharges
+                dayBeforeYesterdayPlatformCharges,
+                todayDeliveryCharges,
+                yesterdayDeliveryCharges,
+                dayBeforeYesterdayDeliveryCharges,
             };
         }
 
-        // Get top selling items
         const topSellingItems = Object.entries(itemSales)
             .map(([name, quantitySold]) => ({ name, quantitySold }))
             .sort((a, b) => b.quantitySold - a.quantitySold)
             .slice(0, 10);
 
-        // Get top customers
         const topCustomers = Object.values(customerPurchases)
             .sort((a, b) => b.totalSpent - a.totalSpent)
             .slice(0, 10);
@@ -359,7 +340,7 @@ module.exports.statistics = async (req, res, next) => {
             previousMonthName,
             peakOrderTimes,
             ordersByDay,
-            employeeStats: formattedEmployeeStats, // Now it's an array
+            employeeStats: formattedEmployeeStats,
             todayStr,
             yesterdayStr,
             dayBeforeYesterdayStr,
