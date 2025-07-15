@@ -391,12 +391,13 @@ module.exports.Statistics = async (req, res) => {
         const calculateStats = (orders) => {
     let totalSells = 0;
     let totalPlatformCharges = 0;
+    let deliveryCharge=0;
 
     orders.forEach(order => {
         const distance = order.author.distance || 0;
 
         // Delivery charge: 5 base + 3 × distance
-        const deliveryCharge = 5 + (3 * distance);
+        deliveryCharge = distance <= 1 ? 5 : 5 + Math.floor((distance - 1) * 3);
 
         // Total Sell = sum of item.price × quantity
         const orderSell = order.items.reduce((sum, item) => {
@@ -413,13 +414,13 @@ module.exports.Statistics = async (req, res) => {
             }
         });
 
-        totalPlatformCharges += Math.round(platformCharge + deliveryCharge);
+        totalPlatformCharges += Math.round(platformCharge);
     });
 
     return {
         totalEarnings: totalSells,
         totalPlatformCharges,
-        totalDeliveries: orders.length
+        totalDeliveries: deliveryCharge
     };
 };
 
