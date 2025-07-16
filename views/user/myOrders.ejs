@@ -101,7 +101,7 @@
                                                                                         <%=order.tip%>
                                                                                     </strong></td>
                                                                             </tr>
-                                                                            <% const deliveryCost = user.distance <= 1 ? 5 : 5 + Math.round((user.distance - 1) * 3); %>
+                                                                            <% const deliveryCost = user.distance <= 1 ? 5 : 5 + Math.ceil((user.distance - 1) * 3); %>
                                                                                 <tr>
                                                                                     <td><b>Delivery</b></td>
                                                                                     <td></td>

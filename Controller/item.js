@@ -41,7 +41,12 @@ module.exports.index = async (req, res) => {
             return b.avgRating - a.avgRating;
         });
         // Sort restaurants by rating (assuming rating exists)
-        allRestaurant = allRestaurant.sort((a, b) => b.avgRating - a.avgRating).slice(0, 6);
+        allRestaurant = allRestaurant.sort((a, b) => {
+            // First, compare by isOpen (true first)
+            if (a.isOpen !== b.isOpen) return b.isOpen - a.isOpen;
+            // Then, compare by avgRating
+            return b.avgRating - a.avgRating;
+        }).slice(0, 6);
 
 
         // Render the items view
