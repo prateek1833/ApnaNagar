@@ -557,7 +557,20 @@ module.exports.deleteOrder = async (req, res) => {
         // Set active_order to null
         employee.active_order = null;
         employee.status = "Free";
+
+        // ---- Track Deleted Order Count (add this block) ----
+        const today = new Date().toISOString().slice(0, 10);
+
+        if (!employee.deletedOrdersCount) {
+            employee.deletedOrdersCount = {};
+        }
+
+        employee.deletedOrdersCount[today] = (employee.deletedOrdersCount[today] || 0) + 1;
+        employee.markModified('deletedOrdersCount'); // Important!
+
         await employee.save();
+
+        console.log("Deleted Orders Count Updated:", employee.deletedOrdersCount);
 
         req.flash('success', 'Active order deleted successfully');
         res.redirect(`/employee/${id}/dashboard`);

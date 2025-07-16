@@ -304,6 +304,8 @@ module.exports.statistics = async (req, res, next) => {
             yesterdayDeliveryCharges = yesterdayStats.totalDeliveryCharges;
             dayBeforeYesterdayDeliveryCharges = dayBeforeYesterdayStats.totalDeliveryCharges;
 
+            const deletedOrdersToday = (employee.deletedOrdersCount && employee.deletedOrdersCount[todayStr]) || 0;
+
             employeeStats[employee._id] = {
                 username: employee.username,
                 totalSells: totalSellsEmployee,
@@ -318,6 +320,7 @@ module.exports.statistics = async (req, res, next) => {
                 todayDeliveryCharges,
                 yesterdayDeliveryCharges,
                 dayBeforeYesterdayDeliveryCharges,
+                deletedOrdersToday,
             };
         }
 

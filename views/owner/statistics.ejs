@@ -56,6 +56,29 @@
         <canvas id="restaurantSalesChart"></canvas>
     </div>
 
+        <div class="mt-4">
+        <h4>Deleted Orders by Delivery Boys</h4>
+        <table class="table table-bordered table-striped">
+            <thead class="table-dark">
+                <tr>
+                    <th scope="col"></th>
+                    <th scope="col">Delivery Boy</th>
+                    <th scope="col">Deleted Orders Today</th>
+                </tr>
+            </thead>
+            <tbody>
+                <% employeeStats.forEach((emp, index) => { %>
+                    <tr>
+                        <td><%= index + 1 %></td>
+                        <td><%= emp.username %></td>
+                        <td><%= emp.deletedOrdersToday || 0 %></td>
+                    </tr>
+                <% }) %>
+            </tbody>
+        </table>
+    </div>
+
+
     <!-- Order Trends -->
     <div class="mt-5">
         <h3>Orders by Day of the Week</h3>

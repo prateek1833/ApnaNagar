@@ -96,7 +96,13 @@ const employeeSchema = new Schema({
         required: true,
         unique: true,
         match: /^[0-9]{12}$/ // Optional: basic validation for 12-digit Aadhar
+    },
+        deletedOrdersCount: {
+        type: Object,
+        default: {}
     }
+
+
 });
 
 employeeSchema.plugin(passportLocalMongoose);
