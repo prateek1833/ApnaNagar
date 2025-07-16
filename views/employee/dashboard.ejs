@@ -190,108 +190,87 @@
                         <!-- Pending Orders -->
                         <h4 class="mt-4 text-secondary">Pending Orders</h4>
                         <div class="accordion" id="orderAccordion">
-                            <% if (pendingOrders.length> 0) { %>
-                                <% pendingOrders.forEach(order=> { %>
-                                    <div class="accordion-item">
-                                        <h2 class="accordion-header" id="heading<%= order._id %>">
-                                            <button class="accordion-button collapsed d-flex flex-column justify-content-start" type="button"
-                                                data-bs-toggle="collapse" data-bs-target="#collapse<%= order._id %>"
-                                                aria-expanded="false" aria-controls="collapse<%= order._id %>">
-                                                
-                                                    <div>
-                                                        <!-- Order Details -->
-                                                        <div class="d-flex justify-content-between">
-                                                            <span><%= order.author.name %></span>
-                                                            <span><%= order.author.distance %> km</span>
-                                                        </div>                                                        
-                                                        <div style="font-size: 0.85rem; color: gray;">Created on: <%= new
-                                                                Date(order.createdAt).toLocaleString("en-IN", {
-                                                                timeZone: "Asia/Kolkata" }) %>
-                                                        </div>
-            
-                                                        <!-- Order Items (small font) -->
-                                                        <div style="font-size: 0.75rem; color: #6c757d;">
-                                                            <%= order.author.locality%>, <%= order.author.area%>, <%=order.author.district%>,
-                                                        <%=order.author.state%>
-                                                        </div>
-                                                    </div>
-                                            </button>
-                                        </h2>
-                                        <div id="collapse<%= order._id %>" class="accordion-collapse collapse"
-                                            aria-labelledby="heading<%= order._id %>" data-bs-parent="#orderAccordion">
-                                            <div class="accordion-body p-0">
-                                                <table class="table table-primary">
-                                                    <thead class="thead-primary">
-                                                        <tr>
-                                                            <th>Title</th>
-                                                            <th>Q</th>
-                                                            <th>Price</th>
-                                                            <th>Restaurant</th>
-                                                        </tr>
-                                                    </thead>
-                                                    <tbody>
-                                                        <% order.items.forEach(item=> { %>
-                                                            <tr>
-                                                                <td>
-                                                                    <%= item.item.typ %>
-                                                                        <%= item.item.title %>
-                                                                </td>
-                                                                <td>
-                                                                    <%= item.item.quantity %>
-                                                                        <%= item.item.unit %>
-                                                                </td>
-                                                                <td>
-                                                                    <%= item.item.price %>
-                                                                </td>
-                                                                <td>
-                                                                    <%= pendingRestaurantNames[item.item._id]
-                                                                        || 'No Restaurant' %>
-                                                                </td>
-                                                            </tr>
-                                                            <% }) %>
+                        <% if (pendingOrders.length > 0) { %>
+                            <% pendingOrders.forEach(order => { %>
+                                <div class="accordion-item">
+                                    <h2 class="accordion-header" id="heading<%= order._id %>">
+                                        <button class="accordion-button collapsed d-flex flex-column justify-content-start" type="button"
+                                            data-bs-toggle="collapse" data-bs-target="#collapse<%= order._id %>"
+                                            aria-expanded="false" aria-controls="collapse<%= order._id %>">
+                                            
+                                            <div>
+                                                <!-- Order Header Details -->
+                                                <div class="d-flex justify-content-between">
+                                                    <span><strong><%= order.author.name %></strong></span>
+                                                    <span><strong><%= order.author.distance %> km</strong></span>
+                                                </div>
+                                                <div style="font-size: 0.85rem;">
+                                                    <a href="tel:<%= order.author.mobile %>"><%= order.author.mobile || 'No number' %></a>
+                                                </div>
+                                                <div style="font-size: 0.85rem; color: gray;">
+                                                    Created on: <%= new Date(order.createdAt).toLocaleString("en-IN", { timeZone: "Asia/Kolkata" }) %>
+                                                </div>
 
-                                                                <% const distance=order.author.distance;
-                                                                order.tip = order.tip < 0 ? 0 : order.tip;
-                                                                 const deliveryCost = distance <= 1 ? 5 : 5 + Math.ceil((distance - 1) * 3);
-                                                                    %>
-                                                                    <tr>
-                                                                        <td colspan="3" class="text-start">
-                                                                            <strong>Delivery Cost</strong></td>
-                                                                        <td>
-                                                                            <%= deliveryCost %> Rs
-                                                                        </td>
-                                                                    </tr>
-                                                                    <tr>
-                                                                        <td colspan="3" class="text-start">
-                                                                            <strong>Tips</strong></td>
-                                                                        <td>
-                                                                            <%= order.tip %> Rs
-                                                                        </td>
-                                                                    </tr>
-                                                                    <% const itemTotalPrice=order.items.reduce((total,
-                                                                        item)=> total + item.item.price *
-                                                                        item.item.quantity, 0);
-                                                                        const totalPrice = itemTotalPrice + deliveryCost
-                                                                        + order.tip;
-                                                                        %>
-                                                                        <tr>
-                                                                            <td colspan="3" class="text-start">
-                                                                                <strong>Total Price</strong></td>
-                                                                            <td>
-                                                                                <%= totalPrice %> Rs
-                                                                            </td>
-                                                                        </tr>
-                                                    </tbody>
-                                                </table>
+                                                <!-- Address Info -->
+                                                <div style="font-size: 0.75rem; color: #6c757d;">
+                                                    <%= order.author.locality %>, <%= order.author.area %>, <%= order.author.district %>, <%= order.author.state %>
+                                                </div>
                                             </div>
+                                        </button>
+                                    </h2>
+                                    <div id="collapse<%= order._id %>" class="accordion-collapse collapse"
+                                        aria-labelledby="heading<%= order._id %>" data-bs-parent="#orderAccordion">
+                                        <div class="accordion-body p-0">
+                                            <table class="table table-primary">
+                                                <thead class="thead-primary">
+                                                    <tr>
+                                                        <th>Title</th>
+                                                        <th>Q</th>
+                                                        <th>Price</th>
+                                                        <th>Restaurant</th>
+                                                    </tr>
+                                                </thead>
+                                                <tbody>
+                                                    <% order.items.forEach(item => { %>
+                                                        <tr>
+                                                            <td><%= item.item.typ %> <%= item.item.title %></td>
+                                                            <td><%= item.item.quantity %> <%= item.item.unit %></td>
+                                                            <td><%= item.item.price %></td>
+                                                            <td><%= pendingRestaurantNames[item.item._id] || 'No Restaurant' %></td>
+                                                        </tr>
+                                                    <% }) %>
+
+                                                    <% 
+                                                        const distance = order.author.distance;
+                                                        order.tip = order.tip < 0 ? 0 : order.tip;
+                                                        const deliveryCost = distance <= 1 ? 5 : 5 + Math.ceil((distance - 1) * 3);
+                                                        const itemTotalPrice = order.items.reduce((total, item) => total + item.item.price * item.item.quantity, 0);
+                                                        const totalPrice = itemTotalPrice + deliveryCost + order.tip;
+                                                    %>
+                                                    <tr>
+                                                        <td colspan="3" class="text-start"><strong>Delivery Cost</strong></td>
+                                                        <td><%= deliveryCost %> Rs</td>
+                                                    </tr>
+                                                    <tr>
+                                                        <td colspan="3" class="text-start"><strong>Tips</strong></td>
+                                                        <td><%= order.tip %> Rs</td>
+                                                    </tr>
+                                                    <tr>
+                                                        <td colspan="3" class="text-start"><strong>Total Price</strong></td>
+                                                        <td><%= totalPrice %> Rs</td>
+                                                    </tr>
+                                                </tbody>
+                                            </table>
                                         </div>
                                     </div>
-                                    <hr>
-                                    <% }) %>
-                                        <% } else { %>
-                                            <p class="text-muted">No pending orders.</p>
-                                            <% } %>
-                        </div>
+                                </div>
+                                <hr>
+                            <% }) %>
+                        <% } else { %>
+                            <p class="text-muted">No pending orders.</p>
+                        <% } %>
+                    </div>
+
 
                         <!-- Custom CSS -->
                         <style>
