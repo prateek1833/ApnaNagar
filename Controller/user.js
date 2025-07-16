@@ -211,7 +211,8 @@ module.exports.delete = async (req, res, next) => {
         // Find the order
         const order = await Order.findById(id);
         if (!order) {
-            return res.status(404).send("Order not found");
+            req.flash('error', 'No order found');
+            return res.redirect(`/items/${id}/myOrders`);
         }
 
         // Optional: restrict deletion if more than 2 minutes old

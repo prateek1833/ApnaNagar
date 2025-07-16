@@ -25,6 +25,7 @@ const admin = require("./cloudConfig"); // Firebase Config
 const User = require("./models/user");
 const Restaurant = require("./models/restaurant");
 const Employee = require("./models/employee");
+const Order = require('./models/order'); // Adjust path as needed
 
 const itemRouter = require("./routes/item");
 const reviewsRouter = require("./routes/review");
@@ -366,3 +367,26 @@ app.post('/check-username', async (req, res) => {
 app.all("*", (req, res, next) => {
     next(new ExpressError(404, "Page Not Found!"));
 });
+
+
+// Auto-update db_status to 'Preparing' after 2 minutes
+setInterval(async () => {
+    try {
+        const twoMinutesAgo = new Date(Date.now() - 2 * 60 * 1000);
+
+        // Find orders that are in 'Order Received' state and created 2+ minutes ago
+        const orders = await Order.find({
+            status: 'Order Received',
+            createdAt: { $lte: twoMinutesAgo }
+        });
+
+        for (let order of orders) {
+            order.status = 'Preparing';
+            await order.save();
+            console.log(`Order ${order._id} updated from 'Order Received' to 'Preparing'`);
+        }
+    } catch (err) {
+        console.error('Auto status update error:', err);
+    }
+}, 60 * 1000); // Runs every 1 minute
+
