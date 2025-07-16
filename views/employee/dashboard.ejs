@@ -163,6 +163,11 @@
                 
                         <!-- Action Buttons -->
                         <div class="d-flex flex-wrap justify-content-center gap-2 my-3">
+                            <% if(employee.active_order.status != 'Out for Delivery' && employee.active_order.status != 'Delivered') { %>
+                                <form action="/employee/<%= employee.id %>/outForDelivery" method="POST">
+                                    <button type="submit" class="btn btn-warning">Out for Delivery</button>
+                                </form>
+                            <% } %>
                             <% if(employee.active_order.status != 'Delivered') { %>
                                 <form action="/employee/<%= employee.id %>/delivered" method="POST">
                                     <button type="submit" class="btn btn-success">Delivered</button>
@@ -178,10 +183,12 @@
                             </form>
                 
                             <!-- NEW DELETE BUTTON -->
-                            <form action="/employee/<%= employee.id %>/deleteOrder?_method=DELETE" method="POST" 
-                                onsubmit="return confirm('Are you sure you want to delete this order?');">
-                                <button type="submit" class="btn btn-danger">Delete Order</button>
-                            </form>
+                             <% if(employee.active_order.status != 'Delivered') { %>
+                                <form action="/employee/<%= employee.id %>/deleteOrder?_method=DELETE" method="POST" 
+                                    onsubmit="return confirm('Are you sure you want to delete this order?');">
+                                    <button type="submit" class="btn btn-danger">Delete Order</button>
+                                </form>
+                            <% } %>
                         </div>
                     </div>
                 </div>

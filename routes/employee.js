@@ -46,5 +46,7 @@ router.get("/:id/profile", isLoggedIn, wrapAsync(employeeController.profile));
 
 router.delete("/:id/deleteOrder", isLoggedIn, wrapAsync(employeeController.deleteOrder));
 
+router.post("/:id/outForDelivery", isLoggedIn,isEmployee, wrapAsync(employeeController.outForDelivery));
+
 
 module.exports = router;

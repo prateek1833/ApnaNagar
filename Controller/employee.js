@@ -580,3 +580,41 @@ module.exports.deleteOrder = async (req, res) => {
         res.redirect(`/employee/${id}/dashboard`);
     }
 };
+
+module.exports.outForDelivery = async (req, res) => {
+    try {
+        const { id } = req.params;
+
+        // Fetch employee and populate active_order
+        const employee = await Employee.findById(id).populate('active_order');
+
+        // Ensure employee and an active order exist
+        if (!employee || !employee.active_order) {
+            req.flash('error', 'No active order found for this employee.');
+            return res.redirect(`/employee/${id}/dashboard`);
+        }
+
+        // Update the status
+        // Validate if `active_order` exists before querying
+        if (!employee.active_order || !mongoose.Types.ObjectId.isValid(employee.active_order)) {
+            req.flash("error", "No active order found for the employee.");
+            return res.redirect("/orders");
+        }
+
+        const order = await Order.findById(employee.active_order);
+        if (!order) {
+            req.flash("error", "Order not found.");
+            return res.redirect("/orders");
+        }
+
+        order.status = "Out for Delivery";
+        await order.save();
+
+        req.flash('success', 'Order marked as Out for Delivery.');
+        res.redirect(`/employee/${id}/dashboard`);
+    } catch (err) {
+        console.error('Error updating status to Out for Delivery:', err);
+        req.flash('error', 'Something went wrong while updating the status.');
+        res.redirect(`/employee/${id}/dashboard`);
+    }
+};
