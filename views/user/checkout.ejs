@@ -27,7 +27,7 @@
     }
 </style>
 <% user = currUser %>
-<% const deliveryCost = user.distance <= 1 ? 5 : 5 + Math.round((user.distance - 1) * 3); %>
+<% const deliveryCost = user.distance <= 1 ? 5 : 5 + Math.ceil((user.distance - 1) * 3); %>
 
 <% let estimatedTime = Math.ceil(20 + (user.distance) * 3) ; %>
 

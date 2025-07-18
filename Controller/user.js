@@ -220,7 +220,8 @@ module.exports.delete = async (req, res, next) => {
         const createdAt = new Date(order.createdAt);
         const diffMinutes = (now - createdAt) / (1000 * 60);
         if (diffMinutes > 2) {
-            return res.status(403).send("Cannot delete order after 2 minutes");
+            req.flash('error', 'Cannot delete order after 2 minutes');
+            return res.redirect(`/items/${id}/myOrders`);
         }
 
         // If a delivery boy is assigned, update their status and active_order
