@@ -220,7 +220,7 @@ module.exports.delete = async (req, res, next) => {
         const createdAt = new Date(order.createdAt);
         const diffMinutes = (now - createdAt) / (1000 * 60);
         if (diffMinutes > 2) {
-            req.flash('error', 'Cannot delete order after 2 minutes');
+            req.flash('error', 'Cannot delete order after 2 minutes, Please call the delivery boy');
             return res.redirect(`/items/${id}/myOrders`);
         }
 

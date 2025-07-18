@@ -36,14 +36,6 @@
                                                     timeZone: "Asia/Kolkata" }) %>
                                             </div>
 
-                                            <!-- Order Items (small font) -->
-                                            <div style="font-size: 0.75rem; color: #6c757d;">
-                                                Items:
-                                                <% order.items.forEach((orderItem, index)=> { %>
-                                                    <%= orderItem.item.title %>
-                                                        <%= index < order.items.length - 1 ? ', ' : '' %>
-                                                            <% }); %>
-                                            </div>
                                         </div>
                                     </button>
                                 </h2>
