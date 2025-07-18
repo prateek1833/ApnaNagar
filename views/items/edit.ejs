@@ -29,6 +29,7 @@
                     <input type="file" name="image" class="form-control" id="image-upload">
                     <small class="text-danger d-none" id="image-error">Image size should not exceed 500 KB.</small>
                 </div>
+                <% if(currUser && item.owner._id.equals(currUser.id)){ %>
                 <div class="mb-3 no-spinner"
                     style="border: solid rgb(180, 179, 179); border-width: 1px; border-radius: 10%; padding: 5%;">
                     <label for="detail" class="form-label">Details</label>
@@ -58,6 +59,7 @@
                     </div>
                     <button type="button" id="add-detail" class="btn btn-secondary mt-2">Add Detail</button>
                 </div>
+                <% } %>
                 <div class="mb-3">
                     <label for="key" class="form-label">Keywords</label>
                     <input type="text" name="key" value="<%= item.key.join(', ') %>" class="form-control">
