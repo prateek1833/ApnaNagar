@@ -258,6 +258,7 @@ module.exports.statistics = async (req, res, next) => {
                 let totalSells = 0;
                 let totalPlatformCharges = 0;
                 let totalDeliveryCharges = 0;
+                let lateDeliveries = 0;
 
                 orders.forEach(order => {
         const distance = order.author?.distance || 0;
@@ -277,9 +278,17 @@ module.exports.statistics = async (req, res, next) => {
         });
 
         totalPlatformCharges += Math.round(platformCharge);
+
+        // Calculate late deliveries
+        if (order.deliveredAt && order.createdAt) {
+            const created = new Date(order.createdAt);
+            const delivered = new Date(order.deliveredAt);
+            const diffInMinutes = (delivered - created) / (1000 * 60);
+            if (diffInMinutes > 10) lateDeliveries++;
+        }
     });
 
-                return { totalSells, totalPlatformCharges, totalDeliveryCharges };
+                return { totalSells, totalPlatformCharges, totalDeliveryCharges, lateDeliveries  };
             };
 
             const todayStats = calculateStats(todayOrders);

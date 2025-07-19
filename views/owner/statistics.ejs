@@ -56,27 +56,6 @@
         <canvas id="restaurantSalesChart"></canvas>
     </div>
 
-        <div class="mt-4">
-        <h4>Deleted Orders by Delivery Boys</h4>
-        <table class="table table-bordered table-striped">
-            <thead class="table-dark">
-                <tr>
-                    <th scope="col"></th>
-                    <th scope="col">Delivery Boy</th>
-                    <th scope="col">Deleted Orders Today</th>
-                </tr>
-            </thead>
-            <tbody>
-                <% employeeStats.forEach((emp, index) => { %>
-                    <tr>
-                        <td><%= index + 1 %></td>
-                        <td><%= emp.username %></td>
-                        <td><%= emp.deletedOrdersToday || 0 %></td>
-                    </tr>
-                <% }) %>
-            </tbody>
-        </table>
-    </div>
 
 
     <!-- Order Trends -->
@@ -105,6 +84,32 @@
         <canvas id="employeeEarningsChartDBY"></canvas>
         <canvas id="employeeDeliveriesChartDBY" class="mt-4"></canvas>
         <canvas id="employeePlatformChargesChartDBY" class="mt-4"></canvas>
+    </div>
+
+    <div class="mt-4">
+        <h4>Today's Deliveries</h4>
+        <table class="table table-bordered table-striped">
+            <thead class="table-dark">
+                <tr>
+                    <th scope="col">#</th>
+                    <th scope="col">Name</th>
+                    <th scope="col">Deleted</th>
+                    <th scope="col">Late</th>
+                    <th scope="col">Total</th> <!-- ✅ New Column -->
+                </tr>
+            </thead>
+            <tbody>
+                <% employeeStats.forEach((emp, index) => { %>
+                    <tr>
+                        <td><%= index + 1 %></td>
+                        <td><%= emp.username %></td>
+                        <td><%= emp.deletedOrdersToday || 0 %></td>
+                        <td><%= emp.lateDeliveriesToday || 0 %></td>
+                        <td><%= emp.totalDeliveriesToday || 0 %></td> <!-- ✅ New Data -->
+                    </tr>
+                <% }) %>
+            </tbody>
+        </table>
     </div>
 
 </div>
