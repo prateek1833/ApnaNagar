@@ -18,8 +18,44 @@
             }
         </style>
         <% } %>
+        <h2 class="text-center text-primary mb-4">Delivery Dashboard</h2>
 
-            <h2 class="text-center text-primary mb-4">Delivery Dashboard</h2>
+           <%
+    let todayDateStr = new Date().toISOString().slice(0, 10);
+    let totalDeliveredToday = 0;
+    let totalLateDeliveries = 0;
+
+    if (Array.isArray(employee.completed_orders)) {
+        employee.completed_orders.forEach(order => {
+            if (order.status == 'Delivered' && order.deliveredAt) {
+                let deliveredDateObj = new Date(order.deliveredAt);
+
+                if (deliveredDateObj instanceof Date && !isNaN(deliveredDateObj.getTime())) {
+                    let deliveredDateStr = deliveredDateObj.toISOString().slice(0, 10);
+
+                    if (deliveredDateStr === todayDateStr) {
+                        totalDeliveredToday++;
+
+                        let createdAt = new Date(order.createdAt);
+                        if (!isNaN(createdAt.getTime())) {
+                            let diffInMin = (deliveredDateObj - createdAt) / (1000 * 60);
+                            if (diffInMin > 20+ Math.ceil(order.author.distance * 3)) {
+                                totalLateDeliveries++;
+                            }
+                        }
+                    }
+                }
+            }
+        });
+    }
+%>
+
+
+            <p class="lead"><strong>Today's Deliveries:</strong> <%= totalDeliveredToday %></p>
+            <p class="lead"><strong>Late Deliveries Today:</strong> <%= totalLateDeliveries %></p>
+
+
+
 
             <!-- Total Deliveries -->
             <p class="lead"><strong>Total Deliveries:</strong>

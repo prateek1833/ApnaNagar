@@ -219,6 +219,11 @@ module.exports.completeOrder = async (req, res) => {
 
         order.db_status = "Completed";
         order.status = "Delivered";
+
+        if (!order.deliveredAt) {
+            order.deliveredAt = new Date();
+        }
+        
         order.deliveryBoy = { _id: employee._id, name: employee.username, mobile: employee.mobile };
 
         await employee.save();
@@ -270,6 +275,10 @@ module.exports.completeOrderAndAssignNext = async (req, res) => {
 
         order.db_status = "Completed";
         order.status = "Delivered";
+
+        if (!order.deliveredAt) {
+            order.deliveredAt = new Date();
+        }
 
         await employee.save();
         await order.save();
@@ -500,8 +509,10 @@ module.exports.DeliveredStatus = async (req, res) => {
         }
 
         order.status = "Delivered";
+        order.deliveredAt = new Date();
+
         await order.save();
-        req.flash("Order delivered");
+        req.flash("success", "Order delivered");
         return res.redirect(`/employee/${employeeId}/dashboard`);
     } catch (error) {
         console.error("Error in completeOrderAndAssignNext:", error);
