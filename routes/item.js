@@ -24,11 +24,6 @@ router.get("/:id/show.ejs", wrapAsync(itemController.showItem));
 router.get("/orders", isOwner, isLoggedIn, wrapAsync(itemController.orders));
 router.get("/:id/myOrders", isLoggedIn, wrapAsync(itemController.myOrders));
 
-router.get("/new", isLoggedIn, async (req, res) => {
-    res.render("items/new.ejs");
-});
-
-router.post("/new", isLoggedIn,validateImage, upload.single('image'), wrapAsync(itemController.createItem));
 
 router.route("/:id/edit", validateImage)
     .get(isLoggedIn, itemController.renderEdit)

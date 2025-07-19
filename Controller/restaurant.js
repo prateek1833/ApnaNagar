@@ -413,3 +413,51 @@ module.exports.subscribe = async (req, res) => {
     }
 };
 
+module.exports.createItem = async (req, res) => {
+    let { title, description, category, unit, key } = req.body;
+    let { price, typ, rprice } = req.body;
+    let {id} =req.params;
+
+    let url = req.file.path;
+    let filename = req.file.filename;
+
+    let detail = [];
+
+    // Normalize all to arrays
+    if (!Array.isArray(price)) price = [price];
+    if (!Array.isArray(typ)) typ = [typ];
+    if (!Array.isArray(rprice)) rprice = [rprice];
+
+    for (let i = 0; i < price.length; i++) {
+        detail.push({
+            price: Number(price[i]),
+            rprice: Number(rprice[i]),
+            typ: typ[i]
+        });
+    }
+
+    try {
+        let newItem = new Item({
+            owner: "6638779c9bfc94fc81a42508", // replace with actual user id logic if dynamic
+            title,
+            description,
+            category,
+            avgRating: 0,
+            unit,
+            key: key.split(" "),
+            image: { url, filename },
+            detail,
+            RestaurantId: id,
+            isAvailable: true,
+        });
+
+        await newItem.save();
+        console.log("New item saved");
+        req.flash("success", "New Item Created");
+        res.redirect("/");
+    } catch (err) {
+        console.error(err);
+        req.flash("error", "Error creating new item");
+        res.redirect("/items/new");
+    }
+}

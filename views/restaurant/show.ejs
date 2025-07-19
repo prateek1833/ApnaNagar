@@ -260,7 +260,7 @@
                 <a class="btn btn-primary" href="/restaurant/<%=restaurant._id%>/order" aria-label="Orders">
                     <i class="fa-solid fa-bag-shopping"></i>
                 </a>
-                <a href="/items/new" class="btn btn-success">
+                <a href="/restaurant/<%=restaurant._id%>/newItem" class="btn btn-success">
                                     <i class="fa-solid fa-plus"></i>
                                 </a>
                 <form method="POST" action="/restaurant/<%=restaurant._id%>/delete?_method=DELETE">
