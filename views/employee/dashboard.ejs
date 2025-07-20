@@ -51,22 +51,34 @@
 %>
 
 
-            <p class="lead"><strong>Today's Deliveries:</strong> <%= totalDeliveredToday %></p>
-            <p class="lead"><strong>Late Deliveries Today:</strong> <%= totalLateDeliveries %></p>
-
-
-
-
-            <!-- Total Deliveries -->
-            <p class="lead"><strong>Total Deliveries:</strong>
-                <%= employee.total_deliveries %>
-            </p>
             <%
                 const today = new Date().toISOString().slice(0, 10);
                 const deletedMap = JSON.parse(JSON.stringify(employee.deletedOrdersCount || {}));
                 const deletedToday = deletedMap[today] || 0;
             %>
-            <p class="lead"><strong>Deleted Orders Today:</strong> <%= deletedToday %></p>
+            <table class="table table-light mt-3">
+    <thead class="table-success">
+        <tr>
+            <th>Today's Data</th>
+            <th>Value</th>
+        </tr>
+    </thead>
+    <tbody>
+        <tr>
+            <td>Total Deliveries</td>
+            <td><%= totalDeliveredToday %></td>
+        </tr>
+        <tr>
+            <td>Late Deliveries</td>
+            <td><%= totalLateDeliveries %></td>
+        </tr>
+        <tr>
+            <td>Cancelled/Deleted Orders</td>
+            <td><%= deletedToday %></td>
+        </tr>
+    </tbody>
+</table>
+
 
 
             <!-- Active Order Section -->
