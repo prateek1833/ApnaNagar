@@ -51,7 +51,17 @@ if ("serviceWorker" in navigator && "PushManager" in window) {
 
                 console.log("✅ Push Subscription sent to server");
             }
+            if (currUser && currUser.type === "Owner") {
+                const ownerId = currUser._id;
 
+                await fetch(`/owner/${ownerId}/subscribe`, {
+                    method: "POST",
+                    body: JSON.stringify({ subscription }),
+                    headers: { "Content-Type": "application/json" },
+                });
+
+                console.log("✅ Push Subscription sent to server for Owner");
+            }
             // Listen for messages from service worker to play a sound
             navigator.serviceWorker.addEventListener("message", (event) => {
                 if (event.data && event.data.type === "playSound") {

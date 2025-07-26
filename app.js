@@ -313,6 +313,16 @@ io.on("connection", (socket) => {
     } catch (error) {
       console.error("Error sending push notification:", error);
     }
+
+     const restaurant = await Restaurant.findById(orderData.restaurantId).populate("owner");
+        const owner = restaurant?.owner;
+
+        if (owner?.pushSubscription?.token) {
+            await admin.messaging().send({ ...message, token: owner.pushSubscription.token });
+            console.log(`✅ Push notification sent to restaurant owner: ${owner.username}`);
+        } else {
+            console.warn("⚠️ No FCM token found for owner.");
+        }
   }
   app.post("/restaurant/subscribe", async (req, res) => {
     const { restaurantId, subscription } = req.body;
@@ -334,6 +344,18 @@ app.post("/delivery/subscribe", async (req, res) => {
         res.status(500).json({ message: "Error subscribing delivery boy", error });
     }
 });
+app.post("/owner/subscribe", async (req, res) => {
+    const { ownerId, subscription } = req.body;
+
+    try {
+        await User.findByIdAndUpdate(ownerId, { pushSubscription: subscription });
+        res.status(201).json({ message: "Owner subscribed successfully!" });
+    } catch (error) {
+        console.error("❌ Error subscribing owner:", error);
+        res.status(500).json({ message: "Error subscribing owner", error });
+    }
+});
+
 app.post('/check-mobile', async (req, res) => {
     try {
         let { mobile } = req.body;

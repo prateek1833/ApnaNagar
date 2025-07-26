@@ -365,3 +365,31 @@ module.exports.statistics = async (req, res, next) => {
 };
 
 
+module.exports.subscribeOwner = async (req, res) => {
+    try {
+        const { id } = req.params; // Restaurant (owner) ID from URL
+        const { subscription } = req.body; // Web Push subscription object
+
+        if (!subscription || !subscription.endpoint) {
+            return res.status(400).json({ error: "Invalid subscription object" });
+        }
+
+        const restaurant = await Restaurant.findById(id);
+        if (!restaurant) {
+            return res.status(404).json({ error: "Restaurant (owner) not found" });
+        }
+
+        restaurant.ownerPushSubscription = subscription;
+        await restaurant.save();
+
+        console.log("✅ Subscription saved for owner (restaurant):", restaurant._id);
+
+        res.status(200).json({ message: "Owner subscription successful" });
+    } catch (error) {
+        console.error("❌ Error subscribing owner to notifications:", error);
+        res.status(500).json({ error: "Internal server error" });
+    }
+};
+
+
+

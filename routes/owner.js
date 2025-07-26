@@ -31,4 +31,6 @@ router.get("/statistics", isLoggedIn, isOwner, ownerController.statistics);
 
 router.get("/employee", isLoggedIn, isOwner, ownerController.renderEmployee);
 
+router.get("/:id/subscribe", isLoggedIn, isOwner, ownerController.subscribeOwner);
+
 module.exports=router;

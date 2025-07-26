@@ -45,6 +45,14 @@ const userSchema=new Schema({
     dob: {
         type: Date,
     },
+    pushSubscription: {
+    endpoint: String,
+    keys: {
+        p256dh: String,
+        auth: String,
+    },
+},
+
 
 })
 
