@@ -247,3 +247,7 @@ module.exports.delete = async (req, res, next) => {
         next(error);
     }
 };
+
+module.exports.renderForget = (req, res) => {
+    res.render("user/forget.ejs");
+}
